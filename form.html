@@ -7,6 +7,52 @@
     <style>
         /* KEEP ALL YOUR EXISTING CSS STYLES */
         /* ... All the CSS from your form.html ... */
+        
+        /* Add debug panel styles */
+        .debug-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .debug-btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .debug-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .debug-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .debug-warning {
+            background: #ffc107;
+            color: black;
+        }
+        
+        #debugLog {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -25,7 +71,27 @@
                 <button onclick="logout()" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
+                <button onclick="toggleDebug()" class="nav-btn" style="background: #6c757d;">
+                    <i class="fas fa-bug"></i> Debug
+                </button>
             </div>
+        </div>
+        
+        <!-- Debug Panel -->
+        <div id="debugPanel" class="debug-panel">
+            <h4><i class="fas fa-code"></i> Debug Tools</h4>
+            <div>
+                <button onclick="testConnection()" class="debug-btn debug-success">
+                    <i class="fas fa-plug"></i> Test Connection
+                </button>
+                <button onclick="testStaffSearch()" class="debug-btn debug-info">
+                    <i class="fas fa-search"></i> Test Staff Search
+                </button>
+                <button onclick="clearDebugLog()" class="debug-btn debug-warning">
+                    <i class="fas fa-trash"></i> Clear Log
+                </button>
+            </div>
+            <div id="debugLog"></div>
         </div>
         
         <!-- Main Form -->
@@ -188,9 +254,74 @@
 
     <script>
         // =================== CONFIGURATION ===================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbys505hFhQcLbDb7xLVJznU5ey8m1LshsvUNgrUBEQxAfQkMp98jA2Wk1qbgOpddOd_/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbySoFPvi0jR5I-3IxtBu4eJJcJoBF1ODUWyD876GickdV-pnxlSc1a7ZPk-XztDkKf6/exec';
         
-        // =================== USER AUTHENTICATION ===================
+        // =================== DEBUG FUNCTIONS ===================
+        function logDebug(message, type = 'info') {
+            const debugLog = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color:#666">[${timestamp}]</span> <span style="color:${type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#17a2b8'}">${message}</span>`;
+            debugLog.appendChild(logEntry);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[DEBUG] ${message}`);
+        }
+        
+        function toggleDebug() {
+            const debugPanel = document.getElementById('debugPanel');
+            debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function clearDebugLog() {
+            document.getElementById('debugLog').innerHTML = '';
+        }
+        
+        async function testConnection() {
+            logDebug('Testing connection to Google Sheets API...');
+            
+            try {
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                logDebug(`Connection successful: ${result.message}`, 'success');
+                alert('✓ Connection to Google Sheets successful!');
+            } catch (error) {
+                logDebug(`Connection failed: ${error.message}`, 'error');
+                alert('✗ Connection failed: ' + error.message);
+            }
+        }
+        
+        async function testStaffSearch() {
+            const email = prompt('Enter staff email to test search:');
+            if (!email) return;
+            
+            logDebug(`Testing staff search for: ${email}`);
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'getStaffByEmail');
+                formData.append('email', email);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    logDebug(`Found staff: ${result.firstName} ${result.lastName} (${result.position})`, 'success');
+                    alert(`✓ Found: ${result.firstName} ${result.lastName}\nPosition: ${result.position}`);
+                } else {
+                    logDebug(`Staff not found: ${result.error}`, 'error');
+                    alert(`✗ ${result.error}`);
+                }
+            } catch (error) {
+                logDebug(`Search failed: ${error.message}`, 'error');
+                alert('✗ Search failed: ' + error.message);
+            }
+        }
+        
+        // =================== MAIN APPLICATION ===================
         const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
         if (!userData.authorized) {
             window.location.href = 'index.html';
@@ -199,7 +330,6 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-        // =================== SYSTEMS AND ACCESS RIGHTS ===================
         const systems = [
             { id: "progres_v4", name: "Progres V4", description: "Refugee registration and case management system" },
             { id: "bims", name: "BIMS", description: "Biometric Identity Management System" },
@@ -224,29 +354,33 @@
             { id: "approve", name: "Approve", description: "Approval authority access" }
         ];
         
-        // =================== GLOBAL VARIABLES ===================
         let selectedStaff = [];
         let selectedSystems = [];
         let selectedAccessRights = [];
         
-        // =================== STAFF SEARCH FROM GOOGLE SHEETS ===================
+        // =================== UPDATED STAFF SEARCH ===================
         async function searchStaffInGoogleSheets(email) {
+            logDebug(`Searching for staff with email: ${email}`);
+            
             try {
-                const response = await fetch(`${API_URL}?action=getStaffByEmail&email=${encodeURIComponent(email)}`);
+                // Create form data for POST request
+                const formData = new FormData();
+                formData.append('action', 'getStaffByEmail');
+                formData.append('email', email);
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
                 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const result = await response.json();
+                logDebug(`API Response: ${JSON.stringify(result)}`);
                 
-                // Check if it's an error response
-                if (result.error) {
-                    return null;
-                }
-                
-                // Check if staff data exists
-                if (result && result.email) {
+                if (result.success) {
                     return {
                         "SN": result.SN || '',
                         "First Name": result.firstName || '',
@@ -255,16 +389,16 @@
                         "Email": result.email,
                         "Title/Position": result.position || 'N/A'
                     };
+                } else {
+                    logDebug(`Staff not found: ${result.error}`, 'error');
+                    return null;
                 }
-                
-                return null;
             } catch (error) {
-                console.error('Error searching for staff:', error);
-                throw new Error('Unable to search staff database');
+                logDebug(`Search error: ${error.message}`, 'error');
+                throw new Error('Unable to search staff database: ' + error.message);
             }
         }
         
-        // =================== ADD STAFF FUNCTION ===================
         async function addStaff() {
             const email = document.getElementById('staffEmail').value.trim().toLowerCase();
             const errorDiv = document.getElementById('errorMessage');
@@ -272,7 +406,6 @@
             const successText = document.getElementById('successText');
             const addStaffBtn = document.getElementById('addStaffBtn');
             
-            // Clear previous messages
             errorDiv.style.display = 'none';
             successMsg.style.display = 'none';
             
@@ -281,51 +414,40 @@
                 return;
             }
             
-            // Validate email format
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showError('Please enter a valid email address.');
                 return;
             }
             
-            // Check if staff is already added
             if (selectedStaff.some(staff => staff.Email.toLowerCase() === email)) {
                 showError('This staff member is already in the list.');
                 return;
             }
             
-            // Show loading state
             addStaffBtn.innerHTML = '<div class="loading"></div>';
             addStaffBtn.disabled = true;
             
             try {
-                // Search in Google Sheets database
                 const staff = await searchStaffInGoogleSheets(email);
                 
                 if (!staff) {
-                    showError(`Staff with email "${email}" not found in database. Please register the staff first.`);
+                    showError(`Staff with email "${email}" not found. Please register the staff first.`);
                     return;
                 }
                 
-                // Add to selected staff array
                 selectedStaff.push(staff);
                 
-                // Show success message
                 const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
                 successText.textContent = `${fullName} added successfully!`;
                 successMsg.style.display = 'flex';
                 
-                // Clear email input
                 document.getElementById('staffEmail').value = '';
                 
-                // Update staff list display
                 updateStaffList();
-                
-                // Update staff count
                 updateStaffCount();
                 updateSubmitButton();
                 
-                // Hide success message after 3 seconds
                 setTimeout(() => {
                     successMsg.style.display = 'none';
                 }, 3000);
@@ -334,25 +456,22 @@
                 console.error('Error:', error);
                 showError('Error searching for staff: ' + error.message);
             } finally {
-                // Reset button state
                 addStaffBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Staff';
                 addStaffBtn.disabled = false;
             }
         }
         
-        // =================== SUBMIT REQUEST TO GOOGLE SHEETS ===================
+        // =================== UPDATED REQUEST SUBMISSION ===================
         async function submitRequestToGoogleSheets(reason, startDate, endDate) {
             const submitBtn = document.getElementById('submitBtn');
             const errorDiv = document.getElementById('errorMessage');
             
-            // Show loading state
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
             submitBtn.disabled = true;
             errorDiv.style.display = 'none';
             
             try {
-                // Prepare request data for Google Sheets
                 const requestData = {
                     action: 'addRequest',
                     staffEmails: selectedStaff.map(staff => staff.Email),
@@ -371,45 +490,58 @@
                     requestingOfficerEmail: userData.email
                 };
                 
-                console.log('Submitting request:', requestData);
+                logDebug('Submitting request to Google Sheets...');
+                logDebug(`Request data: ${JSON.stringify(requestData)}`);
                 
-                // Send to Google Apps Script
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Important for Google Apps Script
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData)
+                // Create FormData for POST request
+                const formData = new FormData();
+                Object.keys(requestData).forEach(key => {
+                    if (Array.isArray(requestData[key])) {
+                        formData.append(key, JSON.stringify(requestData[key]));
+                    } else {
+                        formData.append(key, requestData[key]);
+                    }
                 });
                 
-                // Generate request ID locally since we can't get response with no-cors
-                const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
                 
-                // Get system names for display
-                const systemNames = selectedSystems.map(systemId => {
-                    const system = systems.find(s => s.id === systemId);
-                    return system ? system.name : systemId;
-                }).join(', ');
+                const result = await response.json();
+                logDebug(`Submission response: ${JSON.stringify(result)}`);
                 
-                // Show success modal
-                showSuccessModal(requestId, selectedStaff.length, systemNames);
-                
-                // Reset form
-                resetForm();
+                if (result.success) {
+                    const requestId = result.requestId;
+                    const systemNames = selectedSystems.map(systemId => {
+                        const system = systems.find(s => s.id === systemId);
+                        return system ? system.name : systemId;
+                    }).join(', ');
+                    
+                    showSuccessModal(requestId, selectedStaff.length, systemNames);
+                    resetForm();
+                    
+                    logDebug(`Request submitted successfully! ID: ${requestId}`, 'success');
+                } else {
+                    throw new Error(result.error || 'Failed to submit request');
+                }
                 
             } catch (error) {
                 console.error('Error submitting request:', error);
-                showError('Error submitting request. Please try again.');
+                showError('Error submitting request: ' + error.message);
+                logDebug(`Submission failed: ${error.message}`, 'error');
             } finally {
-                // Reset button state
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
         }
         
-        // =================== KEEP ALL YOUR EXISTING FUNCTIONS ===================
-        // Initialize checkboxes, update functions, etc.
+        // =================== KEEP ALL YOUR EXISTING UI FUNCTIONS ===================
+        // (initializeCheckboxes, updateSelectedSystemsDisplay, removeSystem,
+        // setDefaultDates, updateStaffList, removeStaff, clearStaffList,
+        // updateStaffCount, updateSubmitButton, validateForm, etc.)
+        
+        // Add your existing functions here...
         function initializeCheckboxes() {
             const systemsGrid = document.getElementById('systemsGrid');
             systems.forEach(system => {
@@ -502,135 +634,7 @@
             });
         }
         
-        function updateSelectedSystemsDisplay() {
-            const selectedSystemsDiv = document.getElementById('selectedSystems');
-            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
-            
-            if (selectedSystems.length > 0) {
-                selectedSystemsDiv.style.display = 'block';
-                selectedTagsDiv.innerHTML = '';
-                
-                selectedSystems.forEach(systemId => {
-                    const system = systems.find(s => s.id === systemId);
-                    if (system) {
-                        const tag = document.createElement('div');
-                        tag.className = 'system-tag';
-                        tag.innerHTML = `
-                            ${system.name}
-                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        selectedTagsDiv.appendChild(tag);
-                    }
-                });
-            } else {
-                selectedSystemsDiv.style.display = 'none';
-            }
-        }
-        
-        function removeSystem(systemId) {
-            const index = selectedSystems.indexOf(systemId);
-            if (index > -1) {
-                selectedSystems.splice(index, 1);
-            }
-            
-            const checkbox = document.getElementById(`system_${systemId}`);
-            if (checkbox) {
-                checkbox.checked = false;
-                const systemOption = checkbox.closest('.system-option');
-                if (systemOption) {
-                    systemOption.classList.remove('selected');
-                    const checkmark = systemOption.querySelector('.checkmark');
-                    if (checkmark) {
-                        checkmark.style.display = 'none';
-                    }
-                }
-            }
-            
-            updateSelectedSystemsDisplay();
-            updateSubmitButton();
-        }
-        
-        function setDefaultDates() {
-            const today = new Date();
-            const oneYearLater = new Date();
-            oneYearLater.setFullYear(today.getFullYear() + 1);
-            
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-            
-            const todayStr = formatDate(today);
-            const oneYearLaterStr = formatDate(oneYearLater);
-            
-            document.getElementById('startDate').value = todayStr;
-            document.getElementById('endDate').value = oneYearLaterStr;
-            document.getElementById('endDate').min = todayStr;
-            document.getElementById('endDate').max = oneYearLaterStr;
-        }
-        
-        function updateStaffList() {
-            const staffTableBody = document.getElementById('staffTableBody');
-            staffTableBody.innerHTML = '';
-            
-            selectedStaff.forEach((staff, index) => {
-                const row = document.createElement('tr');
-                const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
-                row.innerHTML = `
-                    <td style="font-weight: 600; color: #4361ee;">${index + 1}</td>
-                    <td><strong>${fullName}</strong></td>
-                    <td>${staff["Email"]}</td>
-                    <td>${staff["Title/Position"]}</td>
-                    <td>
-                        <button type="button" onclick="removeStaff(${index})" class="remove-btn">
-                            <i class="fas fa-times"></i> Remove
-                        </button>
-                    </td>
-                `;
-                staffTableBody.appendChild(row);
-            });
-        }
-        
-        function removeStaff(index) {
-            selectedStaff.splice(index, 1);
-            updateStaffList();
-            updateStaffCount();
-            updateSubmitButton();
-        }
-        
-        function clearStaffList() {
-            if (selectedStaff.length === 0) return;
-            
-            if (confirm(`Are you sure you want to remove all ${selectedStaff.length} staff members from the list?`)) {
-                selectedStaff = [];
-                updateStaffList();
-                updateStaffCount();
-                updateSubmitButton();
-            }
-        }
-        
-        function updateStaffCount() {
-            const count = selectedStaff.length;
-            document.getElementById('staffCount').textContent = count;
-            document.getElementById('staffCountBtn').textContent = count;
-            
-            const staffListSection = document.getElementById('staffListSection');
-            if (count > 0) {
-                staffListSection.style.display = 'block';
-            } else {
-                staffListSection.style.display = 'none';
-            }
-        }
-        
-        function updateSubmitButton() {
-            const count = selectedStaff.length;
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
-        }
+        // ... Add all your other existing functions (updateStaffList, removeStaff, etc.)
         
         // =================== FORM SUBMISSION ===================
         document.getElementById('accessRequestForm').addEventListener('submit', async function(e) {
@@ -698,90 +702,14 @@
             errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
             errorDiv.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function showSuccessModal(requestId, staffCount, systemNames) {
-            document.getElementById('modalRequestId').textContent = requestId;
-            document.getElementById('modalStaffCount').textContent = staffCount;
-            document.getElementById('modalSystem').textContent = systemNames;
-            document.getElementById('modalRequestDate').textContent = new Date().toLocaleDateString();
-            
-            const approvalLink = `approval.html?id=${requestId}`;
-            document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
-            
-            document.getElementById('successModal').style.display = 'flex';
-        }
-        
-        function copyApprovalLink() {
-            const linkInput = document.getElementById('approvalLinkInput');
-            linkInput.select();
-            linkInput.setSelectionRange(0, 99999);
-            document.execCommand('copy');
-            
-            const copyBtn = document.querySelector('.copy-btn');
-            const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            copyBtn.style.background = '#4CAF50';
-            
-            setTimeout(() => {
-                copyBtn.innerHTML = originalText;
-                copyBtn.style.background = '#1976d2';
-            }, 2000);
-        }
-        
-        function closeModal() {
-            document.getElementById('successModal').style.display = 'none';
-        }
-        
-        function newRequest() {
-            closeModal();
-            resetForm();
-        }
-        
-        function goToDashboard() {
-            closeModal();
-            window.location.href = 'dashboard.html';
-        }
-        
-        function resetForm() {
-            document.getElementById('accessRequestForm').reset();
-            
-            selectedStaff = [];
-            selectedSystems = [];
-            selectedAccessRights = [];
-            
-            updateStaffCount();
-            updateStaffList();
-            updateSelectedSystemsDisplay();
-            updateSubmitButton();
-            
-            document.querySelectorAll('.system-option').forEach(opt => {
-                opt.classList.remove('selected');
-                const checkbox = opt.querySelector('input[type="checkbox"]');
-                const checkmark = opt.querySelector('.checkmark');
-                if (checkbox) checkbox.checked = false;
-                if (checkmark) checkmark.style.display = 'none';
-            });
-            
-            document.querySelectorAll('.access-option').forEach(opt => {
-                opt.classList.remove('selected');
-                const checkbox = opt.querySelector('input[type="checkbox"]');
-                const checkmark = opt.querySelector('.access-checkmark');
-                if (checkbox) checkbox.checked = false;
-                if (checkmark) checkmark.style.display = 'none';
-            });
-            
-            setDefaultDates();
-            document.getElementById('staffEmail').focus();
-        }
-        
-        function logout() {
-            localStorage.removeItem('opm_user');
-            window.location.href = 'index.html';
+            logDebug(`Error: ${message}`, 'error');
         }
         
         // =================== INITIALIZATION ===================
         window.addEventListener('DOMContentLoaded', () => {
+            logDebug('Form page loaded', 'success');
+            logDebug(`API URL: ${API_URL}`, 'info');
+            
             initializeCheckboxes();
             setDefaultDates();
             updateStaffCount();
