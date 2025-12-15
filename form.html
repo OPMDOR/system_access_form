@@ -1137,9 +1137,10 @@
             document.getElementById('modalSystem').textContent = systemName;
             document.getElementById('modalRequestDate').textContent = new Date().toLocaleDateString();
             
-            // Create approval link
+            // Create approval link - Use relative path
             const approvalLink = `approval.html?id=${requestId}`;
-            document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
+            // For local testing, use this:
+            document.getElementById('approvalLinkInput').value = window.location.href.replace('form.html', approvalLink);
             
             // Show modal
             document.getElementById('successModal').style.display = 'flex';
@@ -1251,3 +1252,4 @@
     </script>
 </body>
 </html>
+
