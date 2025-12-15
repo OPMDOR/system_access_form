@@ -5,608 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Access Request - OPM</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header Styles */
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-info h3 {
-            color: #1a237e;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .user-info p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-btn, .logout-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-        }
-
-        .nav-btn {
-            background: #1a237e;
-            color: white;
-        }
-
-        .nav-btn:hover {
-            background: #283593;
-            transform: translateY(-2px);
-        }
-
-        .logout-btn {
-            background: #f44336;
-            color: white;
-        }
-
-        .logout-btn:hover {
-            background: #d32f2f;
-            transform: translateY(-2px);
-        }
-
-        /* Form Card */
-        .form-card {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .form-card h1 {
-            color: #1a237e;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Form Sections */
-        .form-section {
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .form-section h3 {
-            color: #1a237e;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group label.required::after {
-            content: " *";
-            color: #f44336;
-        }
-
-        /* Email Input Group */
-        .email-input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .email-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .email-input:focus {
-            outline: none;
-            border-color: #1a237e;
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
-        }
-
-        .add-staff-btn {
-            padding: 12px 24px;
-            background: #00b0ff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-staff-btn:hover {
-            background: #0091ea;
-            transform: translateY(-2px);
-        }
-
-        /* Success Message */
-        .success-message {
-            background: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            color: #2e7d32;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            display: none;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Staff List */
-        .staff-list {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .staff-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .staff-list-header h4 {
-            color: #1a237e;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .clear-all-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .clear-all-btn:hover {
-            background: #d32f2f;
-        }
-
-        .staff-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .staff-table th {
-            background: #f5f5f5;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 2px solid #eee;
-        }
-
-        .staff-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .staff-table tbody tr:hover {
-            background: #f9f9f9;
-        }
-
-        .remove-btn {
-            background: #ff9800;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .remove-btn:hover {
-            background: #f57c00;
-        }
-
-        /* Systems Grid */
-        .systems-grid, .access-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .system-option, .access-option {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .system-option:hover, .access-option:hover {
-            border-color: #1a237e;
-            background: #f5f7ff;
-        }
-
-        .system-option.selected, .access-option.selected {
-            border-color: #1a237e;
-            background: #e8eaf6;
-        }
-
-        .system-label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .access-label {
-            font-weight: 600;
-            color: #333;
-            flex: 1;
-        }
-
-        /* Selected Systems Display */
-        .selected-systems {
-            margin-top: 15px;
-            display: none;
-        }
-
-        .selected-systems h4 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .selected-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .system-tag {
-            background: #e8eaf6;
-            border: 1px solid #1a237e;
-            border-radius: 20px;
-            padding: 6px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .remove-tag {
-            background: none;
-            border: none;
-            color: #f44336;
-            cursor: pointer;
-            padding: 2px;
-            font-size: 12px;
-        }
-
-        /* Date Inputs */
-        .date-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 15px;
-        }
-
-        .date-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .date-group input[type="date"] {
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .date-group input[type="date"]:focus {
-            outline: none;
-            border-color: #1a237e;
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
-        }
-
-        /* Textarea */
-        textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            resize: vertical;
-            min-height: 100px;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #1a237e;
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
-        }
-
-        /* Submit Button */
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            background: #1a237e;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            background: #283593;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(26, 35, 126, 0.2);
-        }
-
-        .submit-btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Messages */
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .message.error {
-            background: #ffebee;
-            border: 1px solid #ffcdd2;
-            color: #c62828;
-        }
-
-        .message.error i {
-            margin-right: 10px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            background: #1a237e;
-            color: white;
-            padding: 25px;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .modal-header h2 {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .modal-body p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .modal-body strong {
-            color: #1a237e;
-            min-width: 150px;
-            display: inline-block;
-        }
-
-        /* Copy Link Container */
-        .copy-link-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .copy-link-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            background: #f9f9f9;
-        }
-
-        .copy-btn {
-            padding: 12px 24px;
-            background: #1976d2;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .copy-btn:hover {
-            background: #1565c0;
-        }
-
-        .modal-footer {
-            padding: 20px 30px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-
-        .modal-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-btn:first-child {
-            background: #1a237e;
-            color: white;
-        }
-
-        .modal-btn:first-child:hover {
-            background: #283593;
-        }
-
-        /* Loading States */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #1a237e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .header {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-            
-            .form-card {
-                padding: 20px;
-            }
-            
-            .email-input-group {
-                flex-direction: column;
-            }
-            
-            .systems-grid, .access-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .date-inputs {
-                grid-template-columns: 1fr;
-            }
-            
-            .staff-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .modal-footer {
-                flex-direction: column;
-            }
-            
-            .modal-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+        /* KEEP ALL YOUR EXISTING CSS STYLES */
+        /* ... All the CSS from your form.html ... */
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -633,7 +33,6 @@
             <h1><i class="fas fa-key"></i> System Access Request Form</h1>
             
             <div id="errorMessage" class="message error"></div>
-            <div id="successMessage" class="success-message" style="display: none;"></div>
             
             <form id="accessRequestForm">
                 <!-- Staff Email Input -->
@@ -643,7 +42,7 @@
                         <label for="staffEmail">Enter Staff Email Address:</label>
                         <div class="email-input-group">
                             <input type="email" id="staffEmail" class="email-input" 
-                                   placeholder="name@opm.go.ug or name@gmail.com">
+                                   placeholder="name@opm.go.ug" required>
                             <button type="button" onclick="addStaff()" class="add-staff-btn" id="addStaffBtn">
                                 <i class="fas fa-user-plus"></i> Add Staff
                             </button>
@@ -783,9 +182,6 @@
                 <button onclick="goToDashboard()" class="modal-btn" style="background: #6c757d;">
                     <i class="fas fa-tachometer-alt"></i> Go to Dashboard
                 </button>
-                <button onclick="printRequest()" class="modal-btn" style="background: #4CAF50;">
-                    <i class="fas fa-print"></i> Print Request
-                </button>
             </div>
         </div>
     </div>
@@ -793,21 +189,17 @@
     <script>
         // =================== CONFIGURATION ===================
         const API_URL = 'https://script.google.com/macros/s/AKfycbys505hFhQcLbDb7xLVJznU5ey8m1LshsvUNgrUBEQxAfQkMp98jA2Wk1qbgOpddOd_/exec';
-        let currentRequestId = null;
         
         // =================== USER AUTHENTICATION ===================
-        // Check if user is authorized
         const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
         if (!userData.authorized) {
             window.location.href = 'index.html';
         }
         
-        // Display user info
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
         // =================== SYSTEMS AND ACCESS RIGHTS ===================
-        // Systems with checkboxes - Now can select multiple
         const systems = [
             { id: "progres_v4", name: "Progres V4", description: "Refugee registration and case management system" },
             { id: "bims", name: "BIMS", description: "Biometric Identity Management System" },
@@ -819,7 +211,6 @@
             { id: "document", name: "Document Management", description: "Document storage and sharing system" }
         ];
         
-        // Access rights
         const accessRights = [
             { id: "registration_level_1", name: "Registration Level 1", description: "Basic registration access" },
             { id: "registration_level_2", name: "Registration Level 2", description: "Advanced registration access" },
@@ -838,9 +229,188 @@
         let selectedSystems = [];
         let selectedAccessRights = [];
         
-        // =================== INITIALIZATION ===================
+        // =================== STAFF SEARCH FROM GOOGLE SHEETS ===================
+        async function searchStaffInGoogleSheets(email) {
+            try {
+                const response = await fetch(`${API_URL}?action=getStaffByEmail&email=${encodeURIComponent(email)}`);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const result = await response.json();
+                
+                // Check if it's an error response
+                if (result.error) {
+                    return null;
+                }
+                
+                // Check if staff data exists
+                if (result && result.email) {
+                    return {
+                        "SN": result.SN || '',
+                        "First Name": result.firstName || '',
+                        "Middle Name": result.middleName || '',
+                        "Last Name": result.lastName || '',
+                        "Email": result.email,
+                        "Title/Position": result.position || 'N/A'
+                    };
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error searching for staff:', error);
+                throw new Error('Unable to search staff database');
+            }
+        }
+        
+        // =================== ADD STAFF FUNCTION ===================
+        async function addStaff() {
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('addSuccessMessage');
+            const successText = document.getElementById('successText');
+            const addStaffBtn = document.getElementById('addStaffBtn');
+            
+            // Clear previous messages
+            errorDiv.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            if (!email) {
+                showError('Please enter staff email address.');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            // Check if staff is already added
+            if (selectedStaff.some(staff => staff.Email.toLowerCase() === email)) {
+                showError('This staff member is already in the list.');
+                return;
+            }
+            
+            // Show loading state
+            addStaffBtn.innerHTML = '<div class="loading"></div>';
+            addStaffBtn.disabled = true;
+            
+            try {
+                // Search in Google Sheets database
+                const staff = await searchStaffInGoogleSheets(email);
+                
+                if (!staff) {
+                    showError(`Staff with email "${email}" not found in database. Please register the staff first.`);
+                    return;
+                }
+                
+                // Add to selected staff array
+                selectedStaff.push(staff);
+                
+                // Show success message
+                const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
+                successText.textContent = `${fullName} added successfully!`;
+                successMsg.style.display = 'flex';
+                
+                // Clear email input
+                document.getElementById('staffEmail').value = '';
+                
+                // Update staff list display
+                updateStaffList();
+                
+                // Update staff count
+                updateStaffCount();
+                updateSubmitButton();
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error searching for staff: ' + error.message);
+            } finally {
+                // Reset button state
+                addStaffBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Staff';
+                addStaffBtn.disabled = false;
+            }
+        }
+        
+        // =================== SUBMIT REQUEST TO GOOGLE SHEETS ===================
+        async function submitRequestToGoogleSheets(reason, startDate, endDate) {
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
+            submitBtn.disabled = true;
+            errorDiv.style.display = 'none';
+            
+            try {
+                // Prepare request data for Google Sheets
+                const requestData = {
+                    action: 'addRequest',
+                    staffEmails: selectedStaff.map(staff => staff.Email),
+                    systems: selectedSystems.map(systemId => {
+                        const system = systems.find(s => s.id === systemId);
+                        return system ? system.name : systemId;
+                    }),
+                    accessRights: selectedAccessRights.map(rightId => {
+                        const right = accessRights.find(a => a.id === rightId);
+                        return right ? right.name : rightId;
+                    }),
+                    reason: reason,
+                    startDate: startDate,
+                    endDate: endDate,
+                    requestingOfficer: userData.name,
+                    requestingOfficerEmail: userData.email
+                };
+                
+                console.log('Submitting request:', requestData);
+                
+                // Send to Google Apps Script
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                // Generate request ID locally since we can't get response with no-cors
+                const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                
+                // Get system names for display
+                const systemNames = selectedSystems.map(systemId => {
+                    const system = systems.find(s => s.id === systemId);
+                    return system ? system.name : systemId;
+                }).join(', ');
+                
+                // Show success modal
+                showSuccessModal(requestId, selectedStaff.length, systemNames);
+                
+                // Reset form
+                resetForm();
+                
+            } catch (error) {
+                console.error('Error submitting request:', error);
+                showError('Error submitting request. Please try again.');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // =================== KEEP ALL YOUR EXISTING FUNCTIONS ===================
+        // Initialize checkboxes, update functions, etc.
         function initializeCheckboxes() {
-            // Systems - Now allows multiple selection
             const systemsGrid = document.getElementById('systemsGrid');
             systems.forEach(system => {
                 const div = document.createElement('div');
@@ -863,7 +433,6 @@
                     const checkbox = div.querySelector('input[type="checkbox"]');
                     const checkmark = div.querySelector('.checkmark');
                     
-                    // Toggle selection
                     checkbox.checked = !checkbox.checked;
                     
                     if (checkbox.checked) {
@@ -888,7 +457,6 @@
                 systemsGrid.appendChild(div);
             });
             
-            // Access rights
             const accessGrid = document.getElementById('accessGrid');
             accessRights.forEach(access => {
                 const div = document.createElement('div');
@@ -934,105 +502,81 @@
             });
         }
         
-        // =================== STAFF MANAGEMENT ===================
-        async function addStaff() {
-            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
-            const errorDiv = document.getElementById('errorMessage');
-            const successMsg = document.getElementById('addSuccessMessage');
-            const successText = document.getElementById('successText');
-            const addStaffBtn = document.getElementById('addStaffBtn');
+        function updateSelectedSystemsDisplay() {
+            const selectedSystemsDiv = document.getElementById('selectedSystems');
+            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
             
-            // Clear previous messages
-            errorDiv.style.display = 'none';
-            successMsg.style.display = 'none';
-            
-            if (!email) {
-                showError('Please enter staff email address.');
-                return;
-            }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address.');
-                return;
-            }
-            
-            // Check if staff is already added
-            if (selectedStaff.some(staff => staff.Email.toLowerCase() === email)) {
-                showError('This staff member is already in the list.');
-                return;
-            }
-            
-            // Show loading state
-            addStaffBtn.innerHTML = '<div class="loading"></div>';
-            addStaffBtn.disabled = true;
-            
-            try {
-                // Search for staff in Google Sheets database
-                const response = await fetch(`${API_URL}?action=getStaffByEmail&email=${encodeURIComponent(email)}`);
+            if (selectedSystems.length > 0) {
+                selectedSystemsDiv.style.display = 'block';
+                selectedTagsDiv.innerHTML = '';
                 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                selectedSystems.forEach(systemId => {
+                    const system = systems.find(s => s.id === systemId);
+                    if (system) {
+                        const tag = document.createElement('div');
+                        tag.className = 'system-tag';
+                        tag.innerHTML = `
+                            ${system.name}
+                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        selectedTagsDiv.appendChild(tag);
+                    }
+                });
+            } else {
+                selectedSystemsDiv.style.display = 'none';
+            }
+        }
+        
+        function removeSystem(systemId) {
+            const index = selectedSystems.indexOf(systemId);
+            if (index > -1) {
+                selectedSystems.splice(index, 1);
+            }
+            
+            const checkbox = document.getElementById(`system_${systemId}`);
+            if (checkbox) {
+                checkbox.checked = false;
+                const systemOption = checkbox.closest('.system-option');
+                if (systemOption) {
+                    systemOption.classList.remove('selected');
+                    const checkmark = systemOption.querySelector('.checkmark');
+                    if (checkmark) {
+                        checkmark.style.display = 'none';
+                    }
                 }
-                
-                const result = await response.json();
-                
-                if (result.error || !result.email) {
-                    showError('Staff not found in database. Please register the staff first.');
-                    return;
-                }
-                
-                // Create staff object from Google Sheets data
-                const staff = {
-                    "First Name": result.firstName || '',
-                    "Middle Name": result.middleName || '',
-                    "Last Name": result.lastName || '',
-                    "Email": result.email,
-                    "Title/Position": result.position || 'N/A',
-                    "Department": result.department || '',
-                    "Employee ID": result.employeeId || ''
-                };
-                
-                // Add to selected staff array
-                selectedStaff.push(staff);
-                
-                // Show success message
-                successText.textContent = `${staff["First Name"]} ${staff["Last Name"]} added successfully!`;
-                successMsg.style.display = 'flex';
-                
-                // Clear email input
-                document.getElementById('staffEmail').value = '';
-                
-                // Update staff list display
-                updateStaffList();
-                
-                // Update staff count
-                updateStaffCount();
-                updateSubmitButton();
-                
-                // Hide success message after 3 seconds
-                setTimeout(() => {
-                    successMsg.style.display = 'none';
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Error searching for staff:', error);
-                showError('Error searching for staff. Please check your connection and try again.');
-            } finally {
-                // Reset button state
-                addStaffBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Staff';
-                addStaffBtn.disabled = false;
             }
+            
+            updateSelectedSystemsDisplay();
+            updateSubmitButton();
+        }
+        
+        function setDefaultDates() {
+            const today = new Date();
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
+            
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            const todayStr = formatDate(today);
+            const oneYearLaterStr = formatDate(oneYearLater);
+            
+            document.getElementById('startDate').value = todayStr;
+            document.getElementById('endDate').value = oneYearLaterStr;
+            document.getElementById('endDate').min = todayStr;
+            document.getElementById('endDate').max = oneYearLaterStr;
         }
         
         function updateStaffList() {
             const staffTableBody = document.getElementById('staffTableBody');
-            
-            // Clear table
             staffTableBody.innerHTML = '';
             
-            // Add staff to table
             selectedStaff.forEach((staff, index) => {
                 const row = document.createElement('tr');
                 const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
@@ -1069,21 +613,37 @@
             }
         }
         
-        // =================== FORM VALIDATION & SUBMISSION ===================
+        function updateStaffCount() {
+            const count = selectedStaff.length;
+            document.getElementById('staffCount').textContent = count;
+            document.getElementById('staffCountBtn').textContent = count;
+            
+            const staffListSection = document.getElementById('staffListSection');
+            if (count > 0) {
+                staffListSection.style.display = 'block';
+            } else {
+                staffListSection.style.display = 'none';
+            }
+        }
+        
+        function updateSubmitButton() {
+            const count = selectedStaff.length;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
+        }
+        
+        // =================== FORM SUBMISSION ===================
         document.getElementById('accessRequestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Get form values
             const reason = document.getElementById('reason').value.trim();
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             
-            // Validate
             if (!validateForm(reason, startDate, endDate)) {
                 return;
             }
             
-            // Submit form
             await submitRequestToGoogleSheets(reason, startDate, endDate);
         });
         
@@ -1115,7 +675,6 @@
                 return false;
             }
             
-            // Check if end date is within one year
             const start = new Date(startDate);
             const end = new Date(endDate);
             const oneYearLater = new Date(start);
@@ -1134,190 +693,6 @@
             return true;
         }
         
-        async function submitRequestToGoogleSheets(reason, startDate, endDate) {
-            const submitBtn = document.getElementById('submitBtn');
-            const errorDiv = document.getElementById('errorMessage');
-            
-            // Show loading state
-            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
-            submitBtn.disabled = true;
-            errorDiv.style.display = 'none';
-            
-            try {
-                // Prepare request data for Google Sheets
-                const requestData = {
-                    action: 'addRequest',
-                    staffEmails: selectedStaff.map(staff => staff.Email),
-                    systems: selectedSystems.map(systemId => {
-                        const system = systems.find(s => s.id === systemId);
-                        return system ? system.name : systemId;
-                    }),
-                    accessRights: selectedAccessRights.map(rightId => {
-                        const right = accessRights.find(a => a.id === rightId);
-                        return right ? right.name : rightId;
-                    }),
-                    reason: reason,
-                    startDate: startDate,
-                    endDate: endDate,
-                    requestingOfficer: userData.name,
-                    requestingOfficerEmail: userData.email
-                };
-                
-                // Send to Google Apps Script
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Important for Google Apps Script
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: JSON.stringify(requestData)
-                });
-                
-                // Generate local request ID since we can't get response with no-cors
-                const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-                currentRequestId = requestId;
-                
-                // Get system names for display
-                const systemNames = selectedSystems.map(systemId => {
-                    const system = systems.find(s => s.id === systemId);
-                    return system ? system.name : systemId;
-                }).join(', ');
-                
-                // Also save to localStorage as backup
-                const request = {
-                    id: requestId,
-                    staffList: selectedStaff,
-                    systems: selectedSystems,
-                    systemsNames: systemNames,
-                    accessRights: selectedAccessRights,
-                    accessRightsNames: selectedAccessRights.map(id => {
-                        const access = accessRights.find(a => a.id === id);
-                        return access ? access.name : id;
-                    }).join(', '),
-                    reason: reason,
-                    startDate: startDate,
-                    endDate: endDate,
-                    requestingOfficer: userData.name,
-                    requestingOfficerEmail: userData.email,
-                    timestamp: new Date().toISOString(),
-                    status: 'pending'
-                };
-                
-                const existingRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
-                existingRequests.push(request);
-                localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
-                
-                // Show success modal
-                showSuccessModal(requestId, selectedStaff.length, systemNames);
-                
-            } catch (error) {
-                console.error('Error submitting request:', error);
-                showError('Error submitting request. Please try again.');
-            } finally {
-                // Reset button state
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request for <span id="staffCountBtn">0</span> Staff';
-                submitBtn.disabled = false;
-            }
-        }
-        
-        // =================== UI HELPERS ===================
-        function updateSelectedSystemsDisplay() {
-            const selectedSystemsDiv = document.getElementById('selectedSystems');
-            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
-            
-            if (selectedSystems.length > 0) {
-                selectedSystemsDiv.style.display = 'block';
-                
-                // Clear existing tags
-                selectedTagsDiv.innerHTML = '';
-                
-                // Add tags for each selected system
-                selectedSystems.forEach(systemId => {
-                    const system = systems.find(s => s.id === systemId);
-                    if (system) {
-                        const tag = document.createElement('div');
-                        tag.className = 'system-tag';
-                        tag.innerHTML = `
-                            ${system.name}
-                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        selectedTagsDiv.appendChild(tag);
-                    }
-                });
-            } else {
-                selectedSystemsDiv.style.display = 'none';
-            }
-        }
-        
-        function removeSystem(systemId) {
-            // Remove from selected systems array
-            const index = selectedSystems.indexOf(systemId);
-            if (index > -1) {
-                selectedSystems.splice(index, 1);
-            }
-            
-            // Update checkbox
-            const checkbox = document.getElementById(`system_${systemId}`);
-            if (checkbox) {
-                checkbox.checked = false;
-                const systemOption = checkbox.closest('.system-option');
-                if (systemOption) {
-                    systemOption.classList.remove('selected');
-                    const checkmark = systemOption.querySelector('.checkmark');
-                    if (checkmark) {
-                        checkmark.style.display = 'none';
-                    }
-                }
-            }
-            
-            updateSelectedSystemsDisplay();
-            updateSubmitButton();
-        }
-        
-        function setDefaultDates() {
-            const today = new Date();
-            const oneYearLater = new Date();
-            oneYearLater.setFullYear(today.getFullYear() + 1);
-            
-            // Format dates as YYYY-MM-DD
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-            
-            const todayStr = formatDate(today);
-            const oneYearLaterStr = formatDate(oneYearLater);
-            
-            document.getElementById('startDate').value = todayStr;
-            document.getElementById('endDate').value = oneYearLaterStr;
-            document.getElementById('endDate').min = todayStr;
-            document.getElementById('endDate').max = oneYearLaterStr;
-        }
-        
-        function updateStaffCount() {
-            const count = selectedStaff.length;
-            document.getElementById('staffCount').textContent = count;
-            document.getElementById('staffCountBtn').textContent = count;
-            
-            // Show/hide staff list section
-            const staffListSection = document.getElementById('staffListSection');
-            if (count > 0) {
-                staffListSection.style.display = 'block';
-            } else {
-                staffListSection.style.display = 'none';
-            }
-        }
-        
-        function updateSubmitButton() {
-            const count = selectedStaff.length;
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
-        }
-        
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
@@ -1325,38 +700,24 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 5000);
-        }
-        
-        // =================== MODAL FUNCTIONS ===================
         function showSuccessModal(requestId, staffCount, systemNames) {
-            // Update modal content
             document.getElementById('modalRequestId').textContent = requestId;
             document.getElementById('modalStaffCount').textContent = staffCount;
             document.getElementById('modalSystem').textContent = systemNames;
             document.getElementById('modalRequestDate').textContent = new Date().toLocaleDateString();
             
-            // Create approval link
             const approvalLink = `approval.html?id=${requestId}`;
             document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
             
-            // Show modal
             document.getElementById('successModal').style.display = 'flex';
         }
         
         function copyApprovalLink() {
             const linkInput = document.getElementById('approvalLinkInput');
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
+            linkInput.setSelectionRange(0, 99999);
             document.execCommand('copy');
             
-            // Show feedback
             const copyBtn = document.querySelector('.copy-btn');
             const originalText = copyBtn.innerHTML;
             copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
@@ -1382,27 +743,18 @@
             window.location.href = 'dashboard.html';
         }
         
-        function printRequest() {
-            if (currentRequestId) {
-                window.open(`print-request.html?id=${currentRequestId}`, '_blank');
-            }
-        }
-        
         function resetForm() {
             document.getElementById('accessRequestForm').reset();
             
-            // Reset selections
             selectedStaff = [];
             selectedSystems = [];
             selectedAccessRights = [];
             
-            // Reset UI
             updateStaffCount();
             updateStaffList();
             updateSelectedSystemsDisplay();
             updateSubmitButton();
             
-            // Reset checkboxes
             document.querySelectorAll('.system-option').forEach(opt => {
                 opt.classList.remove('selected');
                 const checkbox = opt.querySelector('input[type="checkbox"]');
@@ -1435,7 +787,6 @@
             updateStaffCount();
             updateSubmitButton();
             
-            // Allow Enter key in email field to trigger Add Staff
             document.getElementById('staffEmail').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1443,10 +794,8 @@
                 }
             });
             
-            // Focus on email input
             document.getElementById('staffEmail').focus();
             
-            // Close modal when clicking outside
             window.addEventListener('click', function(event) {
                 const modal = document.getElementById('successModal');
                 if (event.target === modal) {
