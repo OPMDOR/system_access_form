@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Request - OPM System Access</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 40px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-info h2 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: #3a56d4;
+        }
+        
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .request-id {
+            font-family: monospace;
+            font-weight: bold;
+            color: #4361ee;
+            font-size: 18px;
+        }
+        
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+        
+        .detail-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-section:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-section h3 {
+            color: #4361ee;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .staff-table th {
+            background: #4361ee;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .staff-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .staff-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .reason-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        
+        .approval-details {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .rejection-details {
+            background: #fdeaea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .request-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .staff-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <h2><i class="fas fa-file-alt"></i> Request Details</h2>
+            </div>
+            <div class="nav-buttons">
+                <a href="dashboard.html" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a href="form.html" class="nav-btn">
+                    <i class="fas fa-plus"></i> New Request
+                </a>
+            </div>
+        </div>
+        
+        <!-- Request Details -->
+        <div class="request-card">
+            <div id="message" class="message error" style="display: none;"></div>
+            
+            <div id="requestDetails">
+                <!-- Request details will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if user is authorized
+        const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
+        if (!userData.authorized) {
+            window.location.href = 'index.html';
+        }
+        
+        // Get request ID from session storage
+        const requestId = sessionStorage.getItem('view_request_id');
+        
+        if (!requestId) {
+            document.getElementById('message').textContent = 'No request selected.';
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('requestDetails').innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <a href="dashboard.html" class="nav-btn" style="display: inline-flex;">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            `;
+        } else {
+            loadRequest(requestId);
+        }
+        
+        function loadRequest(requestId) {
+            try {
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const request = allRequests.find(req => req.id === requestId);
+                
+                if (!request) {
+                    document.getElementById('message').textContent = 'Request not found.';
+                    document.getElementById('message').style.display = 'block';
+                    return;
+                }
+                
+                displayRequestDetails(request);
+                
+            } catch (error) {
+                document.getElementById('message').textContent = 'Error loading request: ' + error.message;
+                document.getElementById('message').style.display = 'block';
+            }
+        }
+        
+        function displayRequestDetails(request) {
+            const requestDetails = document.getElementById('requestDetails');
+            const staffCount = request.staffList ? request.staffList.length : 0;
+            const date = new Date(request.timestamp).toLocaleString();
+            const status = request.status.charAt(0).toUpperCase() + request.status.slice(1);
+            
+            let html = `
+                <div class="request-header">
+                    <div class="request-id">${request.id}</div>
+                    <span class="status-badge ${request.status}">${status}</span>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-users"></i> Staff Details (${staffCount})</h3>
+                    <table class="staff-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            if (request.staffList && request.staffList.length > 0) {
+                request.staffList.forEach((staff, index) => {
+                    const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong>${fullName}</strong></td>
+                            <td>${staff["Email"]}</td>
+                            <td>${staff["Title/Position"]}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                html += `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #666; padding: 20px;">
+                            No staff information available
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-laptop"></i> System Details</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">System Required</div>
+                            <div class="info-value">${request.systemName || request.system || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Access Rights</div>
+                            <div class="info-value">${request.accessRightsNames || request.accessRights || 'N/A'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-clock"></i> Access Duration</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Start Date</div>
+                            <div class="info-value">${request.startDate || 'Current Date'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">End Date</div>
+                            <div class="info-value">${request.endDate || 'N/A'}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-file-alt"></i> Reason for Access</h3>
+                    <div class="reason-box">
+                        ${request.reason || 'No reason provided.'}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-user-circle"></i> Request Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Requested By</div>
+                            <div class="info-value">${request.requestingOfficer || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Request Email</div>
+                            <div class="info-value">${request.requestingOfficerEmail || 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Request Date</div>
+                            <div class="info-value">${date}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add approval/rejection details if processed
+            if (request.status !== 'pending') {
+                const approvalDate = new Date(request.approvalDate).toLocaleString();
+                const detailsClass = request.status === 'approved' ? 'approval-details' : 'rejection-details';
+                const title = request.status === 'approved' ? 'Approval Details' : 'Rejection Details';
+                const icon = request.status === 'approved' ? 'fa-check-circle' : 'fa-times-circle';
+                
+                html += `
+                    <div class="detail-section">
+                        <h3><i class="fas ${icon}"></i> ${title}</h3>
+                        <div class="${detailsClass}">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">${request.status === 'approved' ? 'Approved' : 'Rejected'} By</div>
+                                    <div class="info-value">${request.approver || 'N/A'}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">${request.status === 'approved' ? 'Approval' : 'Rejection'} Date</div>
+                                    <div class="info-value">${approvalDate}</div>
+                                </div>
+                                ${request.comments ? `
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <div class="info-label">Comments</div>
+                                    <div class="info-value">${request.comments}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            requestDetails.innerHTML = html;
+        }
+        
+        // Auto-remove request ID from session storage when leaving
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.removeItem('view_request_id');
+        });
+    </script>
+</body>
+</html>
