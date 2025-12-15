@@ -305,6 +305,44 @@
             flex: 1;
         }
 
+        /* Selected Systems Display */
+        .selected-systems {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .selected-systems h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .system-tag {
+            background: #e8eaf6;
+            border: 1px solid #1a237e;
+            border-radius: 20px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .remove-tag {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            padding: 2px;
+            font-size: 12px;
+        }
+
         /* Date Inputs */
         .date-inputs {
             display: grid;
@@ -633,10 +671,19 @@
                 <div class="form-section">
                     <h3><i class="fas fa-laptop"></i> System Details</h3>
                     <div class="form-group">
-                        <label class="required">Select System Required:</label>
+                        <label class="required">Select System(s) Required:</label>
                         <div class="systems-grid" id="systemsGrid">
                             <!-- Systems will be added dynamically -->
                         </div>
+                        <div id="selectedSystems" class="selected-systems">
+                            <h4>Selected Systems:</h4>
+                            <div class="selected-tags" id="selectedSystemsTags">
+                                <!-- Selected system tags will appear here -->
+                            </div>
+                        </div>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
+                            You can select multiple systems. Selected systems will appear above.
+                        </p>
                     </div>
                     
                     <div class="form-group">
@@ -694,7 +741,7 @@
             <div class="modal-body">
                 <p><strong>Request ID:</strong> <span id="modalRequestId"></span></p>
                 <p><strong>Number of Staff:</strong> <span id="modalStaffCount"></span></p>
-                <p><strong>System:</strong> <span id="modalSystem"></span></p>
+                <p><strong>Systems:</strong> <span id="modalSystem"></span></p>
                 <p><strong>Request Date:</strong> <span id="modalRequestDate"></span></p>
                 
                 <div style="margin-top: 25px;">
@@ -744,11 +791,16 @@
             { "First Name": "Linda", "Last Name": "Davis", "Email": "linda.d@opm.go.ug", "Title/Position": "Data Analyst" }
         ];
         
-        // Systems with checkboxes
+        // Systems with checkboxes - Now can select multiple
         const systems = [
             { id: "progres_v4", name: "Progres V4", description: "Refugee registration and case management system" },
             { id: "bims", name: "BIMS", description: "Biometric Identity Management System" },
-            { id: "rapp", name: "RAPP", description: "Refugee Assistance and Protection Program" }
+            { id: "rapp", name: "RAPP", description: "Refugee Assistance and Protection Program" },
+            { id: "financial", name: "Financial System", description: "Financial management and accounting system" },
+            { id: "hrms", name: "HRMS", description: "Human Resource Management System" },
+            { id: "procurement", name: "Procurement System", description: "Procurement and supply chain management" },
+            { id: "project", name: "Project Management", description: "Project planning and tracking system" },
+            { id: "document", name: "Document Management", description: "Document storage and sharing system" }
         ];
         
         // Access rights
@@ -758,17 +810,21 @@
             { id: "print", name: "Print", description: "Print documents and reports" },
             { id: "export", name: "Export", description: "Export data and reports" },
             { id: "rsd", name: "RSD", description: "Refugee Status Determination access" },
-            { id: "dtr", name: "DTR", description: "Daily Time Recording access" }
+            { id: "dtr", name: "DTR", description: "Daily Time Recording access" },
+            { id: "admin", name: "Administrator", description: "Full system administrator access" },
+            { id: "view", name: "View Only", description: "Read-only access" },
+            { id: "edit", name: "Edit", description: "Edit and update access" },
+            { id: "approve", name: "Approve", description: "Approval authority access" }
         ];
         
         // Array to store selected staff
         let selectedStaff = [];
-        let selectedSystem = null;
+        let selectedSystems = []; // Now an array for multiple systems
         let selectedAccessRights = [];
         
         // Initialize systems and access rights checkboxes
         function initializeCheckboxes() {
-            // Systems
+            // Systems - Now allows multiple selection
             const systemsGrid = document.getElementById('systemsGrid');
             systems.forEach(system => {
                 const div = document.createElement('div');
@@ -776,7 +832,7 @@
                 div.innerHTML = `
                     <input type="checkbox" class="system-checkbox" id="system_${system.id}" 
                            value="${system.id}" style="display: none;">
-                    <div class="checkmark-box" style="width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;">
                         <div class="checkmark" style="display: none; color: #4361ee; font-size: 16px;">
                             <i class="fas fa-check"></i>
                         </div>
@@ -790,34 +846,26 @@
                 div.addEventListener('click', () => {
                     const checkbox = div.querySelector('input[type="checkbox"]');
                     const checkmark = div.querySelector('.checkmark');
-                    const allSystemOptions = document.querySelectorAll('.system-option');
                     
-                    // Deselect all other systems
-                    allSystemOptions.forEach(opt => {
-                        opt.classList.remove('selected');
-                        const otherCheckbox = opt.querySelector('input[type="checkbox"]');
-                        const otherCheckmark = opt.querySelector('.checkmark');
-                        if (otherCheckbox) {
-                            otherCheckbox.checked = false;
-                            if (otherCheckmark) otherCheckmark.style.display = 'none';
-                        }
-                    });
+                    // Toggle selection
+                    checkbox.checked = !checkbox.checked;
                     
-                    // Toggle current system
-                    if (selectedSystem === system.id) {
-                        // Deselect
-                        div.classList.remove('selected');
-                        checkbox.checked = false;
-                        checkmark.style.display = 'none';
-                        selectedSystem = null;
-                    } else {
-                        // Select
+                    if (checkbox.checked) {
                         div.classList.add('selected');
-                        checkbox.checked = true;
                         checkmark.style.display = 'block';
-                        selectedSystem = system.id;
+                        if (!selectedSystems.includes(system.id)) {
+                            selectedSystems.push(system.id);
+                        }
+                    } else {
+                        div.classList.remove('selected');
+                        checkmark.style.display = 'none';
+                        const index = selectedSystems.indexOf(system.id);
+                        if (index > -1) {
+                            selectedSystems.splice(index, 1);
+                        }
                     }
                     
+                    updateSelectedSystemsDisplay();
                     updateSubmitButton();
                 });
                 
@@ -870,6 +918,63 @@
             });
         }
         
+        // Update selected systems display
+        function updateSelectedSystemsDisplay() {
+            const selectedSystemsDiv = document.getElementById('selectedSystems');
+            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
+            
+            if (selectedSystems.length > 0) {
+                selectedSystemsDiv.style.display = 'block';
+                
+                // Clear existing tags
+                selectedTagsDiv.innerHTML = '';
+                
+                // Add tags for each selected system
+                selectedSystems.forEach(systemId => {
+                    const system = systems.find(s => s.id === systemId);
+                    if (system) {
+                        const tag = document.createElement('div');
+                        tag.className = 'system-tag';
+                        tag.innerHTML = `
+                            ${system.name}
+                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        selectedTagsDiv.appendChild(tag);
+                    }
+                });
+            } else {
+                selectedSystemsDiv.style.display = 'none';
+            }
+        }
+        
+        // Remove system from selection
+        function removeSystem(systemId) {
+            // Remove from selected systems array
+            const index = selectedSystems.indexOf(systemId);
+            if (index > -1) {
+                selectedSystems.splice(index, 1);
+            }
+            
+            // Update checkbox
+            const checkbox = document.getElementById(`system_${systemId}`);
+            if (checkbox) {
+                checkbox.checked = false;
+                const systemOption = checkbox.closest('.system-option');
+                if (systemOption) {
+                    systemOption.classList.remove('selected');
+                    const checkmark = systemOption.querySelector('.checkmark');
+                    if (checkmark) {
+                        checkmark.style.display = 'none';
+                    }
+                }
+            }
+            
+            updateSelectedSystemsDisplay();
+            updateSubmitButton();
+        }
+        
         // Set current date as default start date
         function setDefaultDates() {
             const today = new Date();
@@ -912,7 +1017,7 @@
         function updateSubmitButton() {
             const count = selectedStaff.length;
             const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = count === 0 || !selectedSystem || selectedAccessRights.length === 0;
+            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
         }
         
         // Add staff function
@@ -1049,8 +1154,8 @@
                 return false;
             }
             
-            if (!selectedSystem) {
-                showError('Please select a system.');
+            if (selectedSystems.length === 0) {
+                showError('Please select at least one system.');
                 return false;
             }
             
@@ -1092,8 +1197,11 @@
             // Generate unique request ID
             const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
             
-            // Get system name
-            const system = systems.find(s => s.id === selectedSystem);
+            // Get system names
+            const systemNames = selectedSystems.map(systemId => {
+                const system = systems.find(s => s.id === systemId);
+                return system ? system.name : systemId;
+            }).join(', ');
             
             // Get access rights names
             const accessRightsNames = selectedAccessRights.map(id => {
@@ -1105,8 +1213,8 @@
             const request = {
                 id: requestId,
                 staffList: selectedStaff,
-                system: selectedSystem,
-                systemName: system ? system.name : selectedSystem,
+                systems: selectedSystems, // Now an array
+                systemsNames: systemNames, // Combined names for display
                 accessRights: selectedAccessRights,
                 accessRightsNames: accessRightsNames,
                 reason: reason,
@@ -1124,20 +1232,20 @@
             localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
             
             // Show success modal
-            showSuccessModal(requestId, selectedStaff.length, system ? system.name : selectedSystem);
+            showSuccessModal(requestId, selectedStaff.length, systemNames);
             
             // Reset form
             resetForm();
         }
         
-        function showSuccessModal(requestId, staffCount, systemName) {
+        function showSuccessModal(requestId, staffCount, systemNames) {
             // Update modal content
             document.getElementById('modalRequestId').textContent = requestId;
             document.getElementById('modalStaffCount').textContent = staffCount;
-            document.getElementById('modalSystem').textContent = systemName;
+            document.getElementById('modalSystem').textContent = systemNames;
             document.getElementById('modalRequestDate').textContent = new Date().toLocaleDateString();
             
-            // Create approval link - Use relative path
+            // Create approval link
             const approvalLink = `approval.html?id=${requestId}`;
             // For local testing, use this:
             document.getElementById('approvalLinkInput').value = window.location.href.replace('form.html', approvalLink);
@@ -1182,12 +1290,13 @@
             
             // Reset selections
             selectedStaff = [];
-            selectedSystem = null;
+            selectedSystems = [];
             selectedAccessRights = [];
             
             // Reset UI
             updateStaffCount();
             updateStaffList();
+            updateSelectedSystemsDisplay();
             updateSubmitButton();
             
             // Reset checkboxes
@@ -1252,4 +1361,3 @@
     </script>
 </body>
 </html>
-
