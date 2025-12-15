@@ -549,6 +549,22 @@
             background: #283593;
         }
 
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #1a237e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -617,6 +633,7 @@
             <h1><i class="fas fa-key"></i> System Access Request Form</h1>
             
             <div id="errorMessage" class="message error"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
             
             <form id="accessRequestForm">
                 <!-- Staff Email Input -->
@@ -627,7 +644,7 @@
                         <div class="email-input-group">
                             <input type="email" id="staffEmail" class="email-input" 
                                    placeholder="name@opm.go.ug or name@gmail.com">
-                            <button type="button" onclick="addStaff()" class="add-staff-btn">
+                            <button type="button" onclick="addStaff()" class="add-staff-btn" id="addStaffBtn">
                                 <i class="fas fa-user-plus"></i> Add Staff
                             </button>
                         </div>
@@ -766,11 +783,19 @@
                 <button onclick="goToDashboard()" class="modal-btn" style="background: #6c757d;">
                     <i class="fas fa-tachometer-alt"></i> Go to Dashboard
                 </button>
+                <button onclick="printRequest()" class="modal-btn" style="background: #4CAF50;">
+                    <i class="fas fa-print"></i> Print Request
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // =================== CONFIGURATION ===================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbys505hFhQcLbDb7xLVJznU5ey8m1LshsvUNgrUBEQxAfQkMp98jA2Wk1qbgOpddOd_/exec';
+        let currentRequestId = null;
+        
+        // =================== USER AUTHENTICATION ===================
         // Check if user is authorized
         const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
         if (!userData.authorized) {
@@ -781,47 +806,7 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-                // Staff database - Load from localStorage or use default
-        function initializeStaffDatabase() {
-            const savedStaff = localStorage.getItem('opm_staff_database');
-            
-            if (savedStaff) {
-                return JSON.parse(savedStaff);
-            } else {
-                // Default staff data if none exists
-                const defaultStaff = [
-                    { 
-                        "First Name": "John", 
-                        "Last Name": "Smith", 
-                        "Email": "john.smith@opm.go.ug", 
-                        "Title/Position": "ICT Officer",
-                        "Department": "ICT Department",
-                        "Employee ID": "OPM-001"
-                    },
-                    { 
-                        "First Name": "Sarah", 
-                        "Last Name": "Johnson", 
-                        "Email": "sarah.j@opm.go.ug", 
-                        "Title/Position": "HR Manager",
-                        "Department": "Human Resources",
-                        "Employee ID": "OPM-002"
-                    },
-                    { 
-                        "First Name": "Michael", 
-                        "Last Name": "Brown", 
-                        "Email": "m.brown@opm.go.ug", 
-                        "Title/Position": "Finance Officer",
-                        "Department": "Finance Department",
-                        "Employee ID": "OPM-003"
-                    }
-                ];
-                return defaultStaff;
-            }
-        }
-        
-        // Initialize staff database
-        let staffDatabase = initializeStaffDatabase();
-        
+        // =================== SYSTEMS AND ACCESS RIGHTS ===================
         // Systems with checkboxes - Now can select multiple
         const systems = [
             { id: "progres_v4", name: "Progres V4", description: "Refugee registration and case management system" },
@@ -848,12 +833,12 @@
             { id: "approve", name: "Approve", description: "Approval authority access" }
         ];
         
-        // Array to store selected staff
+        // =================== GLOBAL VARIABLES ===================
         let selectedStaff = [];
-        let selectedSystems = []; // Now an array for multiple systems
+        let selectedSystems = [];
         let selectedAccessRights = [];
         
-        // Initialize systems and access rights checkboxes
+        // =================== INITIALIZATION ===================
         function initializeCheckboxes() {
             // Systems - Now allows multiple selection
             const systemsGrid = document.getElementById('systemsGrid');
@@ -949,114 +934,13 @@
             });
         }
         
-        // Update selected systems display
-        function updateSelectedSystemsDisplay() {
-            const selectedSystemsDiv = document.getElementById('selectedSystems');
-            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
-            
-            if (selectedSystems.length > 0) {
-                selectedSystemsDiv.style.display = 'block';
-                
-                // Clear existing tags
-                selectedTagsDiv.innerHTML = '';
-                
-                // Add tags for each selected system
-                selectedSystems.forEach(systemId => {
-                    const system = systems.find(s => s.id === systemId);
-                    if (system) {
-                        const tag = document.createElement('div');
-                        tag.className = 'system-tag';
-                        tag.innerHTML = `
-                            ${system.name}
-                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        selectedTagsDiv.appendChild(tag);
-                    }
-                });
-            } else {
-                selectedSystemsDiv.style.display = 'none';
-            }
-        }
-        
-        // Remove system from selection
-        function removeSystem(systemId) {
-            // Remove from selected systems array
-            const index = selectedSystems.indexOf(systemId);
-            if (index > -1) {
-                selectedSystems.splice(index, 1);
-            }
-            
-            // Update checkbox
-            const checkbox = document.getElementById(`system_${systemId}`);
-            if (checkbox) {
-                checkbox.checked = false;
-                const systemOption = checkbox.closest('.system-option');
-                if (systemOption) {
-                    systemOption.classList.remove('selected');
-                    const checkmark = systemOption.querySelector('.checkmark');
-                    if (checkmark) {
-                        checkmark.style.display = 'none';
-                    }
-                }
-            }
-            
-            updateSelectedSystemsDisplay();
-            updateSubmitButton();
-        }
-        
-        // Set current date as default start date
-        function setDefaultDates() {
-            const today = new Date();
-            const oneYearLater = new Date();
-            oneYearLater.setFullYear(today.getFullYear() + 1);
-            
-            // Format dates as YYYY-MM-DD
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-            
-            const todayStr = formatDate(today);
-            const oneYearLaterStr = formatDate(oneYearLater);
-            
-            document.getElementById('startDate').value = todayStr;
-            document.getElementById('endDate').value = oneYearLaterStr;
-            document.getElementById('endDate').min = todayStr;
-            document.getElementById('endDate').max = oneYearLaterStr;
-        }
-        
-        // Update UI with staff count
-        function updateStaffCount() {
-            const count = selectedStaff.length;
-            document.getElementById('staffCount').textContent = count;
-            document.getElementById('staffCountBtn').textContent = count;
-            
-            // Show/hide staff list section
-            const staffListSection = document.getElementById('staffListSection');
-            if (count > 0) {
-                staffListSection.style.display = 'block';
-            } else {
-                staffListSection.style.display = 'none';
-            }
-        }
-        
-        // Update submit button
-        function updateSubmitButton() {
-            const count = selectedStaff.length;
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
-        }
-        
-        // Add staff function
-        function addStaff() {
+        // =================== STAFF MANAGEMENT ===================
+        async function addStaff() {
             const email = document.getElementById('staffEmail').value.trim().toLowerCase();
             const errorDiv = document.getElementById('errorMessage');
             const successMsg = document.getElementById('addSuccessMessage');
             const successText = document.getElementById('successText');
+            const addStaffBtn = document.getElementById('addStaffBtn');
             
             // Clear previous messages
             errorDiv.style.display = 'none';
@@ -1080,12 +964,36 @@
                 return;
             }
             
-            // Find staff in database
-            const staff = staffDatabase.find(s => 
-                s.Email.toLowerCase() === email
-            );
+            // Show loading state
+            addStaffBtn.innerHTML = '<div class="loading"></div>';
+            addStaffBtn.disabled = true;
             
-            if (staff) {
+            try {
+                // Search for staff in Google Sheets database
+                const response = await fetch(`${API_URL}?action=getStaffByEmail&email=${encodeURIComponent(email)}`);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const result = await response.json();
+                
+                if (result.error || !result.email) {
+                    showError('Staff not found in database. Please register the staff first.');
+                    return;
+                }
+                
+                // Create staff object from Google Sheets data
+                const staff = {
+                    "First Name": result.firstName || '',
+                    "Middle Name": result.middleName || '',
+                    "Last Name": result.lastName || '',
+                    "Email": result.email,
+                    "Title/Position": result.position || 'N/A',
+                    "Department": result.department || '',
+                    "Employee ID": result.employeeId || ''
+                };
+                
                 // Add to selected staff array
                 selectedStaff.push(staff);
                 
@@ -1108,12 +1016,16 @@
                     successMsg.style.display = 'none';
                 }, 3000);
                 
-            } else {
-                showError('Staff not found in database. Please check the email address.');
+            } catch (error) {
+                console.error('Error searching for staff:', error);
+                showError('Error searching for staff. Please check your connection and try again.');
+            } finally {
+                // Reset button state
+                addStaffBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Staff';
+                addStaffBtn.disabled = false;
             }
         }
         
-        // Update staff list display
         function updateStaffList() {
             const staffTableBody = document.getElementById('staffTableBody');
             
@@ -1123,7 +1035,7 @@
             // Add staff to table
             selectedStaff.forEach((staff, index) => {
                 const row = document.createElement('tr');
-                const fullName = `${staff["First Name"]} ${staff["Last Name"]}`;
+                const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
                 row.innerHTML = `
                     <td style="font-weight: 600; color: #4361ee;">${index + 1}</td>
                     <td><strong>${fullName}</strong></td>
@@ -1139,7 +1051,6 @@
             });
         }
         
-        // Remove staff from list
         function removeStaff(index) {
             selectedStaff.splice(index, 1);
             updateStaffList();
@@ -1147,7 +1058,6 @@
             updateSubmitButton();
         }
         
-        // Clear all staff
         function clearStaffList() {
             if (selectedStaff.length === 0) return;
             
@@ -1159,8 +1069,8 @@
             }
         }
         
-        // Handle form submission
-        document.getElementById('accessRequestForm').addEventListener('submit', function(e) {
+        // =================== FORM VALIDATION & SUBMISSION ===================
+        document.getElementById('accessRequestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get form values
@@ -1174,7 +1084,7 @@
             }
             
             // Submit form
-            submitRequest(reason, startDate, endDate);
+            await submitRequestToGoogleSheets(reason, startDate, endDate);
         });
         
         function validateForm(reason, startDate, endDate) {
@@ -1224,51 +1134,207 @@
             return true;
         }
         
-        function submitRequest(reason, startDate, endDate) {
-            // Generate unique request ID
-            const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        async function submitRequestToGoogleSheets(reason, startDate, endDate) {
+            const submitBtn = document.getElementById('submitBtn');
+            const errorDiv = document.getElementById('errorMessage');
             
-            // Get system names
-            const systemNames = selectedSystems.map(systemId => {
-                const system = systems.find(s => s.id === systemId);
-                return system ? system.name : systemId;
-            }).join(', ');
+            // Show loading state
+            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
+            submitBtn.disabled = true;
+            errorDiv.style.display = 'none';
             
-            // Get access rights names
-            const accessRightsNames = selectedAccessRights.map(id => {
-                const access = accessRights.find(a => a.id === id);
-                return access ? access.name : id;
-            }).join(', ');
-            
-            // Create request object
-            const request = {
-                id: requestId,
-                staffList: selectedStaff,
-                systems: selectedSystems, // Now an array
-                systemsNames: systemNames, // Combined names for display
-                accessRights: selectedAccessRights,
-                accessRightsNames: accessRightsNames,
-                reason: reason,
-                startDate: startDate,
-                endDate: endDate,
-                requestingOfficer: userData.name,
-                requestingOfficerEmail: userData.email,
-                timestamp: new Date().toISOString(),
-                status: 'pending'
-            };
-            
-            // Save to localStorage
-            const existingRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
-            existingRequests.push(request);
-            localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
-            
-            // Show success modal
-            showSuccessModal(requestId, selectedStaff.length, systemNames);
-            
-            // Reset form
-            resetForm();
+            try {
+                // Prepare request data for Google Sheets
+                const requestData = {
+                    action: 'addRequest',
+                    staffEmails: selectedStaff.map(staff => staff.Email),
+                    systems: selectedSystems.map(systemId => {
+                        const system = systems.find(s => s.id === systemId);
+                        return system ? system.name : systemId;
+                    }),
+                    accessRights: selectedAccessRights.map(rightId => {
+                        const right = accessRights.find(a => a.id === rightId);
+                        return right ? right.name : rightId;
+                    }),
+                    reason: reason,
+                    startDate: startDate,
+                    endDate: endDate,
+                    requestingOfficer: userData.name,
+                    requestingOfficerEmail: userData.email
+                };
+                
+                // Send to Google Apps Script
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                // Generate local request ID since we can't get response with no-cors
+                const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                currentRequestId = requestId;
+                
+                // Get system names for display
+                const systemNames = selectedSystems.map(systemId => {
+                    const system = systems.find(s => s.id === systemId);
+                    return system ? system.name : systemId;
+                }).join(', ');
+                
+                // Also save to localStorage as backup
+                const request = {
+                    id: requestId,
+                    staffList: selectedStaff,
+                    systems: selectedSystems,
+                    systemsNames: systemNames,
+                    accessRights: selectedAccessRights,
+                    accessRightsNames: selectedAccessRights.map(id => {
+                        const access = accessRights.find(a => a.id === id);
+                        return access ? access.name : id;
+                    }).join(', '),
+                    reason: reason,
+                    startDate: startDate,
+                    endDate: endDate,
+                    requestingOfficer: userData.name,
+                    requestingOfficerEmail: userData.email,
+                    timestamp: new Date().toISOString(),
+                    status: 'pending'
+                };
+                
+                const existingRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                existingRequests.push(request);
+                localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
+                
+                // Show success modal
+                showSuccessModal(requestId, selectedStaff.length, systemNames);
+                
+            } catch (error) {
+                console.error('Error submitting request:', error);
+                showError('Error submitting request. Please try again.');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request for <span id="staffCountBtn">0</span> Staff';
+                submitBtn.disabled = false;
+            }
         }
         
+        // =================== UI HELPERS ===================
+        function updateSelectedSystemsDisplay() {
+            const selectedSystemsDiv = document.getElementById('selectedSystems');
+            const selectedTagsDiv = document.getElementById('selectedSystemsTags');
+            
+            if (selectedSystems.length > 0) {
+                selectedSystemsDiv.style.display = 'block';
+                
+                // Clear existing tags
+                selectedTagsDiv.innerHTML = '';
+                
+                // Add tags for each selected system
+                selectedSystems.forEach(systemId => {
+                    const system = systems.find(s => s.id === systemId);
+                    if (system) {
+                        const tag = document.createElement('div');
+                        tag.className = 'system-tag';
+                        tag.innerHTML = `
+                            ${system.name}
+                            <button type="button" onclick="removeSystem('${systemId}')" class="remove-tag">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        selectedTagsDiv.appendChild(tag);
+                    }
+                });
+            } else {
+                selectedSystemsDiv.style.display = 'none';
+            }
+        }
+        
+        function removeSystem(systemId) {
+            // Remove from selected systems array
+            const index = selectedSystems.indexOf(systemId);
+            if (index > -1) {
+                selectedSystems.splice(index, 1);
+            }
+            
+            // Update checkbox
+            const checkbox = document.getElementById(`system_${systemId}`);
+            if (checkbox) {
+                checkbox.checked = false;
+                const systemOption = checkbox.closest('.system-option');
+                if (systemOption) {
+                    systemOption.classList.remove('selected');
+                    const checkmark = systemOption.querySelector('.checkmark');
+                    if (checkmark) {
+                        checkmark.style.display = 'none';
+                    }
+                }
+            }
+            
+            updateSelectedSystemsDisplay();
+            updateSubmitButton();
+        }
+        
+        function setDefaultDates() {
+            const today = new Date();
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
+            
+            // Format dates as YYYY-MM-DD
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            const todayStr = formatDate(today);
+            const oneYearLaterStr = formatDate(oneYearLater);
+            
+            document.getElementById('startDate').value = todayStr;
+            document.getElementById('endDate').value = oneYearLaterStr;
+            document.getElementById('endDate').min = todayStr;
+            document.getElementById('endDate').max = oneYearLaterStr;
+        }
+        
+        function updateStaffCount() {
+            const count = selectedStaff.length;
+            document.getElementById('staffCount').textContent = count;
+            document.getElementById('staffCountBtn').textContent = count;
+            
+            // Show/hide staff list section
+            const staffListSection = document.getElementById('staffListSection');
+            if (count > 0) {
+                staffListSection.style.display = 'block';
+            } else {
+                staffListSection.style.display = 'none';
+            }
+        }
+        
+        function updateSubmitButton() {
+            const count = selectedStaff.length;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = count === 0 || selectedSystems.length === 0 || selectedAccessRights.length === 0;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // =================== MODAL FUNCTIONS ===================
         function showSuccessModal(requestId, staffCount, systemNames) {
             // Update modal content
             document.getElementById('modalRequestId').textContent = requestId;
@@ -1278,8 +1344,7 @@
             
             // Create approval link
             const approvalLink = `approval.html?id=${requestId}`;
-            // For local testing, use this:
-            document.getElementById('approvalLinkInput').value = window.location.href.replace('form.html', approvalLink);
+            document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
             
             // Show modal
             document.getElementById('successModal').style.display = 'flex';
@@ -1288,6 +1353,7 @@
         function copyApprovalLink() {
             const linkInput = document.getElementById('approvalLinkInput');
             linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand('copy');
             
             // Show feedback
@@ -1314,6 +1380,12 @@
         function goToDashboard() {
             closeModal();
             window.location.href = 'dashboard.html';
+        }
+        
+        function printRequest() {
+            if (currentRequestId) {
+                window.open(`print-request.html?id=${currentRequestId}`, '_blank');
+            }
         }
         
         function resetForm() {
@@ -1351,19 +1423,12 @@
             document.getElementById('staffEmail').focus();
         }
         
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-            errorDiv.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
         function logout() {
             localStorage.removeItem('opm_user');
             window.location.href = 'index.html';
         }
         
-        // Initialize
+        // =================== INITIALIZATION ===================
         window.addEventListener('DOMContentLoaded', () => {
             initializeCheckboxes();
             setDefaultDates();
@@ -1392,4 +1457,3 @@
     </script>
 </body>
 </html>
-
