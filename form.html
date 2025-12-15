@@ -781,15 +781,46 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-        // Staff database - Sample staff data (replace with your actual data)
-        const staffDatabase = [
-            { "First Name": "John", "Last Name": "Smith", "Email": "john.smith@opm.go.ug", "Title/Position": "ICT Officer" },
-            { "First Name": "Sarah", "Last Name": "Johnson", "Email": "sarah.j@opm.go.ug", "Title/Position": "HR Manager" },
-            { "First Name": "Michael", "Last Name": "Brown", "Email": "m.brown@opm.go.ug", "Title/Position": "Finance Officer" },
-            { "First Name": "Grace", "Last Name": "Williams", "Email": "grace.w@opm.go.ug", "Title/Position": "Program Coordinator" },
-            { "First Name": "David", "Last Name": "Miller", "Email": "d.miller@opm.go.ug", "Title/Position": "Admin Assistant" },
-            { "First Name": "Linda", "Last Name": "Davis", "Email": "linda.d@opm.go.ug", "Title/Position": "Data Analyst" }
-        ];
+                // Staff database - Load from localStorage or use default
+        function initializeStaffDatabase() {
+            const savedStaff = localStorage.getItem('opm_staff_database');
+            
+            if (savedStaff) {
+                return JSON.parse(savedStaff);
+            } else {
+                // Default staff data if none exists
+                const defaultStaff = [
+                    { 
+                        "First Name": "John", 
+                        "Last Name": "Smith", 
+                        "Email": "john.smith@opm.go.ug", 
+                        "Title/Position": "ICT Officer",
+                        "Department": "ICT Department",
+                        "Employee ID": "OPM-001"
+                    },
+                    { 
+                        "First Name": "Sarah", 
+                        "Last Name": "Johnson", 
+                        "Email": "sarah.j@opm.go.ug", 
+                        "Title/Position": "HR Manager",
+                        "Department": "Human Resources",
+                        "Employee ID": "OPM-002"
+                    },
+                    { 
+                        "First Name": "Michael", 
+                        "Last Name": "Brown", 
+                        "Email": "m.brown@opm.go.ug", 
+                        "Title/Position": "Finance Officer",
+                        "Department": "Finance Department",
+                        "Employee ID": "OPM-003"
+                    }
+                ];
+                return defaultStaff;
+            }
+        }
+        
+        // Initialize staff database
+        let staffDatabase = initializeStaffDatabase();
         
         // Systems with checkboxes - Now can select multiple
         const systems = [
@@ -1361,3 +1392,4 @@
     </script>
 </body>
 </html>
+
