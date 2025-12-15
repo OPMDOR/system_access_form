@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Approve Request - OPM</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,7 +14,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             width: 100%;
             margin: 0 auto;
         }
@@ -50,56 +49,35 @@
             border-radius: 50px;
             font-weight: bold;
             display: inline-block;
-            margin-left: 10px;
         }
         
         .pending { background: #fff3cd; color: #856404; }
         .approved { background: #d4edda; color: #155724; }
         .rejected { background: #f8d7da; color: #721c24; }
         
-        .requests-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px 0;
-            background: white;
+        .request-details {
+            background: #f8f9fa;
+            padding: 25px;
             border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin: 20px 0;
         }
         
-        .requests-table th {
-            background: #4361ee;
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-        
-        .requests-table td {
-            padding: 15px;
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
         
-        .action-column {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
+        .detail-label {
             font-weight: 600;
+            color: #555;
+            width: 200px;
         }
         
-        .approve-btn {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .reject-btn {
-            background: #e74c3c;
-            color: white;
+        .detail-value {
+            flex: 1;
+            color: #333;
         }
         
         .approver-section {
@@ -121,32 +99,45 @@
             font-weight: 600;
         }
         
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
+            font-family: inherit;
         }
         
-        .batch-actions {
-            background: #f8fff8;
-            padding: 30px;
-            border-radius: 10px;
-            margin: 40px 0;
-            border: 2px solid #4caf50;
-            text-align: center;
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            justify-content: center;
         }
         
-        .submit-btn {
-            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-            color: white;
-            padding: 16px 50px;
-            font-size: 18px;
+        .action-btn {
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
-            border: none;
-            border-radius: 50px;
             cursor: pointer;
+            border: none;
+            min-width: 150px;
+        }
+        
+        .approve-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .reject-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
         }
         
         .message {
@@ -156,8 +147,36 @@
             display: none;
         }
         
-        .success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
-        .error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #28a745;
+        }
+        
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -171,12 +190,17 @@
             
             <div id="message" class="message"></div>
             
-            <div id="requestsContainer">
-                <!-- Requests will be loaded here -->
+            <!-- Request Details -->
+            <div id="requestDetails" class="request-details">
+                <h3>Request Details</h3>
+                <div id="detailsContent">
+                    <!-- Details will be loaded here -->
+                </div>
             </div>
             
-            <div class="approver-section">
-                <h3><i class="fas fa-user-tie"></i> Approver Information</h3>
+            <!-- Approver Information -->
+            <div class="approver-section" id="approverSection">
+                <h3>Approver Information</h3>
                 <div class="form-group">
                     <label>Your Name *</label>
                     <input type="text" id="approverName" placeholder="Enter your full name">
@@ -185,11 +209,22 @@
                     <label>Your Email *</label>
                     <input type="email" id="approverEmail" placeholder="Enter your email">
                 </div>
+                <div class="form-group">
+                    <label>Comments (Optional)</label>
+                    <textarea id="comments" rows="3" placeholder="Add any comments..."></textarea>
+                </div>
             </div>
             
-            <div class="batch-actions">
-                <button onclick="submitDecisions()" class="submit-btn">
-                    <i class="fas fa-check-circle"></i> Submit Decisions
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="actionButtons">
+                <button onclick="approveRequest()" class="action-btn approve-btn">
+                    Approve Request
+                </button>
+                <button onclick="rejectRequest()" class="action-btn reject-btn">
+                    Reject Request
+                </button>
+                <button onclick="goBack()" class="action-btn back-btn">
+                    Go Back
                 </button>
             </div>
         </div>
@@ -201,158 +236,221 @@
         const requestId = urlParams.get('id');
         
         if (!requestId) {
-            window.location.href = 'index.html';
+            document.getElementById('message').textContent = 'No request ID provided.';
+            document.getElementById('message').className = 'message error';
+            document.getElementById('message').style.display = 'block';
+            return;
         }
         
         // Display request ID
         document.getElementById('requestIdDisplay').textContent = `Request ID: ${requestId}`;
         
         // Load request data
-        async function loadRequest() {
+        function loadRequest() {
             try {
-                // In a real app, you would fetch from GitHub API
-                // For now, we'll use localStorage
+                // Get all requests from localStorage
                 const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
-                const requests = allRequests.filter(req => req.id === requestId);
+                const request = allRequests.find(req => req.id === requestId);
                 
-                if (requests.length === 0) {
-                    showMessage('Request not found.', 'error');
+                if (!request) {
+                    showMessage('Request not found. It may have been deleted or expired.', 'error');
+                    hideApprovalSection();
                     return;
                 }
                 
-                displayRequests(requests);
+                displayRequestDetails(request);
+                
+                // Check if already processed
+                if (request.status !== 'pending') {
+                    showMessage(`This request has already been ${request.status} on ${new Date(request.approvalDate).toLocaleDateString()}`, 'info');
+                    hideApprovalSection();
+                }
                 
             } catch (error) {
                 showMessage('Error loading request: ' + error.message, 'error');
+                hideApprovalSection();
             }
         }
         
-        function displayRequests(requests) {
-            const container = document.getElementById('requestsContainer');
+        function displayRequestDetails(request) {
+            const detailsContent = document.getElementById('detailsContent');
+            const statusDisplay = document.getElementById('statusDisplay');
             
-            if (requests[0].status !== 'pending') {
-                // Show read-only view for already processed requests
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <h3 style="color: #666;">This request has already been ${requests[0].status}</h3>
-                        <p>Processed on: ${requests[0].approvalDate || 'Unknown date'}</p>
-                        <button onclick="window.history.back()" 
-                                style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
-                            Go Back
-                        </button>
+            // Update status badge
+            let statusClass = 'pending';
+            let statusText = 'Pending Approval';
+            
+            if (request.status === 'approved') {
+                statusClass = 'approved';
+                statusText = 'Approved';
+            } else if (request.status === 'rejected') {
+                statusClass = 'rejected';
+                statusText = 'Rejected';
+            }
+            
+            statusDisplay.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+            
+            // Create details HTML
+            let html = '';
+            
+            // Staff Information
+            if (request.staff) {
+                html += `
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Name:</div>
+                        <div class="detail-value">
+                            ${request.staff['First Name'] || ''} 
+                            ${request.staff['Middle Name'] ? request.staff['Middle Name'] + ' ' : ''}
+                            ${request.staff['Last Name'] || ''}
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Email:</div>
+                        <div class="detail-value">${request.staff.Email || request.staffEmail || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Position:</div>
+                        <div class="detail-value">${request.staff['Title/Position'] || 'N/A'}</div>
                     </div>
                 `;
-                return;
+            } else {
+                html += `
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Email:</div>
+                        <div class="detail-value">${request.staffEmail || 'N/A'}</div>
+                    </div>
+                `;
             }
             
-            let html = `
-                <table class="requests-table">
-                    <thead>
-                        <tr>
-                            <th>Staff Member</th>
-                            <th>Position</th>
-                            <th>System</th>
-                            <th>Access Rights</th>
-                            <th>Duration</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            // System Information
+            html += `
+                <div class="detail-row">
+                    <div class="detail-label">System:</div>
+                    <div class="detail-value">${getSystemName(request.system)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Access Rights:</div>
+                    <div class="detail-value">${request.accessRights || 'N/A'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">${request.startDate || 'Current Date'} to ${request.endDate || 'N/A'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Requested By:</div>
+                    <div class="detail-value">
+                        ${request.requestingOfficer || userData.name || 'N/A'}
+                        <br><small>${request.requestingOfficerEmail || userData.email || ''}</small>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Request Date:</div>
+                    <div class="detail-value">${new Date(request.timestamp || Date.now()).toLocaleString()}</div>
+                </div>
             `;
             
-            requests.forEach((request, index) => {
+            // If already processed, show approver info
+            if (request.status !== 'pending') {
                 html += `
-                    <tr>
-                        <td>
-                            <strong>${request.staff.firstname} ${request.staff.lastname}</strong><br>
-                            <small>${request.staff.email}</small>
-                        </td>
-                        <td>${request.staff.title}</td>
-                        <td>${request.system}</td>
-                        <td>${request.accessRights}</td>
-                        <td>${request.duration}</td>
-                        <td>
-                            <div class="action-column">
-                                <button onclick="selectAction(${index}, 'approve')" class="action-btn approve-btn">
-                                    Approve
-                                </button>
-                                <button onclick="selectAction(${index}, 'reject')" class="action-btn reject-btn">
-                                    Reject
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    <div class="detail-row">
+                        <div class="detail-label">${request.status === 'approved' ? 'Approved' : 'Rejected'} By:</div>
+                        <div class="detail-value">
+                            ${request.approver || 'N/A'}
+                            <br><small>${request.approverEmail || ''}</small>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">${request.status === 'approved' ? 'Approval' : 'Rejection'} Date:</div>
+                        <div class="detail-value">${new Date(request.approvalDate).toLocaleString()}</div>
+                    </div>
                 `;
-            });
-            
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-        
-        // Store decisions
-        const decisions = {};
-        
-        function selectAction(index, action) {
-            decisions[index] = action;
-            
-            // Update button styles
-            const row = document.querySelectorAll('tbody tr')[index];
-            const buttons = row.querySelectorAll('.action-btn');
-            
-            buttons.forEach(btn => {
-                btn.style.opacity = '0.6';
-            });
-            
-            if (action === 'approve') {
-                buttons[0].style.opacity = '1';
-                buttons[0].style.boxShadow = '0 0 0 2px #4CAF50';
-            } else {
-                buttons[1].style.opacity = '1';
-                buttons[1].style.boxShadow = '0 0 0 2px #e74c3c';
             }
+            
+            detailsContent.innerHTML = html;
         }
         
-        async function submitDecisions() {
+        function getSystemName(systemCode) {
+            const systems = {
+                'progres_v4': 'Progres V4',
+                'bims': 'BIMS',
+                'rapp': 'RAPP'
+            };
+            return systems[systemCode] || systemCode;
+        }
+        
+        function approveRequest() {
             const approverName = document.getElementById('approverName').value.trim();
             const approverEmail = document.getElementById('approverEmail').value.trim();
+            const comments = document.getElementById('comments').value.trim();
             
             if (!approverName || !approverEmail) {
                 showMessage('Please enter your name and email.', 'error');
                 return;
             }
             
-            if (Object.keys(decisions).length === 0) {
-                showMessage('Please select approve or reject for at least one request.', 'error');
+            updateRequestStatus('approved', approverName, approverEmail, comments);
+        }
+        
+        function rejectRequest() {
+            const approverName = document.getElementById('approverName').value.trim();
+            const approverEmail = document.getElementById('approverEmail').value.trim();
+            const comments = document.getElementById('comments').value.trim();
+            
+            if (!approverName || !approverEmail) {
+                showMessage('Please enter your name and email.', 'error');
                 return;
             }
             
+            if (!comments) {
+                if (!confirm('Are you sure you want to reject without adding comments?')) {
+                    return;
+                }
+            }
+            
+            updateRequestStatus('rejected', approverName, approverEmail, comments);
+        }
+        
+        function updateRequestStatus(status, approverName, approverEmail, comments) {
             try {
-                // Update requests
+                // Get all requests
                 const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const requestIndex = allRequests.findIndex(req => req.id === requestId);
                 
-                Object.keys(decisions).forEach(index => {
-                    const requestIndex = allRequests.findIndex(req => req.id === requestId);
-                    if (requestIndex !== -1) {
-                        allRequests[requestIndex].status = decisions[index];
-                        allRequests[requestIndex].approvalDate = new Date().toISOString();
-                        allRequests[requestIndex].approver = approverName;
-                        allRequests[requestIndex].approverEmail = approverEmail;
-                    }
-                });
+                if (requestIndex === -1) {
+                    showMessage('Request not found.', 'error');
+                    return;
+                }
                 
-                // Save updated requests
+                // Update request
+                allRequests[requestIndex].status = status;
+                allRequests[requestIndex].approver = approverName;
+                allRequests[requestIndex].approverEmail = approverEmail;
+                allRequests[requestIndex].comments = comments;
+                allRequests[requestIndex].approvalDate = new Date().toISOString();
+                
+                // Save back to localStorage
                 localStorage.setItem('opm_requests', JSON.stringify(allRequests));
                 
-                showMessage('Decisions submitted successfully!', 'success');
+                // Show success message
+                const action = status === 'approved' ? 'approved' : 'rejected';
+                showMessage(`Request ${action} successfully!`, 'success');
                 
-                // Reload to show updated status
+                // Hide approval section
+                hideApprovalSection();
+                
+                // Reload request details
                 setTimeout(() => {
                     loadRequest();
-                }, 2000);
+                }, 1000);
                 
             } catch (error) {
-                showMessage('Error submitting decisions: ' + error.message, 'error');
+                showMessage('Error updating request: ' + error.message, 'error');
             }
+        }
+        
+        function hideApprovalSection() {
+            document.getElementById('approverSection').style.display = 'none';
+            document.getElementById('actionButtons').style.display = 'none';
         }
         
         function showMessage(text, type) {
@@ -361,7 +459,7 @@
             messageDiv.className = `message ${type}`;
             messageDiv.style.display = 'block';
             
-            // Auto-hide success messages
+            // Auto-hide success messages after 5 seconds
             if (type === 'success') {
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
@@ -369,7 +467,11 @@
             }
         }
         
-        // Load request on page load
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Load request when page loads
         window.addEventListener('DOMContentLoaded', loadRequest);
     </script>
 </body>
