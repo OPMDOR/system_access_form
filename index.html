@@ -102,13 +102,21 @@
         .authorized-list li {
             padding: 8px 0;
             border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
+            color: #666;
         }
         
         .error {
             color: #e74c3c;
             background: #ffeaea;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        .success {
+            color: #27ae60;
+            background: #eafaf1;
             padding: 10px;
             border-radius: 8px;
             margin: 15px 0;
@@ -133,11 +141,12 @@
             <p class="subtitle">Office of the Prime Minister - Uganda</p>
             
             <div id="errorMessage" class="error"></div>
+            <div id="successMessage" class="success"></div>
             
             <div class="auth-section">
                 <p><strong>Enter your official email address:</strong></p>
                 <input type="email" id="userEmail" class="email-input" 
-                       placeholder="your.name@opm.go.ug">
+                       placeholder="your.name@opm.go.ug" autocomplete="off">
                 
                 <button onclick="checkAuthorization()" class="btn">
                     <i class="fas fa-sign-in-alt"></i> Continue
@@ -146,15 +155,13 @@
             
             <div class="authorized-list">
                 <h4><i class="fas fa-user-check"></i> Authorized Personnel</h4>
-                <p>Only these officers can access the system:</p>
+                <p>The system is accessible only to authorized personnel with registered email addresses. Please use your official email.</p>
+                <p><strong>Authorized email domains include:</strong></p>
                 <ul>
-                    <li>Doreen Kasangaki <span style="color: #666;">kasangakidoryn@gmail.com</span></li>
-                    <li>Eunice Prossy Akello <span style="color: #666;">aprossyeunice@gmail.com</span></li>
-                    <li>Joshua Kalungi <span style="color: #666;">joshuakalungi101@gmail.com</span></li>
-                    <li>Asiku Mahfuz <span style="color: #666;">asikumahfuzu@gmail.com</span></li>
-                    <li>Noel Ikwap <span style="color: #666;">noelikwap@gmail.com</span></li>
-                    <li>Anita Nakazzi <span style="color: #666;">anitahnakkazi@gmail.com</span></li>
+                    <li>@opm.go.ug</li>
+                    <li>@gmail.com (specifically authorized personnel)</li>
                 </ul>
+                <p><em>Note: Access is restricted to pre-approved email addresses only.</em></p>
             </div>
             
             <div style="margin-top: 30px; color: #666; font-size: 0.9em;">
@@ -164,8 +171,18 @@
     </div>
     
     <script>
-        // Strict authorization list
-        const AUTHORIZED_USERS = {
+        // Strict authorization list (emails only, no names displayed)
+        const AUTHORIZED_EMAILS = [
+            "kasangakidoryn@gmail.com",
+            "aprossyeunice@gmail.com",
+            "joshuakalungi101@gmail.com",
+            "asikumahfuzu@gmail.com",
+            "noelikwap@gmail.com",
+            "anitahnakkazi@gmail.com"
+        ];
+        
+        // Corresponding names for internal use only
+        const AUTHORIZED_NAMES = {
             "kasangakidoryn@gmail.com": "Doreen Kasangaki",
             "aprossyeunice@gmail.com": "Eunice Prossy Akello",
             "joshuakalungi101@gmail.com": "Joshua Kalungi",
@@ -177,9 +194,11 @@
         function checkAuthorization() {
             const email = document.getElementById('userEmail').value.trim().toLowerCase();
             const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
             
-            // Clear previous error
+            // Clear previous messages
             errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
             
             if (!email) {
                 showError('Please enter your email address.');
@@ -194,19 +213,23 @@
             }
             
             // Check if authorized
-            if (AUTHORIZED_USERS[email]) {
+            if (AUTHORIZED_EMAILS.includes(email)) {
                 // Store user info in localStorage
                 localStorage.setItem('opm_user', JSON.stringify({
                     email: email,
-                    name: AUTHORIZED_USERS[email],
+                    name: AUTHORIZED_NAMES[email],
                     authorized: true,
                     timestamp: new Date().getTime()
                 }));
                 
-                // Redirect to main form
-                window.location.href = 'form.html';
+                showSuccess('Access granted! Redirecting to the system...');
+                
+                // Redirect to main form after brief delay
+                setTimeout(() => {
+                    window.location.href = 'form.html';
+                }, 1500);
             } else {
-                showError('Access denied. Your email is not authorized to use this system.');
+                showError('Access denied. This email is not authorized to access the system.');
             }
         }
         
@@ -214,6 +237,12 @@
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
         }
         
         // Allow Enter key to submit
