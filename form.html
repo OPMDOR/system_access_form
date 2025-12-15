@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Access Request - OPM</title>
+    <title>Approve Request - OPM</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,188 +19,125 @@
             margin: 0 auto;
         }
         
-        .header {
+        .approval-card {
             background: white;
-            border-radius: 15px 15px 0 0;
-            padding: 25px 40px;
-            margin-bottom: 2px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .user-info h3 {
-            margin: 0;
-            color: #333;
-        }
-        
-        .user-info p {
-            margin: 5px 0 0 0;
-            color: #666;
-        }
-        
-        .logout-btn {
-            background: #f8f9fa;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .logout-btn:hover {
-            background: #e9ecef;
-        }
-        
-        .form-card {
-            background: white;
-            border-radius: 0 0 15px 15px;
+            border-radius: 15px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
         
-        h1 {
-            color: #333;
+        .header {
+            text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 2px solid #f0f0f0;
-            text-align: center;
         }
         
-        .form-section {
-            margin-bottom: 30px;
-            padding: 20px;
+        .request-id {
+            background: #f0f4ff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #4361ee;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+        
+        .request-details {
             background: #f8f9fa;
+            padding: 25px;
             border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            width: 200px;
+        }
+        
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
+        
+        .approver-section {
+            background: #fff8e1;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 4px solid #ffb300;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             color: #555;
             font-weight: 600;
         }
         
-        label.required::after {
-            content: " *";
-            color: #e74c3c;
-        }
-        
-        input, select, textarea {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
-            box-sizing: border-box;
         }
         
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .email-input-group {
+        .action-buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 15px;
+            margin: 30px 0;
+            justify-content: center;
         }
         
-        .email-input {
-            flex: 1;
-        }
-        
-        .add-staff-btn {
-            background: #4361ee;
-            color: white;
-            border: none;
-            padding: 12px 20px;
+        .action-btn {
+            padding: 14px 40px;
             border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 600;
+            border: none;
+            min-width: 150px;
         }
         
-        .add-staff-btn:hover {
-            background: #3a56d4;
-        }
-        
-        .staff-details {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 2px solid #e0e0e0;
-            display: none;
-        }
-        
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .detail-item {
-            margin-bottom: 10px;
-        }
-        
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        
-        .detail-value {
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-        
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-        
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-        
-        .date-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .submit-btn {
+        .approve-btn {
             background: #4CAF50;
             color: white;
-            border: none;
-            padding: 16px 40px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto 0;
         }
         
-        .submit-btn:hover {
-            background: #45a049;
+        .reject-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
         }
         
         .message {
@@ -210,415 +147,342 @@
             display: none;
         }
         
-        .error {
-            background: #ffeaea;
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #28a745;
         }
         
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #4CAF50;
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #dc3545;
         }
         
-        .approval-link {
+        .info {
             background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #90caf9;
+            color: #0d47a1;
+            border: 1px solid #2196f3;
         }
         
         @media (max-width: 768px) {
-            .details-grid,
-            .checkbox-grid,
-            .date-inputs {
-                grid-template-columns: 1fr;
+            .detail-row {
+                flex-direction: column;
             }
             
-            .header {
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .action-buttons {
                 flex-direction: column;
-                gap: 15px;
-                text-align: center;
+            }
+            
+            .action-btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header with user info -->
-        <div class="header">
-            <div class="user-info">
-                <h3 id="userName">User</h3>
-                <p id="userEmail">user@example.com</p>
+        <div class="approval-card">
+            <div class="header">
+                <div class="request-id" id="requestIdDisplay">Request ID: Loading...</div>
+                <h1>System Access Request Approval</h1>
+                <div id="statusDisplay"></div>
             </div>
-            <button onclick="logout()" class="logout-btn">Logout</button>
-        </div>
-        
-        <!-- Main Form -->
-        <div class="form-card">
-            <h1>System Access Request Form</h1>
             
-            <div id="errorMessage" class="message error"></div>
-            <div id="successMessage" class="message success"></div>
+            <div id="message" class="message"></div>
             
-            <form id="accessRequestForm">
-                <!-- Staff Email Input -->
-                <div class="form-section">
-                    <h3>Staff Information</h3>
-                    <div class="form-group">
-                        <label for="staffEmail" class="required">Enter Staff Email:</label>
-                        <div class="email-input-group">
-                            <input type="email" id="staffEmail" class="email-input" 
-                                   placeholder="staff.email@opm.go.ug" required>
-                            <button type="button" onclick="addStaff()" class="add-staff-btn">
-                                Add Staff
-                            </button>
-                        </div>
-                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
-                            Enter email and click "Add Staff" to populate details
-                        </p>
-                    </div>
-                    
-                    <!-- Staff Details -->
-                    <div id="staffDetails" class="staff-details">
-                        <h4>Staff Details</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <div class="detail-label">First Name</div>
-                                <div class="detail-value" id="firstName">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Middle Name</div>
-                                <div class="detail-value" id="middleName">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Last Name</div>
-                                <div class="detail-value" id="lastName">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Email</div>
-                                <div class="detail-value" id="staffEmailDisplay">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Title/Position</div>
-                                <div class="detail-value" id="staffTitle">-</div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Request Details -->
+            <div id="requestDetails" class="request-details">
+                <h3>Request Details</h3>
+                <div id="detailsContent">
+                    <!-- Details will be loaded here -->
                 </div>
-                
-                <!-- System Selection -->
-                <div class="form-section">
-                    <h3>System Details</h3>
-                    <div class="form-group">
-                        <label for="system" class="required">System Required:</label>
-                        <select id="system" required>
-                            <option value="">Select System</option>
-                            <option value="progres_v4">Progres V4</option>
-                            <option value="bims">BIMS</option>
-                            <option value="rapp">RAPP</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="required">Access Rights Required:</label>
-                        <div class="checkbox-grid">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="registration_level_1">
-                                Registration Level 1
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="registration_level_2">
-                                Registration Level 2
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="print">
-                                Print
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="export">
-                                Export
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="rsd">
-                                RSD
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="access" value="dtr">
-                                DTR
-                            </label>
-                        </div>
-                    </div>
+            </div>
+            
+            <!-- Approver Information -->
+            <div class="approver-section" id="approverSection">
+                <h3>Approver Information</h3>
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="approverName" placeholder="Enter your full name">
                 </div>
-                
-                <!-- Access Duration -->
-                <div class="form-section">
-                    <h3>Access Duration</h3>
-                    <div class="form-group">
-                        <div class="date-inputs">
-                            <div>
-                                <label for="startDate">Start Date</label>
-                                <input type="date" id="startDate" required readonly>
-                            </div>
-                            <div>
-                                <label for="endDate" class="required">End Date</label>
-                                <input type="date" id="endDate" required>
-                            </div>
-                        </div>
-                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
-                            End date must be within one year from start date
-                        </p>
-                    </div>
+                <div class="form-group">
+                    <label>Your Email *</label>
+                    <input type="email" id="approverEmail" placeholder="Enter your email">
                 </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
+                <div class="form-group">
+                    <label>Comments (Optional)</label>
+                    <textarea id="comments" rows="3" placeholder="Add any comments..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="actionButtons">
+                <button onclick="approveRequest()" class="action-btn approve-btn">
+                    Approve Request
+                </button>
+                <button onclick="rejectRequest()" class="action-btn reject-btn">
+                    Reject Request
+                </button>
+                <button onclick="goBack()" class="action-btn back-btn">
+                    Go Back
+                </button>
+            </div>
         </div>
     </div>
-
+    
     <script>
-        // Check if user is authorized
-        const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
-        if (!userData.authorized) {
-            window.location.href = 'index.html';
+        // Get request ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestId = urlParams.get('id');
+        
+        if (!requestId) {
+            document.getElementById('message').textContent = 'No request ID provided.';
+            document.getElementById('message').className = 'message error';
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('requestIdDisplay').textContent = 'Invalid Request';
+            return;
         }
         
-        // Display user info
-        document.getElementById('userName').textContent = userData.name;
-        document.getElementById('userEmail').textContent = userData.email;
+        // Display request ID
+        document.getElementById('requestIdDisplay').textContent = `Request ID: ${requestId}`;
         
-        // Sample staff database (in real app, load from CSV)
-        const staffDatabase = [
-            {
-                "First Name": "John",
-                "Middle Name": "Michael",
-                "Last Name": "Doe",
-                "Email": "john.doe@opm.go.ug",
-                "Title/Position": "Registration Officer"
-            },
-            {
-                "First Name": "Jane",
-                "Middle Name": "Ann",
-                "Last Name": "Smith",
-                "Email": "jane.smith@opm.go.ug",
-                "Title/Position": "Data Analyst"
-            },
-            {
-                "First Name": "Robert",
-                "Middle Name": "James",
-                "Last Name": "Johnson",
-                "Email": "robert.j@opm.go.ug",
-                "Title/Position": "System Administrator"
+        // Load request data
+        function loadRequest() {
+            try {
+                // Get all requests from localStorage
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const request = allRequests.find(req => req.id === requestId);
+                
+                if (!request) {
+                    showMessage('Request not found. It may have been deleted or expired.', 'error');
+                    hideApprovalSection();
+                    return;
+                }
+                
+                displayRequestDetails(request);
+                
+                // Check if already processed
+                if (request.status !== 'pending') {
+                    showMessage(`This request has already been ${request.status} on ${new Date(request.approvalDate).toLocaleDateString()}`, 'info');
+                    hideApprovalSection();
+                }
+                
+            } catch (error) {
+                showMessage('Error loading request: ' + error.message, 'error');
+                hideApprovalSection();
             }
-        ];
+        }
         
-        // Set current date as default start date
-        function setDefaultDates() {
-            const today = new Date();
-            const oneYearLater = new Date();
-            oneYearLater.setFullYear(today.getFullYear() + 1);
+        function displayRequestDetails(request) {
+            const detailsContent = document.getElementById('detailsContent');
+            const statusDisplay = document.getElementById('statusDisplay');
             
-            // Format dates as YYYY-MM-DD
-            const formatDate = (date) => {
-                return date.toISOString().split('T')[0];
+            // Update status badge
+            let statusClass = 'pending';
+            let statusText = 'Pending Approval';
+            
+            if (request.status === 'approved') {
+                statusClass = 'approved';
+                statusText = 'Approved';
+            } else if (request.status === 'rejected') {
+                statusClass = 'rejected';
+                statusText = 'Rejected';
+            }
+            
+            statusDisplay.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+            
+            // Create details HTML
+            let html = '';
+            
+            // Staff Information
+            if (request.staff) {
+                html += `
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Name:</div>
+                        <div class="detail-value">
+                            ${request.staff['First Name'] || ''} 
+                            ${request.staff['Middle Name'] ? request.staff['Middle Name'] + ' ' : ''}
+                            ${request.staff['Last Name'] || ''}
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Email:</div>
+                        <div class="detail-value">${request.staff.Email || request.staffEmail || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Position:</div>
+                        <div class="detail-value">${request.staff['Title/Position'] || 'N/A'}</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="detail-row">
+                        <div class="detail-label">Staff Email:</div>
+                        <div class="detail-value">${request.staffEmail || 'N/A'}</div>
+                    </div>
+                `;
+            }
+            
+            // System Information
+            const systemNames = {
+                'progres_v4': 'Progres V4',
+                'bims': 'BIMS',
+                'rapp': 'RAPP'
             };
             
-            document.getElementById('startDate').value = formatDate(today);
-            document.getElementById('endDate').value = formatDate(oneYearLater);
-            document.getElementById('endDate').min = formatDate(today);
-            document.getElementById('endDate').max = formatDate(oneYearLater);
-        }
-        
-        // Add staff function
-        function addStaff() {
-            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
-            const errorDiv = document.getElementById('errorMessage');
-            const staffDetails = document.getElementById('staffDetails');
-            
-            // Clear previous error
-            errorDiv.style.display = 'none';
-            
-            if (!email) {
-                showError('Please enter staff email.');
-                return;
-            }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address.');
-                return;
-            }
-            
-            // Find staff in database
-            const staff = staffDatabase.find(s => 
-                s.Email.toLowerCase() === email
-            );
-            
-            if (staff) {
-                // Populate staff details
-                document.getElementById('firstName').textContent = staff["First Name"] || '-';
-                document.getElementById('middleName').textContent = staff["Middle Name"] || '-';
-                document.getElementById('lastName').textContent = staff["Last Name"] || '-';
-                document.getElementById('staffEmailDisplay').textContent = staff["Email"] || '-';
-                document.getElementById('staffTitle').textContent = staff["Title/Position"] || '-';
-                
-                staffDetails.style.display = 'block';
-            } else {
-                showError('Staff not found in database. Please check the email.');
-                staffDetails.style.display = 'none';
-            }
-        }
-        
-        // Handle form submission
-        document.getElementById('accessRequestForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const staffEmail = document.getElementById('staffEmail').value.trim();
-            const system = document.getElementById('system').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            
-            // Get selected access rights
-            const accessCheckboxes = document.querySelectorAll('input[name="access"]:checked');
-            const accessRights = Array.from(accessCheckboxes).map(cb => cb.value);
-            
-            // Validate
-            if (!validateForm(staffEmail, system, accessRights, startDate, endDate)) {
-                return;
-            }
-            
-            // Submit form
-            submitRequest(staffEmail, system, accessRights, startDate, endDate);
-        });
-        
-        function validateForm(staffEmail, system, accessRights, startDate, endDate) {
-            const errorDiv = document.getElementById('errorMessage');
-            
-            if (!staffEmail) {
-                showError('Please enter staff email.');
-                return false;
-            }
-            
-            if (!system) {
-                showError('Please select a system.');
-                return false;
-            }
-            
-            if (accessRights.length === 0) {
-                showError('Please select at least one access right.');
-                return false;
-            }
-            
-            if (!startDate || !endDate) {
-                showError('Please select both start and end dates.');
-                return false;
-            }
-            
-            // Check if end date is within one year
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const oneYearLater = new Date(start);
-            oneYearLater.setFullYear(start.getFullYear() + 1);
-            
-            if (end > oneYearLater) {
-                showError('End date cannot exceed one year from start date.');
-                return false;
-            }
-            
-            if (end < start) {
-                showError('End date cannot be before start date.');
-                return false;
-            }
-            
-            return true;
-        }
-        
-        function submitRequest(staffEmail, system, accessRights, startDate, endDate) {
-            // Generate unique request ID
-            const requestId = 'REQ-' + Date.now();
-            
-            // Get staff details
-            const staff = staffDatabase.find(s => s.Email.toLowerCase() === staffEmail.toLowerCase());
-            
-            // Create approval link
-            const approvalLink = `${window.location.origin}/approval.html?id=${requestId}`;
-            
-            // Display success message with approval link
-            const successDiv = document.getElementById('successMessage');
-            successDiv.innerHTML = `
-                <h3>Request Submitted Successfully!</h3>
-                <p><strong>Request ID:</strong> ${requestId}</p>
-                <p><strong>Staff:</strong> ${staff ? `${staff["First Name"]} ${staff["Last Name"]}` : staffEmail}</p>
-                <p><strong>System:</strong> ${document.getElementById('system').options[document.getElementById('system').selectedIndex].text}</p>
-                
-                <div class="approval-link">
-                    <h4>Share this link with approver:</h4>
-                    <input type="text" value="${approvalLink}" readonly 
-                           style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #90caf9; border-radius: 4px;">
-                    <button onclick="copyToClipboard('${approvalLink}')" 
-                            style="background: #1976d2; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-                        Copy Link
-                    </button>
-                    <button onclick="newRequest()" 
-                            style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-                        New Request
-                    </button>
+            html += `
+                <div class="detail-row">
+                    <div class="detail-label">System:</div>
+                    <div class="detail-value">${systemNames[request.system] || request.system || 'N/A'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Access Rights:</div>
+                    <div class="detail-value">${request.accessRights || 'N/A'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">${request.startDate || 'Current Date'} to ${request.endDate || 'N/A'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Requested By:</div>
+                    <div class="detail-value">
+                        ${request.requestingOfficer || 'N/A'}
+                        <br><small>${request.requestingOfficerEmail || ''}</small>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Request Date:</div>
+                    <div class="detail-value">${new Date(request.timestamp || Date.now()).toLocaleString()}</div>
                 </div>
             `;
-            successDiv.style.display = 'block';
             
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // If already processed, show approver info
+            if (request.status !== 'pending') {
+                html += `
+                    <div class="detail-row">
+                        <div class="detail-label">${request.status === 'approved' ? 'Approved' : 'Rejected'} By:</div>
+                        <div class="detail-value">
+                            ${request.approver || 'N/A'}
+                            <br><small>${request.approverEmail || ''}</small>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">${request.status === 'approved' ? 'Approval' : 'Rejection'} Date:</div>
+                        <div class="detail-value">${new Date(request.approvalDate).toLocaleString()}</div>
+                    </div>
+                    ${request.comments ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Comments:</div>
+                        <div class="detail-value">${request.comments}</div>
+                    </div>
+                    ` : ''}
+                `;
+            }
             
-            // Reset form
-            document.getElementById('accessRequestForm').reset();
-            document.getElementById('staffDetails').style.display = 'none';
-            setDefaultDates();
+            detailsContent.innerHTML = html;
         }
         
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Link copied to clipboard!');
-            });
-        }
-        
-        function newRequest() {
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('staffEmail').focus();
-        }
-        
-        function logout() {
-            localStorage.removeItem('opm_user');
-            window.location.href = 'index.html';
-        }
-        
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            setDefaultDates();
+        function approveRequest() {
+            const approverName = document.getElementById('approverName').value.trim();
+            const approverEmail = document.getElementById('approverEmail').value.trim();
+            const comments = document.getElementById('comments').value.trim();
             
-            // Allow Enter key in email field to trigger Add Staff
-            document.getElementById('staffEmail').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addStaff();
+            if (!approverName || !approverEmail) {
+                showMessage('Please enter your name and email.', 'error');
+                return;
+            }
+            
+            updateRequestStatus('approved', approverName, approverEmail, comments);
+        }
+        
+        function rejectRequest() {
+            const approverName = document.getElementById('approverName').value.trim();
+            const approverEmail = document.getElementById('approverEmail').value.trim();
+            const comments = document.getElementById('comments').value.trim();
+            
+            if (!approverName || !approverEmail) {
+                showMessage('Please enter your name and email.', 'error');
+                return;
+            }
+            
+            if (!comments) {
+                if (!confirm('Are you sure you want to reject without adding comments?')) {
+                    return;
                 }
-            });
+            }
             
-            // Focus on email input
-            document.getElementById('staffEmail').focus();
-        });
+            updateRequestStatus('rejected', approverName, approverEmail, comments);
+        }
+        
+        function updateRequestStatus(status, approverName, approverEmail, comments) {
+            try {
+                // Get all requests
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const requestIndex = allRequests.findIndex(req => req.id === requestId);
+                
+                if (requestIndex === -1) {
+                    showMessage('Request not found.', 'error');
+                    return;
+                }
+                
+                // Update request
+                allRequests[requestIndex].status = status;
+                allRequests[requestIndex].approver = approverName;
+                allRequests[requestIndex].approverEmail = approverEmail;
+                allRequests[requestIndex].comments = comments;
+                allRequests[requestIndex].approvalDate = new Date().toISOString();
+                
+                // Save back to localStorage
+                localStorage.setItem('opm_requests', JSON.stringify(allRequests));
+                
+                // Show success message
+                const action = status === 'approved' ? 'approved' : 'rejected';
+                showMessage(`Request ${action} successfully!`, 'success');
+                
+                // Hide approval section
+                hideApprovalSection();
+                
+                // Reload request details
+                setTimeout(() => {
+                    loadRequest();
+                }, 1000);
+                
+            } catch (error) {
+                showMessage('Error updating request: ' + error.message, 'error');
+            }
+        }
+        
+        function hideApprovalSection() {
+            document.getElementById('approverSection').style.display = 'none';
+            document.getElementById('actionButtons').style.display = 'none';
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Load request when page loads
+        window.addEventListener('DOMContentLoaded', loadRequest);
     </script>
 </body>
 </html>
