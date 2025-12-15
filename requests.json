@@ -1,0 +1,36 @@
+[
+  {
+    "id": "REQ-20241215-1234",
+    "staffEmail": "opix23@gmail.com",
+    "staff": {
+      "id": "146",
+      "firstname": "Anthony",
+      "lastname": "Ijalla",
+      "email": "opix23@gmail.com",
+      "title": "Registration Volunteer",
+      "settlement": "Kampala"
+    },
+    "system": "progres",
+    "status": "pending",
+    "timestamp": "2024-12-15T09:45:30Z",
+    "requestingOfficer": "Doreen Kasangaki"
+  },
+  {
+    "id": "REQ-20241215-1235",
+    "staffEmail": "komakech2023@gmail.com",
+    "staff": {
+      "id": "147",
+      "firstname": "Emmanuel",
+      "lastname": "Komakech",
+      "email": "komakech2023@gmail.com",
+      "title": "Registration Volunteer",
+      "settlement": "Adjumani"
+    },
+    "system": "finance",
+    "status": "approved",
+    "timestamp": "2024-12-14T14:20:15Z",
+    "requestingOfficer": "Eunice Prossy Akello",
+    "approver": "ICT Manager",
+    "approvalDate": "2024-12-15T10:00:00Z"
+  }
+]

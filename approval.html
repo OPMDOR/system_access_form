@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Request - OPM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .approval-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .request-id {
+            background: #f0f4ff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #4361ee;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+        
+        .requests-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .requests-table th {
+            background: #4361ee;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .requests-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .action-column {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .approve-btn {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .reject-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .approver-section {
+            background: #fff8e1;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 4px solid #ffb300;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .batch-actions {
+            background: #f8fff8;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 40px 0;
+            border: 2px solid #4caf50;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            padding: 16px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="approval-card">
+            <div class="header">
+                <div class="request-id" id="requestIdDisplay">Request ID: Loading...</div>
+                <h1>System Access Request Approval</h1>
+                <div id="statusDisplay"></div>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <div id="requestsContainer">
+                <!-- Requests will be loaded here -->
+            </div>
+            
+            <div class="approver-section">
+                <h3><i class="fas fa-user-tie"></i> Approver Information</h3>
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" id="approverName" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Your Email *</label>
+                    <input type="email" id="approverEmail" placeholder="Enter your email">
+                </div>
+            </div>
+            
+            <div class="batch-actions">
+                <button onclick="submitDecisions()" class="submit-btn">
+                    <i class="fas fa-check-circle"></i> Submit Decisions
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get request ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestId = urlParams.get('id');
+        
+        if (!requestId) {
+            window.location.href = 'index.html';
+        }
+        
+        // Display request ID
+        document.getElementById('requestIdDisplay').textContent = `Request ID: ${requestId}`;
+        
+        // Load request data
+        async function loadRequest() {
+            try {
+                // In a real app, you would fetch from GitHub API
+                // For now, we'll use localStorage
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const requests = allRequests.filter(req => req.id === requestId);
+                
+                if (requests.length === 0) {
+                    showMessage('Request not found.', 'error');
+                    return;
+                }
+                
+                displayRequests(requests);
+                
+            } catch (error) {
+                showMessage('Error loading request: ' + error.message, 'error');
+            }
+        }
+        
+        function displayRequests(requests) {
+            const container = document.getElementById('requestsContainer');
+            
+            if (requests[0].status !== 'pending') {
+                // Show read-only view for already processed requests
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h3 style="color: #666;">This request has already been ${requests[0].status}</h3>
+                        <p>Processed on: ${requests[0].approvalDate || 'Unknown date'}</p>
+                        <button onclick="window.history.back()" 
+                                style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                            Go Back
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <table class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>Staff Member</th>
+                            <th>Position</th>
+                            <th>System</th>
+                            <th>Access Rights</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            requests.forEach((request, index) => {
+                html += `
+                    <tr>
+                        <td>
+                            <strong>${request.staff.firstname} ${request.staff.lastname}</strong><br>
+                            <small>${request.staff.email}</small>
+                        </td>
+                        <td>${request.staff.title}</td>
+                        <td>${request.system}</td>
+                        <td>${request.accessRights}</td>
+                        <td>${request.duration}</td>
+                        <td>
+                            <div class="action-column">
+                                <button onclick="selectAction(${index}, 'approve')" class="action-btn approve-btn">
+                                    Approve
+                                </button>
+                                <button onclick="selectAction(${index}, 'reject')" class="action-btn reject-btn">
+                                    Reject
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Store decisions
+        const decisions = {};
+        
+        function selectAction(index, action) {
+            decisions[index] = action;
+            
+            // Update button styles
+            const row = document.querySelectorAll('tbody tr')[index];
+            const buttons = row.querySelectorAll('.action-btn');
+            
+            buttons.forEach(btn => {
+                btn.style.opacity = '0.6';
+            });
+            
+            if (action === 'approve') {
+                buttons[0].style.opacity = '1';
+                buttons[0].style.boxShadow = '0 0 0 2px #4CAF50';
+            } else {
+                buttons[1].style.opacity = '1';
+                buttons[1].style.boxShadow = '0 0 0 2px #e74c3c';
+            }
+        }
+        
+        async function submitDecisions() {
+            const approverName = document.getElementById('approverName').value.trim();
+            const approverEmail = document.getElementById('approverEmail').value.trim();
+            
+            if (!approverName || !approverEmail) {
+                showMessage('Please enter your name and email.', 'error');
+                return;
+            }
+            
+            if (Object.keys(decisions).length === 0) {
+                showMessage('Please select approve or reject for at least one request.', 'error');
+                return;
+            }
+            
+            try {
+                // Update requests
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                
+                Object.keys(decisions).forEach(index => {
+                    const requestIndex = allRequests.findIndex(req => req.id === requestId);
+                    if (requestIndex !== -1) {
+                        allRequests[requestIndex].status = decisions[index];
+                        allRequests[requestIndex].approvalDate = new Date().toISOString();
+                        allRequests[requestIndex].approver = approverName;
+                        allRequests[requestIndex].approverEmail = approverEmail;
+                    }
+                });
+                
+                // Save updated requests
+                localStorage.setItem('opm_requests', JSON.stringify(allRequests));
+                
+                showMessage('Decisions submitted successfully!', 'success');
+                
+                // Reload to show updated status
+                setTimeout(() => {
+                    loadRequest();
+                }, 2000);
+                
+            } catch (error) {
+                showMessage('Error submitting decisions: ' + error.message, 'error');
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Load request on page load
+        window.addEventListener('DOMContentLoaded', loadRequest);
+    </script>
+</body>
+</html>

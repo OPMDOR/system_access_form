@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access Request - OPM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px 15px 0 0;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        label.required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .staff-search {
+            position: relative;
+        }
+        
+        .suggestions-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .suggestion-item:hover {
+            background: #f0f4ff;
+        }
+        
+        .staff-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .staff-details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .detail-value {
+            color: #333;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .form-actions {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .error { background: #ffeaea; color: #e74c3c; border-left: 4px solid #e74c3c; }
+        .success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4CAF50; }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .staff-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with user info -->
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 style="margin: 0; color: #333;" id="userName">User</h3>
+                    <p style="margin: 5px 0 0 0; color: #666;" id="userEmail">user@example.com</p>
+                </div>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="reports.html" class="nav-btn">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <button onclick="logout()" class="nav-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Form -->
+        <div class="form-card">
+            <h1><i class="fas fa-key"></i> System Access Request</h1>
+            
+            <div id="errorMessage" class="message error"></div>
+            <div id="successMessage" class="message success"></div>
+            
+            <form id="accessRequestForm">
+                <div class="form-grid">
+                    <!-- Staff Search -->
+                    <div class="form-group full-width">
+                        <label for="staffEmail" class="required">Staff Email Address</label>
+                        <div class="staff-search">
+                            <input type="email" id="staffEmail" 
+                                   placeholder="Enter staff email to auto-fill details..." required>
+                            <div id="suggestions" class="suggestions-box"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Auto-populated Staff Details -->
+                    <div id="staffDetails" class="staff-details">
+                        <h3 style="margin-top: 0; color: #4361ee;">
+                            <i class="fas fa-user-check"></i> Staff Details
+                        </h3>
+                        <div class="staff-details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">Full Name</div>
+                                <div class="detail-value" id="staffFullName">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Staff ID</div>
+                                <div class="detail-value" id="staffId">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Position</div>
+                                <div class="detail-value" id="staffTitle">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Settlement</div>
+                                <div class="detail-value" id="staffSettlement">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Department</div>
+                                <div class="detail-value" id="staffDepartment">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Details -->
+                    <div class="form-group">
+                        <label for="system" class="required">System Required</label>
+                        <select id="system" required>
+                            <option value="">Select system</option>
+                            <option value="progres">proGres</option>
+                            <option value="finance">Financial System</option>
+                            <option value="procurement">Procurement</option>
+                            <option value="hris">HRIS</option>
+                            <option value="email">Email</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="required">Access Rights</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="access" value="view"> View Only
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="access" value="data_entry"> Data Entry
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="access" value="edit"> Edit Rights
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="access" value="admin"> Administrator
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="duration" class="required">Access Duration</label>
+                        <select id="duration" required>
+                            <option value="">Select duration</option>
+                            <option value="30_days">30 Days</option>
+                            <option value="90_days">90 Days</option>
+                            <option value="permanent">Permanent</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="justification" class="required">Justification</label>
+                        <textarea id="justification" rows="4" required
+                                  placeholder="Explain why access is needed..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <div id="loading" class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Submitting request...</p>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Check if user is authorized
+        const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
+        if (!userData.authorized) {
+            window.location.href = 'index.html';
+        }
+        
+        // Display user info
+        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('userEmail').textContent = userData.email;
+        
+        // Staff database (loaded from CSV)
+        let staffDatabase = [];
+        
+        // Load staff database from CSV
+        async function loadStaffDatabase() {
+            try {
+                const response = await fetch('staff_database.csv');
+                const csvText = await response.text();
+                
+                // Parse CSV
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim());
+                
+                staffDatabase = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        const values = lines[i].split(',');
+                        const staff = {};
+                        headers.forEach((header, index) => {
+                            staff[header.toLowerCase()] = values[index] ? values[index].trim() : '';
+                        });
+                        staffDatabase.push(staff);
+                    }
+                }
+                
+                console.log('Loaded', staffDatabase.length, 'staff records');
+            } catch (error) {
+                console.error('Error loading staff database:', error);
+                // Load sample data if CSV fails
+                staffDatabase = [
+                    {
+                        id: "146",
+                        firstname: "Anthony",
+                        middlename: "Opio",
+                        lastname: "Ijalla",
+                        email: "opix23@gmail.com",
+                        title: "Registration Volunteer",
+                        settlement: "Kampala",
+                        department: "Registration"
+                    },
+                    {
+                        id: "147",
+                        firstname: "Emmanuel",
+                        middlename: "",
+                        lastname: "Komakech",
+                        email: "komakech2023@gmail.com",
+                        title: "Registration Volunteer",
+                        settlement: "Adjumani",
+                        department: "Registration"
+                    }
+                ];
+            }
+        }
+        
+        // Search staff by email
+        function searchStaff(email) {
+            const normalizedEmail = email.toLowerCase().trim();
+            
+            // First, try exact match
+            const exactMatch = staffDatabase.find(staff => 
+                staff.email.toLowerCase() === normalizedEmail
+            );
+            
+            if (exactMatch) {
+                displayStaffDetails(exactMatch);
+                return;
+            }
+            
+            // Show suggestions for partial matches
+            const suggestions = staffDatabase.filter(staff => 
+                staff.email.toLowerCase().includes(normalizedEmail) ||
+                `${staff.firstname} ${staff.lastname}`.toLowerCase().includes(normalizedEmail)
+            );
+            
+            displaySuggestions(suggestions);
+        }
+        
+        function displayStaffDetails(staff) {
+            document.getElementById('staffFullName').textContent = 
+                `${staff.firstname} ${staff.lastname}`.trim();
+            document.getElementById('staffId').textContent = staff.id;
+            document.getElementById('staffTitle').textContent = staff.title;
+            document.getElementById('staffSettlement').textContent = staff.settlement;
+            document.getElementById('staffDepartment').textContent = staff.department;
+            
+            document.getElementById('staffDetails').style.display = 'block';
+            document.getElementById('suggestions').style.display = 'none';
+        }
+        
+        function displaySuggestions(staffList) {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            
+            if (staffList.length === 0) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+            
+            staffList.forEach(staff => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = `
+                    <strong>${staff.firstname} ${staff.lastname}</strong><br>
+                    <small>${staff.email} • ${staff.title}</small>
+                `;
+                div.onclick = () => {
+                    document.getElementById('staffEmail').value = staff.email;
+                    displayStaffDetails(staff);
+                };
+                suggestionsBox.appendChild(div);
+            });
+            
+            suggestionsBox.style.display = 'block';
+        }
+        
+        // Handle form submission
+        document.getElementById('accessRequestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Get form data
+            const formData = {
+                staffEmail: document.getElementById('staffEmail').value.trim(),
+                system: document.getElementById('system').value,
+                justification: document.getElementById('justification').value.trim(),
+                duration: document.getElementById('duration').value,
+                requestingOfficer: userData.name,
+                requestingOfficerEmail: userData.email,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get selected access rights
+            const accessCheckboxes = document.querySelectorAll('input[name="access"]:checked');
+            formData.accessRights = Array.from(accessCheckboxes).map(cb => cb.value).join(', ');
+            
+            // Validate
+            if (!validateForm(formData)) {
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+            
+            try {
+                // Save request (using GitHub as database)
+                const result = await saveRequest(formData);
+                
+                // Show success
+                document.getElementById('loading').style.display = 'none';
+                showSuccess(result);
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                showError('Error saving request: ' + error.message);
+            }
+        });
+        
+        function validateForm(data) {
+            if (!data.staffEmail) {
+                showError('Please enter staff email.');
+                return false;
+            }
+            
+            if (!data.system) {
+                showError('Please select a system.');
+                return false;
+            }
+            
+            if (!data.accessRights) {
+                showError('Please select access rights.');
+                return false;
+            }
+            
+            if (!data.duration) {
+                showError('Please select access duration.');
+                return false;
+            }
+            
+            if (!data.justification) {
+                showError('Please provide justification.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Save request using GitHub API
+        async function saveRequest(data) {
+            // Generate unique request ID
+            const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+            
+            // Get staff details
+            const staff = staffDatabase.find(s => s.email === data.staffEmail);
+            
+            // Create request object
+            const request = {
+                id: requestId,
+                ...data,
+                staff: staff || {},
+                status: 'pending',
+                approvalDate: null,
+                rejectionReason: null,
+                approver: null
+            };
+            
+            // In a real implementation, you would save to GitHub via API
+            // For now, we'll simulate saving to localStorage
+            
+            // Get existing requests
+            const existingRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+            
+            // Add new request
+            existingRequests.push(request);
+            
+            // Save back to localStorage
+            localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
+            
+            // Create approval link
+            const approvalLink = `${window.location.origin}/approval.html?id=${requestId}`;
+            
+            return {
+                success: true,
+                requestId: requestId,
+                staffName: staff ? `${staff.firstname} ${staff.lastname}` : 'Unknown Staff',
+                approvalLink: approvalLink,
+                timestamp: new Date().toLocaleString()
+            };
+        }
+        
+        function showSuccess(result) {
+            // Display success message with approval link
+            document.getElementById('successMessage').innerHTML = `
+                <h3>Request Submitted Successfully!</h3>
+                <p><strong>Request ID:</strong> ${result.requestId}</p>
+                <p><strong>Staff:</strong> ${result.staffName}</p>
+                <p><strong>Approval Link:</strong></p>
+                <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin: 10px 0;">
+                    <input type="text" value="${result.approvalLink}" readonly 
+                           style="width: 100%; border: none; background: transparent;">
+                </div>
+                <button onclick="copyToClipboard('${result.approvalLink}')" 
+                        style="background: #4361ee; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                    Copy Link
+                </button>
+                <button onclick="window.location.reload()" 
+                        style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-left: 10px;">
+                    New Request
+                </button>
+            `;
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+        
+        function logout() {
+            localStorage.removeItem('opm_user');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadStaffDatabase();
+            
+            // Setup email search
+            document.getElementById('staffEmail').addEventListener('input', function(e) {
+                if (e.target.value.length >= 2) {
+                    searchStaff(e.target.value);
+                } else {
+                    document.getElementById('suggestions').style.display = 'none';
+                    document.getElementById('staffDetails').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPM System Access Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 75px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 80px;
+            color: #4361ee;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .auth-section {
+            margin: 30px 0;
+        }
+        
+        .email-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+        }
+        
+        .authorized-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .authorized-list h4 {
+            color: #4361ee;
+            margin-top: 0;
+        }
+        
+        .authorized-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        .authorized-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .error {
+            color: #e74c3c;
+            background: #ffeaea;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-card">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            
+            <h1>OPM System Access Portal</h1>
+            <p class="subtitle">Office of the Prime Minister - Uganda</p>
+            
+            <div id="errorMessage" class="error"></div>
+            
+            <div class="auth-section">
+                <p><strong>Enter your official email address:</strong></p>
+                <input type="email" id="userEmail" class="email-input" 
+                       placeholder="your.name@opm.go.ug">
+                
+                <button onclick="checkAuthorization()" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Continue
+                </button>
+            </div>
+            
+            <div class="authorized-list">
+                <h4><i class="fas fa-user-check"></i> Authorized Personnel</h4>
+                <p>Only these officers can access the system:</p>
+                <ul>
+                    <li>Doreen Kasangaki <span style="color: #666;">kasangakidoryn@gmail.com</span></li>
+                    <li>Eunice Prossy Akello <span style="color: #666;">aprossyeunice@gmail.com</span></li>
+                    <li>Joshua Kalungi <span style="color: #666;">joshuakalungi101@gmail.com</span></li>
+                    <li>Asiku Mahfuz <span style="color: #666;">asikumahfuzu@gmail.com</span></li>
+                    <li>Noel Ikwap <span style="color: #666;">noelikwap@gmail.com</span></li>
+                    <li>Anita Nakazzi <span style="color: #666;">anitahnakkazi@gmail.com</span></li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 30px; color: #666; font-size: 0.9em;">
+                <p><i class="fas fa-info-circle"></i> For approval officers: Use direct approval links provided by requestors.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Strict authorization list
+        const AUTHORIZED_USERS = {
+            "kasangakidoryn@gmail.com": "Doreen Kasangaki",
+            "aprossyeunice@gmail.com": "Eunice Prossy Akello",
+            "joshuakalungi101@gmail.com": "Joshua Kalungi",
+            "asikumahfuzu@gmail.com": "Asiku Mahfuz",
+            "noelikwap@gmail.com": "Noel Ikwap",
+            "anitahnakkazi@gmail.com": "Anita Nakazzi"
+        };
+        
+        function checkAuthorization() {
+            const email = document.getElementById('userEmail').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Clear previous error
+            errorDiv.style.display = 'none';
+            
+            if (!email) {
+                showError('Please enter your email address.');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            // Check if authorized
+            if (AUTHORIZED_USERS[email]) {
+                // Store user info in localStorage
+                localStorage.setItem('opm_user', JSON.stringify({
+                    email: email,
+                    name: AUTHORIZED_USERS[email],
+                    authorized: true,
+                    timestamp: new Date().getTime()
+                }));
+                
+                // Redirect to main form
+                window.location.href = 'form.html';
+            } else {
+                showError('Access denied. Your email is not authorized to use this system.');
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('userEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAuthorization();
+            }
+        });
+        
+        // Auto-focus on input
+        window.onload = function() {
+            document.getElementById('userEmail').focus();
+        };
+    </script>
+</body>
+</html>
