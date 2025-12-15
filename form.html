@@ -5,8 +5,554 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Access Request - OPM</title>
     <style>
-        /* All the CSS styles from the previous form.html */
-        /* ... [Keep all the same CSS] ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info h3 {
+            color: #1a237e;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn, .logout-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .nav-btn {
+            background: #1a237e;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            background: #283593;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h1 {
+            color: #1a237e;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            color: #1a237e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group label.required::after {
+            content: " *";
+            color: #f44336;
+        }
+
+        /* Email Input Group */
+        .email-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        .add-staff-btn {
+            padding: 12px 24px;
+            background: #00b0ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-staff-btn:hover {
+            background: #0091ea;
+            transform: translateY(-2px);
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Staff List */
+        .staff-list {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .staff-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .staff-list-header h4 {
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clear-all-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-all-btn:hover {
+            background: #d32f2f;
+        }
+
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .staff-table th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #eee;
+        }
+
+        .staff-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .staff-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .remove-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #f57c00;
+        }
+
+        /* Systems Grid */
+        .systems-grid, .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .system-option, .access-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .system-option:hover, .access-option:hover {
+            border-color: #1a237e;
+            background: #f5f7ff;
+        }
+
+        .system-option.selected, .access-option.selected {
+            border-color: #1a237e;
+            background: #e8eaf6;
+        }
+
+        .system-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .access-label {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        /* Date Inputs */
+        .date-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .date-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-group input[type="date"] {
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .date-group input[type="date"]:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        /* Textarea */
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #283593;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 35, 126, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+
+        .message.error i {
+            margin-right: 10px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: #1a237e;
+            color: white;
+            padding: 25px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-body p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .modal-body strong {
+            color: #1a237e;
+            min-width: 150px;
+            display: inline-block;
+        }
+
+        /* Copy Link Container */
+        .copy-link-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .copy-link-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f9f9f9;
+        }
+
+        .copy-btn {
+            padding: 12px 24px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #1565c0;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-btn:first-child {
+            background: #1a237e;
+            color: white;
+        }
+
+        .modal-btn:first-child:hover {
+            background: #283593;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .form-card {
+                padding: 20px;
+            }
+            
+            .email-input-group {
+                flex-direction: column;
+            }
+            
+            .systems-grid, .access-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .date-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .staff-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -188,10 +734,14 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-        // Staff database - All staff from your data
+        // Staff database - Sample staff data (replace with your actual data)
         const staffDatabase = [
-            // ... [All your staff data] ...
-            // Use the complete staff database from previous response
+            { "First Name": "John", "Last Name": "Smith", "Email": "john.smith@opm.go.ug", "Title/Position": "ICT Officer" },
+            { "First Name": "Sarah", "Last Name": "Johnson", "Email": "sarah.j@opm.go.ug", "Title/Position": "HR Manager" },
+            { "First Name": "Michael", "Last Name": "Brown", "Email": "m.brown@opm.go.ug", "Title/Position": "Finance Officer" },
+            { "First Name": "Grace", "Last Name": "Williams", "Email": "grace.w@opm.go.ug", "Title/Position": "Program Coordinator" },
+            { "First Name": "David", "Last Name": "Miller", "Email": "d.miller@opm.go.ug", "Title/Position": "Admin Assistant" },
+            { "First Name": "Linda", "Last Name": "Davis", "Email": "linda.d@opm.go.ug", "Title/Position": "Data Analyst" }
         ];
         
         // Systems with checkboxes
@@ -226,14 +776,14 @@
                 div.innerHTML = `
                     <input type="checkbox" class="system-checkbox" id="system_${system.id}" 
                            value="${system.id}" style="display: none;">
-                    <div class="system-checkbox" style="width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 4px; position: relative;">
-                        <div class="checkmark" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #4361ee; font-size: 14px;">
+                    <div class="checkmark-box" style="width: 24px; height: 24px; border: 2px solid #ddd; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div class="checkmark" style="display: none; color: #4361ee; font-size: 16px;">
                             <i class="fas fa-check"></i>
                         </div>
                     </div>
-                    <div>
+                    <div style="flex: 1;">
                         <div class="system-label">${system.name}</div>
-                        <div style="color: #666; font-size: 0.85em; margin-top: 2px;">${system.description}</div>
+                        <div style="color: #666; font-size: 0.85em; margin-top: 4px;">${system.description}</div>
                     </div>
                 `;
                 
@@ -281,46 +831,38 @@
                 div.className = 'access-option';
                 div.innerHTML = `
                     <input type="checkbox" class="access-checkbox" id="access_${access.id}" 
-                           value="${access.id}">
-                    <span class="access-label">${access.name}</span>
+                           value="${access.id}" style="display: none;">
+                    <div style="width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div class="access-checkmark" style="display: none; color: #4361ee; font-size: 14px;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <span class="access-label">${access.name}</span>
+                        <div style="color: #666; font-size: 0.85em; margin-top: 2px;">${access.description}</div>
+                    </div>
                 `;
                 
                 div.addEventListener('click', () => {
                     const checkbox = div.querySelector('input[type="checkbox"]');
+                    const checkmark = div.querySelector('.access-checkmark');
                     checkbox.checked = !checkbox.checked;
                     
                     if (checkbox.checked) {
                         div.classList.add('selected');
+                        checkmark.style.display = 'block';
                         if (!selectedAccessRights.includes(access.id)) {
                             selectedAccessRights.push(access.id);
                         }
                     } else {
                         div.classList.remove('selected');
+                        checkmark.style.display = 'none';
                         const index = selectedAccessRights.indexOf(access.id);
                         if (index > -1) {
                             selectedAccessRights.splice(index, 1);
                         }
                     }
                     
-                    updateSubmitButton();
-                    checkbox.dispatchEvent(new Event('change'));
-                });
-                
-                // Also handle checkbox click
-                const checkbox = div.querySelector('input[type="checkbox"]');
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.checked) {
-                        div.classList.add('selected');
-                        if (!selectedAccessRights.includes(access.id)) {
-                            selectedAccessRights.push(access.id);
-                        }
-                    } else {
-                        div.classList.remove('selected');
-                        const index = selectedAccessRights.indexOf(access.id);
-                        if (index > -1) {
-                            selectedAccessRights.splice(index, 1);
-                        }
-                    }
                     updateSubmitButton();
                 });
                 
@@ -342,10 +884,13 @@
                 return `${year}-${month}-${day}`;
             };
             
-            document.getElementById('startDate').value = formatDate(today);
-            document.getElementById('endDate').value = formatDate(oneYearLater);
-            document.getElementById('endDate').min = formatDate(today);
-            document.getElementById('endDate').max = formatDate(oneYearLater);
+            const todayStr = formatDate(today);
+            const oneYearLaterStr = formatDate(oneYearLater);
+            
+            document.getElementById('startDate').value = todayStr;
+            document.getElementById('endDate').value = oneYearLaterStr;
+            document.getElementById('endDate').min = todayStr;
+            document.getElementById('endDate').max = oneYearLaterStr;
         }
         
         // Update UI with staff count
@@ -442,14 +987,14 @@
             // Add staff to table
             selectedStaff.forEach((staff, index) => {
                 const row = document.createElement('tr');
-                const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
+                const fullName = `${staff["First Name"]} ${staff["Last Name"]}`;
                 row.innerHTML = `
                     <td style="font-weight: 600; color: #4361ee;">${index + 1}</td>
                     <td><strong>${fullName}</strong></td>
                     <td>${staff["Email"]}</td>
                     <td>${staff["Title/Position"]}</td>
                     <td>
-                        <button onclick="removeStaff(${index})" class="remove-btn">
+                        <button type="button" onclick="removeStaff(${index})" class="remove-btn">
                             <i class="fas fa-times"></i> Remove
                         </button>
                     </td>
@@ -597,7 +1142,7 @@
             document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
             
             // Show modal
-            document.getElementById('successModal').style.display = 'block';
+            document.getElementById('successModal').style.display = 'flex';
         }
         
         function copyApprovalLink() {
@@ -656,7 +1201,9 @@
             document.querySelectorAll('.access-option').forEach(opt => {
                 opt.classList.remove('selected');
                 const checkbox = opt.querySelector('input[type="checkbox"]');
+                const checkmark = opt.querySelector('.access-checkmark');
                 if (checkbox) checkbox.checked = false;
+                if (checkmark) checkmark.style.display = 'none';
             });
             
             setDefaultDates();
