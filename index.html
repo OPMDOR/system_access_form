@@ -3,103 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPM System Access Portal</title>
+    <title>OPM System Access Portal | Office of the Prime Minister</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        * {
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .login-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        
-        .auth-section {
-            margin: 30px 0;
-        }
-        
-        .email-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            text-align: center;
+            padding: 0;
             box-sizing: border-box;
         }
-        
+
+        :root {
+            --primary: #1a237e;
+            --primary-light: #534bae;
+            --primary-dark: #000051;
+            --secondary: #00b0ff;
+            --accent: #ff4081;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --error: #f44336;
+            --light: #f8f9fa;
+            --dark: #212121;
+            --gray: #757575;
+            --gray-light: #f5f5f5;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(0);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: white;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: white;
+            color: var(--dark);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(0, 176, 255, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #9e9e9e;
+        }
+
         .btn {
-            background: #4361ee;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             border: none;
-            padding: 14px 40px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
+
         .btn:hover {
-            background: #3a56d4;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
         }
-        
-        .error {
-            color: #e74c3c;
-            background: #ffeaea;
-            padding: 10px;
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn i {
+            font-size: 18px;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff5252 0%, #f44336 100%);
+            color: white;
+            padding: 16px;
             border-radius: 8px;
-            margin: 15px 0;
+            margin-bottom: 24px;
             display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .error-message i {
+            font-size: 20px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+            
+            .login-card {
+                border-radius: 0;
+            }
+            
+            .card-header {
+                padding: 30px 20px;
+            }
+            
+            .card-body {
+                padding: 30px 20px;
+            }
+            
+            .card-header h1 {
+                font-size: 24px;
+            }
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-card">
-            <h1>OPM System Access Portal</h1>
-            <p class="subtitle">Office of the Prime Minister - Uganda</p>
+            <div class="card-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1>OPM System Access Portal</h1>
+                <p>Office of the Prime Minister - Uganda</p>
+            </div>
             
-            <div id="errorMessage" class="error"></div>
-            
-            <div class="auth-section">
-                <p><strong>Enter your official email address:</strong></p>
-                <input type="email" id="userEmail" class="email-input" 
-                       placeholder="your.name@opm.go.ug">
+            <div class="card-body">
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText">Please enter a valid email address</span>
+                </div>
                 
-                <button onclick="checkAuthorization()" class="btn">Continue</button>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="userEmail">Official Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="userEmail" class="form-control" 
+                                   placeholder="name@opm.go.ug" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Continue to Portal</span>
+                        <i class="fas fa-spinner loading" id="loadingIcon"></i>
+                    </button>
+                </form>
+                
+                <div class="footer-text">
+                    <p>Secure access for authorized personnel only</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         // Strict authorization list
         const AUTHORIZED_USERS = {
@@ -111,59 +347,132 @@
             "anitahnakkazi@gmail.com": "Anita Nakazzi"
         };
         
-        function checkAuthorization() {
-            const email = document.getElementById('userEmail').value.trim().toLowerCase();
-            const errorDiv = document.getElementById('errorMessage');
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const userEmail = document.getElementById('userEmail');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const loginBtn = document.getElementById('loginBtn');
+        const loadingIcon = document.getElementById('loadingIcon');
+        
+        // Show error message
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Handle form submission
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = userEmail.value.trim().toLowerCase();
             
             // Clear previous error
-            errorDiv.style.display = 'none';
+            errorMessage.classList.remove('show');
             
+            // Validation
             if (!email) {
-                showError('Please enter your email address.');
+                showError('Please enter your email address');
+                userEmail.focus();
                 return;
             }
             
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address.');
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                userEmail.focus();
                 return;
             }
             
-            // Check if authorized
+            // Show loading state
+            loginBtn.disabled = true;
+            loadingIcon.classList.add('show');
+            
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Check authorization
             if (AUTHORIZED_USERS[email]) {
-                // Store user info in localStorage
+                // Store user info
                 localStorage.setItem('opm_user', JSON.stringify({
                     email: email,
                     name: AUTHORIZED_USERS[email],
                     authorized: true,
-                    timestamp: new Date().getTime()
+                    timestamp: new Date().getTime(),
+                    lastLogin: new Date().toISOString()
                 }));
                 
-                // Redirect to main form
-                window.location.href = 'form.html';
+                // Add success animation to button
+                loginBtn.innerHTML = '<i class="fas fa-check"></i><span>Access Granted!</span>';
+                loginBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+                
             } else {
-                showError('Access denied. Your email is not authorized to use this system.');
-            }
-        }
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-        
-        // Allow Enter key to submit
-        document.getElementById('userEmail').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkAuthorization();
+                // Show error
+                showError('Access denied. This email is not authorized to use this system.');
+                loginBtn.disabled = false;
+                loadingIcon.classList.remove('show');
+                
+                // Add shake animation to form
+                loginForm.classList.add('shake');
+                setTimeout(() => {
+                    loginForm.classList.remove('shake');
+                }, 500);
             }
         });
         
-        // Auto-focus on input
-        window.onload = function() {
-            document.getElementById('userEmail').focus();
-        };
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            .shake {
+                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            }
+            
+            @keyframes shake {
+                10%, 90% { transform: translateX(-1px); }
+                20%, 80% { transform: translateX(2px); }
+                30%, 50%, 70% { transform: translateX(-3px); }
+                40%, 60% { transform: translateX(3px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Auto-focus on email input
+        window.addEventListener('DOMContentLoaded', () => {
+            userEmail.focus();
+            
+            // Add pulsing animation to button
+            setInterval(() => {
+                loginBtn.style.transform = 'translateY(-1px)';
+                setTimeout(() => {
+                    loginBtn.style.transform = 'translateY(0)';
+                }, 300);
+            }, 3000);
+        });
+        
+        // Allow Enter key to submit
+        userEmail.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginForm.requestSubmit();
+            }
+        });
+        
+        // Clear error when user starts typing
+        userEmail.addEventListener('input', function() {
+            errorMessage.classList.remove('show');
+        });
     </script>
 </body>
 </html>
