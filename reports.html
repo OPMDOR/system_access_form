@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports & Statistics - OPM System Access</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard - OPM System Access</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,38 +14,30 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             width: 100%;
             margin: 0 auto;
         }
         
-        .header-card {
+        .header {
             background: white;
-            border-radius: 15px 15px 0 0;
+            border-radius: 15px;
             padding: 25px 40px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0;
         }
         
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .user-info h2 {
+            margin: 0;
+            color: #333;
         }
         
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
+        .user-info p {
+            margin: 5px 0 0 0;
+            color: #666;
         }
         
         .nav-buttons {
@@ -57,190 +46,72 @@
         }
         
         .nav-btn {
-            background: #f8f9fa;
-            color: #333;
-            border: 1px solid #ddd;
+            background: #4361ee;
+            color: white;
+            border: none;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            text-decoration: none;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            text-decoration: none;
         }
         
-        .reports-card {
-            background: white;
-            border-radius: 0 0 15px 15px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            margin-bottom: 30px;
+        .nav-btn:hover {
+            background: #3a56d4;
         }
         
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        /* Statistics Cards */
-        .stats-grid {
+        .dashboard-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.3s;
-            border-left: 4px solid #4361ee;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .stat-card.pending { border-left-color: #ffb300; }
-        .stat-card.approved { border-left-color: #4CAF50; }
-        .stat-card.rejected { border-left-color: #e74c3c; }
-        
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #4361ee;
-            margin-bottom: 10px;
-        }
-        
-        .stat-card.pending .stat-number { color: #ffb300; }
-        .stat-card.approved .stat-number { color: #4CAF50; }
-        .stat-card.rejected .stat-number { color: #e74c3c; }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.95em;
-        }
-        
-        /* Charts Section */
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-        
-        .chart-container {
+        .card {
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
         }
         
-        .chart-title {
-            color: #333;
-            margin-bottom: 20px;
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #4361ee;
+            margin-top: 0;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        /* Filters Section */
-        .filters-section {
-            background: #fff8e1;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 40px 0;
-            border-left: 4px solid #ffb300;
+        .card .count {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0;
         }
         
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        .requests-table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
         
-        .filter-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-        }
-        
-        .filter-group select, .filter-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        
-        /* Export Section */
-        .export-section {
-            background: #f0f4ff;
-            border-radius: 10px;
-            padding: 40px;
-            margin: 40px 0;
-            text-align: center;
-        }
-        
-        .export-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .export-btn {
-            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-            color: white;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        
-        .export-btn.csv {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-        }
-        
-        .export-btn.excel {
-            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-        }
-        
-        .export-btn.print {
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-        }
-        
-        /* Data Table */
-        .data-table-container {
-            margin: 40px 0;
-            overflow-x: auto;
-        }
-        
-        .data-table {
+        .requests-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
         }
         
-        .data-table th {
+        .requests-table th {
             background: #4361ee;
             color: white;
             padding: 15px;
@@ -248,267 +119,156 @@
             font-weight: 600;
         }
         
-        .data-table td {
+        .requests-table td {
             padding: 15px;
             border-bottom: 1px solid #eee;
         }
         
-        .data-table tr:hover {
-            background: #f8f9fa;
+        .requests-table tr:hover {
+            background: #f8f9ff;
         }
         
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.85em;
+            font-size: 12px;
             font-weight: 600;
         }
         
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-approved { background: #d4edda; color: #155724; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
         
-        /* Loading and Messages */
-        .loading {
+        .action-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .action-btn:hover {
+            background: #3a56d4;
+        }
+        
+        .refresh-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .refresh-btn:hover {
+            background: #5a6268;
+        }
+        
+        .empty-state {
             text-align: center;
             padding: 40px;
-            display: none;
+            color: #666;
         }
         
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ddd;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
-        }
-        
-        .error { background: #ffeaea; color: #e74c3c; border-left: 4px solid #e74c3c; }
-        .success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4CAF50; }
         
         @media (max-width: 768px) {
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .export-buttons {
+            .header {
                 flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
             
-            .export-btn {
+            .nav-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .nav-btn {
                 width: 100%;
                 justify-content: center;
             }
             
-            .header-card {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
+            .requests-table {
+                display: block;
+                overflow-x: auto;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header with user info -->
-        <div class="header-card">
+        <!-- Header -->
+        <div class="header">
             <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div>
-                    <h3 style="margin: 0; color: #333;" id="userName">User</h3>
-                    <p style="margin: 5px 0 0 0; color: #666;" id="userEmail">user@example.com</p>
-                </div>
+                <h2><i class="fas fa-tachometer-alt"></i> OPM System Access Dashboard</h2>
+                <p>Welcome, <span id="userName">User</span> (<span id="userEmail">user@example.com</span>)</p>
             </div>
-            
             <div class="nav-buttons">
                 <a href="form.html" class="nav-btn">
-                    <i class="fas fa-plus-circle"></i> New Request
+                    <i class="fas fa-plus"></i> New Request
                 </a>
-                <a href="index.html" class="nav-btn">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <button onclick="logout()" class="nav-btn">
+                <button onclick="logout()" class="nav-btn" style="background: #e74c3c;">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
         </div>
         
-        <!-- Reports Main Card -->
-        <div class="reports-card">
-            <h1><i class="fas fa-chart-bar"></i> Reports & Statistics</h1>
-            
-            <div id="errorMessage" class="message error"></div>
-            <div id="successMessage" class="message success"></div>
-            
-            <!-- Statistics Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalRequests">0</div>
-                    <div class="stat-label">Total Requests</div>
-                </div>
-                
-                <div class="stat-card pending">
-                    <div class="stat-number" id="pendingRequests">0</div>
-                    <div class="stat-label">Pending Approval</div>
-                </div>
-                
-                <div class="stat-card approved">
-                    <div class="stat-number" id="approvedRequests">0</div>
-                    <div class="stat-label">Approved</div>
-                </div>
-                
-                <div class="stat-card rejected">
-                    <div class="stat-number" id="rejectedRequests">0</div>
-                    <div class="stat-label">Rejected</div>
-                </div>
+        <!-- Stats Cards -->
+        <div class="dashboard-cards">
+            <div class="card">
+                <h3><i class="fas fa-clock"></i> Pending Requests</h3>
+                <div class="count" id="pendingCount">0</div>
+                <p>Awaiting approval</p>
             </div>
             
-            <!-- Charts Section -->
-            <div class="charts-section">
-                <div class="chart-container">
-                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Requests by Status</h3>
-                    <canvas id="statusChart"></canvas>
-                </div>
-                
-                <div class="chart-container">
-                    <h3 class="chart-title"><i class="fas fa-server"></i> Requests by System</h3>
-                    <canvas id="systemChart"></canvas>
-                </div>
+            <div class="card">
+                <h3><i class="fas fa-check-circle"></i> Approved Requests</h3>
+                <div class="count" id="approvedCount">0</div>
+                <p>Successfully approved</p>
             </div>
             
-            <!-- Filters Section -->
-            <div class="filters-section">
-                <h3><i class="fas fa-filter"></i> Filter Data</h3>
-                <p>Filter requests by date range, status, or system:</p>
-                
-                <div class="filter-grid">
-                    <div class="filter-group">
-                        <label for="dateFrom">From Date</label>
-                        <input type="date" id="dateFrom" class="filter-input">
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="dateTo">To Date</label>
-                        <input type="date" id="dateTo" class="filter-input">
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="statusFilter">Status</label>
-                        <select id="statusFilter" class="filter-select">
-                            <option value="">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="systemFilter">System</label>
-                        <select id="systemFilter" class="filter-select">
-                            <option value="">All Systems</option>
-                            <option value="progres">proGres</option>
-                            <option value="finance">Financial System</option>
-                            <option value="procurement">Procurement</option>
-                            <option value="hris">HRIS</option>
-                            <option value="email">Email</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 20px; display: flex; gap: 15px;">
-                    <button onclick="applyFilters()" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Apply Filters
-                    </button>
-                    <button onclick="clearFilters()" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Clear Filters
-                    </button>
-                    <button onclick="refreshData()" class="btn btn-success">
-                        <i class="fas fa-sync-alt"></i> Refresh Data
-                    </button>
-                </div>
+            <div class="card">
+                <h3><i class="fas fa-times-circle"></i> Rejected Requests</h3>
+                <div class="count" id="rejectedCount">0</div>
+                <p>Requests rejected</p>
             </div>
             
-            <!-- Export Section -->
-            <div class="export-section">
-                <h3><i class="fas fa-download"></i> Export Data</h3>
-                <p>Download system access request data in various formats for reporting and analysis.</p>
-                
-                <div class="export-buttons">
-                    <button onclick="exportToCSV()" class="export-btn csv">
-                        <i class="fas fa-file-csv"></i> Download CSV
-                    </button>
-                    
-                    <button onclick="exportToExcel()" class="export-btn excel">
-                        <i class="fas fa-file-excel"></i> Download Excel
-                    </button>
-                    
-                    <button onclick="printReport()" class="export-btn print">
-                        <i class="fas fa-print"></i> Print Report
-                    </button>
-                    
-                    <button onclick="exportToJSON()" class="export-btn">
-                        <i class="fas fa-file-code"></i> Download JSON
-                    </button>
-                </div>
-                
-                <p style="color: #666; margin-top: 20px; font-size: 0.9em;">
-                    <i class="fas fa-info-circle"></i> CSV files can be opened in Excel, Google Sheets, or any spreadsheet software.
-                </p>
-            </div>
-            
-            <!-- Data Table -->
-            <div class="data-table-container">
-                <h3><i class="fas fa-table"></i> Recent Requests</h3>
-                <div id="loading" class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Loading data...</p>
-                </div>
-                
-                <table class="data-table" id="requestsTable">
-                    <thead>
-                        <tr>
-                            <th>Request ID</th>
-                            <th>Staff Name</th>
-                            <th>System</th>
-                            <th>Request Date</th>
-                            <th>Status</th>
-                            <th>Approver</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Data will be inserted here -->
-                    </tbody>
-                </table>
-                
-                <div style="margin-top: 20px; text-align: center;">
-                    <button onclick="loadMore()" id="loadMoreBtn" class="btn btn-outline-primary" style="display: none;">
-                        <i class="fas fa-chevron-down"></i> Load More
-                    </button>
-                    <p id="tableInfo" style="color: #666; margin-top: 10px;"></p>
-                </div>
+            <div class="card">
+                <h3><i class="fas fa-users"></i> Total Staff</h3>
+                <div class="count" id="totalStaff">0</div>
+                <p>Staff with access requests</p>
             </div>
         </div>
+        
+        <!-- Requests Table -->
+        <div class="requests-table-container">
+            <h3><i class="fas fa-list"></i> All Access Requests</h3>
+            
+            <div id="requestsTableContainer">
+                <!-- Table will be loaded here -->
+            </div>
+            
+            <button onclick="loadRequests()" class="refresh-btn">
+                <i class="fas fa-sync"></i> Refresh Data
+            </button>
+        </div>
     </div>
-
+    
     <script>
-        // Check authorization
+        // Check if user is authorized
         const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
         if (!userData.authorized) {
             window.location.href = 'index.html';
@@ -518,479 +278,137 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-        // Global variables
-        let allRequests = [];
-        let filteredRequests = [];
-        let currentPage = 1;
-        const pageSize = 10;
-        let statusChart, systemChart;
-        
-        // Load data on page load
-        window.addEventListener('DOMContentLoaded', async () => {
-            showLoading();
-            await loadAllRequests();
-            updateStatistics();
-            renderCharts();
-            renderTable();
-            hideLoading();
-            
-            // Set default date range (last 30 days)
-            const today = new Date();
-            const lastMonth = new Date();
-            lastMonth.setDate(today.getDate() - 30);
-            
-            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
-            document.getElementById('dateFrom').value = lastMonth.toISOString().split('T')[0];
-        });
-        
-        // Load all requests from localStorage
-        async function loadAllRequests() {
+        // Load all requests
+        function loadRequests() {
             try {
-                // Get requests from localStorage
-                allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
                 
-                // Sort by date (newest first)
-                allRequests.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                // Calculate stats
+                const pending = allRequests.filter(r => r.status === 'pending').length;
+                const approved = allRequests.filter(r => r.status === 'approved').length;
+                const rejected = allRequests.filter(r => r.status === 'rejected').length;
                 
-                filteredRequests = [...allRequests];
+                // Calculate total unique staff
+                const allStaff = new Set();
+                allRequests.forEach(request => {
+                    if (request.staffList) {
+                        request.staffList.forEach(staff => {
+                            allStaff.add(staff.Email);
+                        });
+                    }
+                });
                 
-                console.log('Loaded', allRequests.length, 'requests');
+                // Update stats
+                document.getElementById('pendingCount').textContent = pending;
+                document.getElementById('approvedCount').textContent = approved;
+                document.getElementById('rejectedCount').textContent = rejected;
+                document.getElementById('totalStaff').textContent = allStaff.size;
+                
+                // Display table
+                displayRequestsTable(allRequests);
                 
             } catch (error) {
                 console.error('Error loading requests:', error);
-                showError('Error loading data. Please refresh the page.');
+                document.getElementById('requestsTableContainer').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error loading data</h3>
+                        <p>Please try refreshing the page</p>
+                    </div>
+                `;
             }
         }
         
-        // Update statistics
-        function updateStatistics() {
-            const total = allRequests.length;
-            const pending = allRequests.filter(r => r.status === 'pending').length;
-            const approved = allRequests.filter(r => r.status === 'approved').length;
-            const rejected = allRequests.filter(r => r.status === 'rejected').length;
+        function displayRequestsTable(requests) {
+            const container = document.getElementById('requestsTableContainer');
             
-            document.getElementById('totalRequests').textContent = total;
-            document.getElementById('pendingRequests').textContent = pending;
-            document.getElementById('approvedRequests').textContent = approved;
-            document.getElementById('rejectedRequests').textContent = rejected;
-        }
-        
-        // Render charts
-        function renderCharts() {
-            // Destroy existing charts
-            if (statusChart) statusChart.destroy();
-            if (systemChart) systemChart.destroy();
-            
-            // Status Chart
-            const statusCtx = document.getElementById('statusChart').getContext('2d');
-            const statusData = {
-                labels: ['Pending', 'Approved', 'Rejected'],
-                datasets: [{
-                    data: [
-                        allRequests.filter(r => r.status === 'pending').length,
-                        allRequests.filter(r => r.status === 'approved').length,
-                        allRequests.filter(r => r.status === 'rejected').length
-                    ],
-                    backgroundColor: [
-                        '#ffb300',
-                        '#4CAF50',
-                        '#e74c3c'
-                    ],
-                    borderWidth: 1
-                }]
-            };
-            
-            statusChart = new Chart(statusCtx, {
-                type: 'pie',
-                data: statusData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${label}: ${value} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // System Chart
-            const systemCtx = document.getElementById('systemChart').getContext('2d');
-            
-            // Group by system
-            const systems = {};
-            allRequests.forEach(request => {
-                const system = request.system || 'Unknown';
-                systems[system] = (systems[system] || 0) + 1;
-            });
-            
-            const systemLabels = Object.keys(systems);
-            const systemData = Object.values(systems);
-            
-            // Generate colors
-            const systemColors = systemLabels.map((_, i) => {
-                const hue = (i * 137.5) % 360; // Golden angle for distinct colors
-                return `hsl(${hue}, 70%, 60%)`;
-            });
-            
-            const systemChartData = {
-                labels: systemLabels,
-                datasets: [{
-                    data: systemData,
-                    backgroundColor: systemColors,
-                    borderWidth: 1
-                }]
-            };
-            
-            systemChart = new Chart(systemCtx, {
-                type: 'doughnut',
-                data: systemChartData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Apply filters
-        function applyFilters() {
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            const status = document.getElementById('statusFilter').value;
-            const system = document.getElementById('systemFilter').value;
-            
-            filteredRequests = allRequests.filter(request => {
-                // Date filter
-                if (dateFrom || dateTo) {
-                    const requestDate = new Date(request.timestamp).toISOString().split('T')[0];
-                    
-                    if (dateFrom && requestDate < dateFrom) return false;
-                    if (dateTo && requestDate > dateTo) return false;
-                }
-                
-                // Status filter
-                if (status && request.status !== status) return false;
-                
-                // System filter
-                if (system && request.system !== system) return false;
-                
-                return true;
-            });
-            
-            currentPage = 1;
-            renderTable();
-            
-            // Update table info
-            document.getElementById('tableInfo').textContent = 
-                `Showing ${Math.min(filteredRequests.length, pageSize)} of ${filteredRequests.length} filtered requests`;
-        }
-        
-        // Clear filters
-        function clearFilters() {
-            document.getElementById('dateFrom').value = '';
-            document.getElementById('dateTo').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('systemFilter').value = '';
-            
-            filteredRequests = [...allRequests];
-            currentPage = 1;
-            renderTable();
-        }
-        
-        // Refresh data
-        async function refreshData() {
-            showLoading();
-            await loadAllRequests();
-            updateStatistics();
-            renderCharts();
-            renderTable();
-            hideLoading();
-            showSuccess('Data refreshed successfully!');
-        }
-        
-        // Render table
-        function renderTable() {
-            const tableBody = document.getElementById('tableBody');
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
-            
-            // Clear existing rows
-            tableBody.innerHTML = '';
-            
-            // Calculate items to show
-            const startIndex = 0;
-            const endIndex = Math.min(currentPage * pageSize, filteredRequests.length);
-            const itemsToShow = filteredRequests.slice(startIndex, endIndex);
-            
-            if (itemsToShow.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
-                            <i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 15px; color: #ddd;"></i>
-                            <p>No requests found</p>
-                            ${filteredRequests.length !== allRequests.length ? 
-                                '<p>Try clearing your filters</p>' : ''}
-                        </td>
-                    </tr>
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No requests yet</h3>
+                        <p>Create your first access request to get started</p>
+                        <a href="form.html" class="nav-btn" style="display: inline-flex; margin-top: 20px;">
+                            <i class="fas fa-plus"></i> Create Request
+                        </a>
+                    </div>
                 `;
-                loadMoreBtn.style.display = 'none';
                 return;
             }
             
-            // Add rows
-            itemsToShow.forEach(request => {
-                const row = document.createElement('tr');
-                
-                // Format date
-                const requestDate = new Date(request.timestamp);
-                const formattedDate = requestDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                });
-                
-                // Status badge
-                let statusBadge = '';
-                if (request.status === 'pending') {
-                    statusBadge = '<span class="status-badge status-pending">Pending</span>';
-                } else if (request.status === 'approved') {
-                    statusBadge = '<span class="status-badge status-approved">Approved</span>';
-                } else if (request.status === 'rejected') {
-                    statusBadge = '<span class="status-badge status-rejected">Rejected</span>';
-                }
-                
-                // Staff name
-                const staffName = request.staff ? 
-                    `${request.staff.firstname || ''} ${request.staff.lastname || ''}`.trim() :
-                    'Unknown Staff';
-                
-                row.innerHTML = `
-                    <td><strong>${request.id}</strong></td>
-                    <td>${staffName}<br><small>${request.staffEmail}</small></td>
-                    <td>${request.system || 'Unknown'}</td>
-                    <td>${formattedDate}</td>
-                    <td>${statusBadge}</td>
-                    <td>${request.approver || 'Not assigned'}</td>
-                    <td>
-                        <button onclick="viewRequest('${request.id}')" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye"></i> View
-                        </button>
-                        ${request.status === 'pending' ? `
-                            <button onclick="approveRequest('${request.id}')" class="btn btn-sm btn-outline-success">
-                                <i class="fas fa-check"></i> Approve
-                            </button>
-                        ` : ''}
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
+            // Sort by latest first
+            requests.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            // Show/hide load more button
-            if (endIndex < filteredRequests.length) {
-                loadMoreBtn.style.display = 'block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-            
-            // Update table info
-            document.getElementById('tableInfo').textContent = 
-                `Showing ${itemsToShow.length} of ${filteredRequests.length} requests`;
-        }
-        
-        // Load more rows
-        function loadMore() {
-            currentPage++;
-            renderTable();
-        }
-        
-        // View request details
-        function viewRequest(requestId) {
-            window.location.href = `approval.html?id=${requestId}`;
-        }
-        
-        // Approve request directly
-        function approveRequest(requestId) {
-            if (confirm('Are you sure you want to approve this request?')) {
-                // Find and update request
-                const requestIndex = allRequests.findIndex(r => r.id === requestId);
-                if (requestIndex !== -1) {
-                    allRequests[requestIndex].status = 'approved';
-                    allRequests[requestIndex].approvalDate = new Date().toISOString();
-                    allRequests[requestIndex].approver = userData.name;
-                    
-                    // Save back to localStorage
-                    localStorage.setItem('opm_requests', JSON.stringify(allRequests));
-                    
-                    // Refresh display
-                    updateStatistics();
-                    renderCharts();
-                    renderTable();
-                    
-                    showSuccess('Request approved successfully!');
-                }
-            }
-        }
-        
-        // Export functions
-        function exportToCSV() {
-            const headers = ['Request ID', 'Staff Name', 'Staff Email', 'System', 'Access Rights', 
-                           'Duration', 'Status', 'Request Date', 'Requesting Officer', 'Approver'];
-            
-            const csvContent = [
-                headers.join(','),
-                ...filteredRequests.map(request => {
-                    const staffName = request.staff ? 
-                        `${request.staff.firstname || ''} ${request.staff.lastname || ''}`.trim() :
-                        'Unknown';
-                    
-                    return [
-                        `"${request.id}"`,
-                        `"${staffName}"`,
-                        `"${request.staffEmail}"`,
-                        `"${request.system || ''}"`,
-                        `"${request.accessRights || ''}"`,
-                        `"${request.duration || ''}"`,
-                        `"${request.status || ''}"`,
-                        `"${new Date(request.timestamp).toLocaleDateString()}"`,
-                        `"${request.requestingOfficer || ''}"`,
-                        `"${request.approver || ''}"`
-                    ].join(',');
-                })
-            ].join('\n');
-            
-            downloadFile(csvContent, 'opm_requests.csv', 'text/csv');
-        }
-        
-        function exportToExcel() {
-            // For Excel, we'll create an HTML table that Excel can open
             let html = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>OPM System Access Requests</title>
-                    <style>
-                        table { border-collapse: collapse; width: 100%; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #4361ee; color: white; font-weight: bold; }
-                        tr:nth-child(even) { background-color: #f2f2f2; }
-                    </style>
-                </head>
-                <body>
-                    <h1>OPM System Access Requests</h1>
-                    <p>Generated: ${new Date().toLocaleString()}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Request ID</th>
-                                <th>Staff Name</th>
-                                <th>Staff Email</th>
-                                <th>System</th>
-                                <th>Access Rights</th>
-                                <th>Duration</th>
-                                <th>Status</th>
-                                <th>Request Date</th>
-                                <th>Requesting Officer</th>
-                                <th>Approver</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Date</th>
+                            <th>Staff Count</th>
+                            <th>System</th>
+                            <th>Status</th>
+                            <th>Requested By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
             
-            filteredRequests.forEach(request => {
-                const staffName = request.staff ? 
-                    `${request.staff.firstname || ''} ${request.staff.lastname || ''}`.trim() :
-                    'Unknown';
+            requests.forEach(request => {
+                const staffCount = request.staffList ? request.staffList.length : 0;
+                const date = new Date(request.timestamp).toLocaleDateString();
                 
                 html += `
                     <tr>
-                        <td>${request.id}</td>
-                        <td>${staffName}</td>
-                        <td>${request.staffEmail}</td>
-                        <td>${request.system || ''}</td>
-                        <td>${request.accessRights || ''}</td>
-                        <td>${request.duration || ''}</td>
-                        <td>${request.status || ''}</td>
-                        <td>${new Date(request.timestamp).toLocaleDateString()}</td>
-                        <td>${request.requestingOfficer || ''}</td>
-                        <td>${request.approver || ''}</td>
+                        <td><strong>${request.id}</strong></td>
+                        <td>${date}</td>
+                        <td>${staffCount}</td>
+                        <td>${request.systemName || request.system || 'N/A'}</td>
+                        <td>
+                            <span class="status-badge ${request.status}">
+                                ${request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            </span>
+                        </td>
+                        <td>${request.requestingOfficer || 'N/A'}</td>
+                        <td>
+                            <button onclick="viewRequest('${request.id}')" class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${request.status === 'pending' ? `
+                            <button onclick="copyApprovalLink('${request.id}')" class="action-btn" style="background: #4CAF50;">
+                                <i class="fas fa-copy"></i> Copy Link
+                            </button>
+                            ` : ''}
+                        </td>
                     </tr>
                 `;
             });
             
-            html += `
-                        </tbody>
-                    </table>
-                </body>
-                </html>
-            `;
-            
-            downloadFile(html, 'opm_requests.xls', 'application/vnd.ms-excel');
+            html += '</tbody></table>';
+            container.innerHTML = html;
         }
         
-        function exportToJSON() {
-            const jsonContent = JSON.stringify(filteredRequests, null, 2);
-            downloadFile(jsonContent, 'opm_requests.json', 'application/json');
+        function viewRequest(requestId) {
+            // Store the request ID to view
+            sessionStorage.setItem('view_request_id', requestId);
+            window.location.href = 'request-view.html';
         }
         
-        function printReport() {
-            window.print();
-        }
-        
-        // Utility function to download files
-        function downloadFile(content, fileName, mimeType) {
-            const blob = new Blob([content], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        // Helper functions
-        function showLoading() {
-            document.getElementById('loading').style.display = 'block';
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-        }
-        
-        function showError(message) {
-            const div = document.getElementById('errorMessage');
-            div.textContent = message;
-            div.style.display = 'block';
-            setTimeout(() => div.style.display = 'none', 5000);
-        }
-        
-        function showSuccess(message) {
-            const div = document.getElementById('successMessage');
-            div.textContent = message;
-            div.style.display = 'block';
-            setTimeout(() => div.style.display = 'none', 3000);
+        function copyApprovalLink(requestId) {
+            const approvalLink = `${window.location.origin}/approval.html?id=${requestId}`;
+            navigator.clipboard.writeText(approvalLink).then(() => {
+                alert('Approval link copied to clipboard!');
+            });
         }
         
         function logout() {
             localStorage.removeItem('opm_user');
             window.location.href = 'index.html';
         }
+        
+        // Load requests on page load
+        window.addEventListener('DOMContentLoaded', loadRequests);
     </script>
 </body>
 </html>
