@@ -151,51 +151,17 @@
             transform: translateY(-2px);
         }
         
-        .staff-details {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 2px solid #e0e0e0;
-            display: none;
-        }
-        
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .detail-item {
-            margin-bottom: 10px;
-        }
-        
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        
-        .detail-value {
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            min-height: 20px;
-        }
-        
         .success-message {
             background: #d4edda;
             color: #155724;
-            padding: 12px;
+            padding: 10px 15px;
             border-radius: 6px;
-            margin-top: 15px;
-            display: none;
+            margin-top: 10px;
             border-left: 4px solid #28a745;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 10px;
+            font-size: 0.9em;
         }
         
         .staff-list {
@@ -204,6 +170,7 @@
             padding: 20px;
             border-radius: 10px;
             border: 2px solid #e0e0e0;
+            display: none;
         }
         
         .staff-list-header {
@@ -238,16 +205,18 @@
         
         .staff-table th {
             color: white;
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             font-weight: 600;
             border: none;
+            font-size: 14px;
         }
         
         .staff-table td {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid #eee;
             vertical-align: middle;
+            font-size: 14px;
         }
         
         .staff-table tbody tr:hover {
@@ -262,10 +231,10 @@
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             transition: all 0.3s;
             display: flex;
@@ -275,17 +244,17 @@
         
         .remove-btn:hover {
             background: #c0392b;
-            transform: translateY(-2px);
         }
         
         .clear-all-btn {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -294,7 +263,6 @@
         
         .clear-all-btn:hover {
             background: #5a6268;
-            transform: translateY(-2px);
         }
         
         /* System Checkboxes */
@@ -450,20 +418,122 @@
             border-left: 4px solid #e74c3c;
         }
         
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #4CAF50;
-            border-left: 4px solid #4CAF50;
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
         }
         
-        .approval-link {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 25px 0;
-            border: 2px solid #90caf9;
-            border-left: 4px solid #1976d2;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-body p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .modal-body strong {
+            color: #333;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .modal-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        .copy-link-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .copy-link-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .copy-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         @media (max-width: 768px) {
@@ -480,10 +550,6 @@
             .add-staff-btn {
                 width: 100%;
                 justify-content: center;
-            }
-            
-            .details-grid {
-                grid-template-columns: 1fr;
             }
             
             .systems-grid,
@@ -510,6 +576,20 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+            
+            .copy-link-container {
+                flex-direction: column;
+            }
+            
+            .copy-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -532,7 +612,6 @@
             <h1><i class="fas fa-key"></i> System Access Request Form</h1>
             
             <div id="errorMessage" class="message error"></div>
-            <div id="successMessage" class="message success"></div>
             
             <form id="accessRequestForm">
                 <!-- Staff Email Input -->
@@ -552,33 +631,16 @@
                         </p>
                     </div>
                     
-                    <!-- Staff Details -->
-                    <div id="staffDetails" class="staff-details">
-                        <h4>Staff Details Found</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <div class="detail-label">Full Name</div>
-                                <div class="detail-value" id="fullName">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Email</div>
-                                <div class="detail-value" id="staffEmailDisplay">-</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Position</div>
-                                <div class="detail-value" id="staffTitle">-</div>
-                            </div>
-                        </div>
-                        <div id="addSuccessMessage" class="success-message">
-                            <i class="fas fa-check-circle"></i>
-                            <span id="successText"></span>
-                        </div>
+                    <!-- Success Message -->
+                    <div id="addSuccessMessage" class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="successText"></span>
                     </div>
                     
                     <!-- Staff List -->
-                    <div id="staffListSection" class="staff-list" style="display: none;">
+                    <div id="staffListSection" class="staff-list">
                         <div class="staff-list-header">
-                            <h4><i class="fas fa-list-check"></i> Staff Selected for Access (<span id="staffCount">0</span>)</h4>
+                            <h4><i class="fas fa-list-check"></i> Selected Staff (<span id="staffCount">0</span>)</h4>
                             <button type="button" onclick="clearStaffList()" class="clear-all-btn">
                                 <i class="fas fa-trash"></i> Clear All
                             </button>
@@ -655,6 +717,41 @@
             </form>
         </div>
     </div>
+    
+    <!-- Success Popup Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Request Submitted Successfully!</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>Request ID:</strong> <span id="modalRequestId"></span></p>
+                <p><strong>Number of Staff:</strong> <span id="modalStaffCount"></span></p>
+                <p><strong>System:</strong> <span id="modalSystem"></span></p>
+                <p><strong>Request Date:</strong> <span id="modalRequestDate"></span></p>
+                
+                <div style="margin-top: 25px;">
+                    <h4 style="color: #4361ee; margin-bottom: 10px;">
+                        <i class="fas fa-share-alt"></i> Share Approval Link:
+                    </h4>
+                    <div class="copy-link-container">
+                        <input type="text" id="approvalLinkInput" class="copy-link-input" readonly>
+                        <button onclick="copyApprovalLink()" class="copy-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+                        <i class="fas fa-info-circle"></i> Send this link to the approver for review
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="newRequest()" class="modal-btn">
+                    <i class="fas fa-plus"></i> Create New Request
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Check if user is authorized
@@ -667,16 +764,182 @@
         document.getElementById('userName').textContent = userData.name;
         document.getElementById('userEmail').textContent = userData.email;
         
-        // Staff database (using your data)
+        // Staff database - All staff from your data
         const staffDatabase = [
-            // ... [All your staff data from previous response] ...
-            // For brevity, I'm including just a few examples. Use the full list from previous response
+            {"First Name": "Ceasar", "Middle Name": "", "Last Name": "Atiku", "Email": "ceasaratiku@gmail.com", "Title/Position": "Assistant Community Services Officer"},
+            {"First Name": "Mariam", "Middle Name": "", "Last Name": "Nakasango", "Email": "mariam.nakasango@opm.go.ug", "Title/Position": "Assistant Community Services Officer"},
             {"First Name": "Doryn", "Middle Name": "", "Last Name": "Kasangaki", "Email": "kasangakidoryn@gmail.com", "Title/Position": "Assistant IT Officer"},
             {"First Name": "Prossy", "Middle Name": "Eunice", "Last Name": "Akello", "Email": "aprossyeunice@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Doreen", "Middle Name": "", "Last Name": "Kasangaki", "Email": "doreen.kasangaki@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Tedson", "Middle Name": "", "Last Name": "TWESIGYE", "Email": "tedson.twesigye@opm.go.ug", "Title/Position": "Assistant IT Officer"},
             {"First Name": "Joshua", "Middle Name": "Edward", "Last Name": "Karungi", "Email": "joshuakalungi101@gmail.com", "Title/Position": "Assistant IT Officer"},
-            {"First Name": "Mahfuzu", "Middle Name": "", "Last Name": "Asiku", "Email": "asiku.mahfuzu@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
             {"First Name": "Noel", "Middle Name": "", "Last Name": "Ikwap", "Email": "noel.ikwap@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Teddy", "Middle Name": "", "Last Name": "Kayeny", "Email": "teddy.kayeny@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Astar", "Middle Name": "", "Last Name": "Kitimbo", "Email": "suadiqk@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Mayinja", "Middle Name": "", "Last Name": "Peter", "Email": "pete.mayinja@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Jane", "Middle Name": "", "Last Name": "Nakku", "Email": "nakkujane@yahoo.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Amos", "Middle Name": "", "Last Name": "Ojelel", "Email": "amos.ojelel@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Akanjuna", "Middle Name": "", "Last Name": "Rubashoka", "Email": "akanjuna.rubashoka@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rogers", "Middle Name": "", "Last Name": "Akankwasa", "Email": "rogers.akankwasa@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Eve", "Middle Name": "", "Last Name": "Nakayima", "Email": "eve.nakayima@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Sumaya", "Middle Name": "", "Last Name": "Kalembe", "Email": "sumaya.kalembe@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Allan", "Middle Name": "", "Last Name": "Mutasa", "Email": "allan.mutasa@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Collins", "Middle Name": "", "Last Name": "Tubbo", "Email": "tubbocollins92@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Innocent", "Middle Name": "", "Last Name": "Kakuru", "Email": "innocent.kakuru@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Peggy", "Middle Name": "", "Last Name": "Ayesiga", "Email": "Peggie.ayesiga@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Irene", "Middle Name": "", "Last Name": "Nakalema", "Email": "irene.nakalema@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Gloria", "Middle Name": "", "Last Name": "NATUKUNDA", "Email": "gloria.natukunda@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Denis", "Middle Name": "", "Last Name": "OLWA", "Email": "denniseolwa@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Michael", "Middle Name": "Jackson", "Last Name": "Ocaya", "Email": "michael.ocaya@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Robert", "Middle Name": "", "Last Name": "Okello", "Email": "okellorob@yahoo.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Harriet", "Middle Name": "", "Last Name": "Akello", "Email": "harriet.akello@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rauben", "Middle Name": "", "Last Name": "Mugume", "Email": "rauben.mugume@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Richard", "Middle Name": "Peko", "Last Name": "Tabulee", "Email": "rtabulee@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Elvis", "Middle Name": "", "Last Name": "Ochan", "Email": "elvis.ochan@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Mahfuzu", "Middle Name": "", "Last Name": "Asiku", "Email": "asiku.mahfuzu@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Mutiibwa", "Email": "mutiibwajade@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Hamza", "Middle Name": "", "Last Name": "Mutebi", "Email": "hamza.mutebi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Pamela", "Middle Name": "", "Last Name": "Aboke", "Email": "pamela.aboke@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "David", "Middle Name": "", "Last Name": "Mwaka", "Email": "david.mwaka@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Jennifer", "Middle Name": "", "Last Name": "Amodo", "Email": "jenniferhopeamodo@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Albert", "Middle Name": "", "Last Name": "Olicho", "Email": "albert.olicho@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Kereke", "Email": "sarah.kereke@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Arnold", "Middle Name": "", "Last Name": "Natwijuka", "Email": "arnoldnatwijuka@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Brian", "Middle Name": "", "Last Name": "Nyombi", "Email": "brian.nyombi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Moses", "Middle Name": "", "Last Name": "Mayiga", "Email": "moses.mayiga@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Barungi", "Email": "sarah.birungi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "ANALD", "Middle Name": "", "Last Name": "AMUTUHEIRE", "Email": "anald.amutuheire@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Saphrah", "Middle Name": "", "Last Name": "Mpirirwe", "Email": "mpirirwesaphrah@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Esther", "Middle Name": "", "Last Name": "Mukyala", "Email": "naiesther@yahoo.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Tryphine", "Middle Name": "", "Last Name": "Amanya", "Email": "amanyatry188@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Tonny", "Middle Name": "", "Last Name": "Olur", "Email": "tonnyolur@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Billy", "Middle Name": "", "Last Name": "Muhozi", "Email": "muhoozibilly@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Lydia", "Middle Name": "", "Last Name": "Tusiime", "Email": "lydiashanne@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Madiinah", "Middle Name": "", "Last Name": "Nalwoga", "Email": "madiinah.nalwoga@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Mahfuzu", "Middle Name": "", "Last Name": "ASIKU", "Email": "asiku.mafuzu@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Paul", "Middle Name": "", "Last Name": "Tiondi", "Email": "paul.tiondi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Hellen", "Middle Name": "", "Last Name": "Amadrio", "Email": "hellen.amadrio@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Deogracious", "Middle Name": "", "Last Name": "Drabile", "Email": "deograciousdrabile12@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Betty", "Middle Name": "", "Last Name": "Endeo", "Email": "betty.endeo@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Fred", "Middle Name": "", "Last Name": "Buzu", "Email": "fred.buzu@yahoo.com", "Title/Position": "Community Services Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Agea", "Email": "sarah.agea@opm.go.ug", "Title/Position": "Community Services Officer"},
+            {"First Name": "Peace", "Middle Name": "", "Last Name": "Asiimwe", "Email": "peace.asiimwe@opm.go.ug", "Title/Position": "Community Services Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Naluyinda", "Email": "sarah.naluyinda@opm.go.ug", "Title/Position": "Community Services Officer"},
             {"First Name": "Anitah", "Middle Name": "", "Last Name": "Nakazzi", "Email": "anitah.nakazi@gmail.com", "Title/Position": "Data Management Specialist"},
+            {"First Name": "Hudra", "Middle Name": "", "Last Name": "Bwana", "Email": "hudra.bwana@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Musiimenta", "Middle Name": "", "Last Name": "Bella", "Email": "bellamusiime@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "NABIRYE", "Middle Name": "", "Last Name": "Eleanor", "Email": "eleanor.nabirye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Ivan", "Middle Name": "", "Last Name": "Ruhinda", "Email": "ivan.ruhinda@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Prossy", "Middle Name": "", "Last Name": "KANYESIGYE", "Email": "prossy.kanyesigye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rhona", "Middle Name": "", "Last Name": "Kemigisha", "Email": "ronitakem@gmail.com", "Title/Position": "Protection Officer"},
+            {"First Name": "DICKENS", "Middle Name": "", "Last Name": "Bwengye", "Email": "dickens.bwengye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Agnes", "Middle Name": "", "Last Name": "Baseera", "Email": "agnes.baseera@opm.go.ug", "Title/Position": "Protection Officer"},
+            {"First Name": "Namboowa", "Middle Name": "", "Last Name": "Diana", "Email": "diana.namboowa@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Muwonge", "Email": "george.muwonge@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Roy", "Middle Name": "", "Last Name": "Yiga", "Email": "roy.yiga@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Nassozi", "Email": "joan.nassozi@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Judith", "Middle Name": "", "Last Name": "Nahabwe", "Email": "judith.nahabwe@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Eve", "Middle Name": "", "Last Name": "Opileni", "Email": "eve.opileni@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Sharon", "Middle Name": "", "Last Name": "Ayebazibwe", "Email": "sharon.ayebazibwe@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Freda", "Middle Name": "", "Last Name": "Munduru", "Email": "mundurufreda@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Newton", "Middle Name": "", "Last Name": "Mugume", "Email": "mnewton.biz@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rendar", "Middle Name": "", "Last Name": "Namanya", "Email": "rendarn462@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Samson", "Middle Name": "", "Last Name": "Emunot", "Email": "emunotsamson@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Naswifu", "Middle Name": "", "Last Name": "Koire", "Email": "naswifu.koire@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Mariam", "Middle Name": "", "Last Name": "Ali", "Email": "joremariam@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Isaac", "Middle Name": "", "Last Name": "Ahiyanyire", "Email": "nyihireizhak@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rouben", "Middle Name": "", "Last Name": "Mugume", "Email": "mugumerauben@yahoo.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Shirley", "Middle Name": "", "Last Name": "Kyakunda", "Email": "shirley.kyakunda@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Julian", "Middle Name": "", "Last Name": "NAMUGAYA", "Email": "julian.namugaya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "JUDITH", "Middle Name": "", "Last Name": "NATUKUNDA", "Email": "judithnatukunda2015@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Nicholas", "Middle Name": "Kahima", "Last Name": "Tugume", "Email": "nicholas.tugume@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Hajarah", "Middle Name": "", "Last Name": "Nabulya", "Email": "hajara.nabulya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Didas", "Middle Name": "", "Last Name": "Kwesiga", "Email": "kwesdidas@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Racheal", "Middle Name": "", "Last Name": "Ayebare", "Email": "ntare.rach@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Daphine", "Middle Name": "", "Last Name": "Twongyre", "Email": "daphine.twongyere@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Ivan", "Middle Name": "", "Last Name": "Mandu", "Email": "ivan.mandu@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Patience", "Middle Name": "", "Last Name": "Kihumuro", "Email": "kihumuro69@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Brenda", "Middle Name": "", "Last Name": "Kato", "Email": "brendah.kato@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Peace", "Middle Name": "", "Last Name": "Besigye", "Email": "peace.besigye@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Leona", "Middle Name": "", "Last Name": "Aine", "Email": "leona.aine@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Milly", "Middle Name": "", "Last Name": "Nabunya", "Email": "milliam.nabunya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Annet", "Middle Name": "", "Last Name": "Asuru", "Email": "annet.asuru@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Harriet", "Middle Name": "", "Last Name": "Faidah", "Email": "harriet.faidha@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Martha", "Middle Name": "", "Last Name": "Nabadda", "Email": "martha.nabadda@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Rosette", "Middle Name": "", "Last Name": "Kemirembe", "Email": "rosette.kemirembe@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Herbert", "Middle Name": "", "Last Name": "Ochama", "Email": "herbert.ochama@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Christine", "Middle Name": "Logi", "Last Name": "UNZIA", "Email": "christine.unzia@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Gerald", "Middle Name": "", "Last Name": "Latuk", "Email": "gerald.latuk@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Angella", "Middle Name": "", "Last Name": "Auma", "Email": "angella.auma@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Oliwa", "Middle Name": "", "Last Name": "Joseph", "Email": "josephkjj123@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rhona", "Middle Name": "", "Last Name": "Kamwine", "Email": "kamwine.ronah@yahoo.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Joshua", "Middle Name": "", "Last Name": "Atwine", "Email": "Joshuaatwine056@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jalia", "Middle Name": "", "Last Name": "Nakasuse", "Email": "nakasusejalla1@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jackie", "Middle Name": "", "Last Name": "Namugolo", "Email": "namugoloj65@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Fatumah", "Middle Name": "", "Last Name": "Nalubowa", "Email": "fatumahmukasa93@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Ginyera", "Email": "orochiginyera@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Faith", "Middle Name": "", "Last Name": "Anero", "Email": "faithanero22@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Onencan", "Middle Name": "", "Last Name": "Robinson", "Email": "onencanrobinson@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Winfred", "Middle Name": "", "Last Name": "Nantumbwe", "Email": "winniewonder09@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Papetra", "Middle Name": "", "Last Name": "Lakica", "Email": "papetralakica@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Bosco", "Middle Name": "", "Last Name": "Okot", "Email": "okotbosco82@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Warren", "Middle Name": "", "Last Name": "Mirimo", "Email": "warrenmirimo@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Milly", "Middle Name": "", "Last Name": "Akello", "Email": "akellomilly97@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Phaeb", "Middle Name": "", "Last Name": "Kyomugisha", "Email": "kphaeb@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "David", "Middle Name": "Okot", "Last Name": "Nyeko", "Email": "okotdavidnyeko151995@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Micheal", "Middle Name": "", "Last Name": "Opoka", "Email": "opokamichael481@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Allen", "Middle Name": "", "Last Name": "Atwijukire", "Email": "atallen2014@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Elijah", "Middle Name": "", "Last Name": "Kwikiriza", "Email": "elikwikriza@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Prossy", "Middle Name": "", "Last Name": "Tukahirwa", "Email": "prossytukahirwa60@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mary", "Middle Name": "Goret", "Last Name": "Athieno", "Email": "kifuonjiag@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Flida", "Middle Name": "", "Last Name": "Mukunzire", "Email": "flidamukunzire@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Kellen", "Middle Name": "", "Last Name": "Kwarikunda", "Email": "leonake959@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Okipi", "Email": "okipigeorge@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "David", "Middle Name": "", "Last Name": "Armstrong", "Email": "armstrongdk@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Edith", "Middle Name": "", "Last Name": "Nampala", "Email": "nampalaedith@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Eunice", "Middle Name": "", "Last Name": "Oyella", "Email": "oyellaeunice01@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Victoria", "Middle Name": "", "Last Name": "Nambogo", "Email": "victoriaheavens23@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Ronald", "Middle Name": "", "Last Name": "Onen", "Email": "ronnycliff@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Namukura", "Email": "namukurasarah12@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Getrude", "Middle Name": "Naibok", "Last Name": "Lodou", "Email": "ibokechap@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Shibah", "Middle Name": "", "Last Name": "Alinda", "Email": "alinda3shibah@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Birungi", "Email": "jbirungi195@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Cynthia", "Middle Name": "", "Last Name": "Aber", "Email": "abercynthia7@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Phiona", "Middle Name": "Mary", "Last Name": "Nabakooza", "Email": "phionamary31@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Amos", "Middle Name": "", "Last Name": "Turyatemba", "Email": "amuhimba@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Gillian", "Middle Name": "", "Last Name": "Nakato", "Email": "nakatogillian@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Henry", "Middle Name": "", "Last Name": "Bweme", "Email": "bwemeh@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mercy", "Middle Name": "Pliver", "Last Name": "Achom", "Email": "achommercy137@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Katushabe", "Email": "joankatushabe27@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Anthony", "Middle Name": "Opio", "Last Name": "Ijalla", "Email": "opix23@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Emmanuel", "Middle Name": "", "Last Name": "Komakech", "Email": "komakech2023@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Dominic", "Middle Name": "", "Last Name": "Andama", "Email": "andamadominic09@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Brian", "Middle Name": "", "Last Name": "Kinyera", "Email": "kinyerakony@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Concy", "Middle Name": "", "Last Name": "Acayo", "Email": "concyacayo@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "MAURICE", "Middle Name": "", "Last Name": "TUKUNDANE", "Email": "tukundanemaurice@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "SAUYA", "Middle Name": "", "Last Name": "OWEMBABAZI", "Email": "sauya@ymail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Dorothy", "Middle Name": "", "Last Name": "Christmas", "Email": "christmasdorah@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Judith", "Middle Name": "", "Last Name": "Nakamanya", "Email": "Judithnak02@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Francis", "Middle Name": "Innocent", "Last Name": "Ebiu", "Email": "esayuebiu94@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Innocent", "Middle Name": "", "Last Name": "Musinguzi", "Email": "imusinguzi8@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Daphine", "Middle Name": "Robinah", "Last Name": "Asiimwe", "Email": "daphineasiimwe95@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Asaph", "Middle Name": "", "Last Name": "Akampa", "Email": "r2asaph@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Faith", "Middle Name": "", "Last Name": "Amujal", "Email": "faithamujal@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Susan", "Middle Name": "", "Last Name": "ABALO", "Email": "susanabalo32@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "STELLA", "Middle Name": "", "Last Name": "AMVIKO", "Email": "amvikostella3@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Specioza", "Middle Name": "", "Last Name": "Eyotaru", "Email": "specieeyotaru@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Flavia", "Middle Name": "", "Last Name": "Anywa", "Email": "flavia.anywa@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Immaculate", "Middle Name": "Collette", "Last Name": "Atim", "Email": "letyour.collette@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Umar", "Middle Name": "", "Last Name": "Twinamatsiko", "Email": "umaromar310@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Racheal", "Middle Name": "", "Last Name": "Aheebwa", "Email": "ahabweracheal6@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Patience", "Middle Name": "", "Last Name": "Brenda", "Email": "patiencebrendah44@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Gladys", "Middle Name": "", "Last Name": "Twogirwe", "Email": "twongirwegladys@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jane", "Middle Name": "", "Last Name": "Kyomuhangi", "Email": "janekyomuhangi256@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Evas", "Middle Name": "", "Last Name": "Ainebyona", "Email": "angellahevas14@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Anitah", "Middle Name": "", "Last Name": "Komugisa", "Email": "annitikom@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "ADRINE", "Middle Name": "", "Last Name": "PROMISE", "Email": "adriepromise@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Elinah", "Middle Name": "", "Last Name": "Gumoshabe", "Email": "gumoshabeelinah97@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mugisha", "Middle Name": "", "Last Name": "Kwiringira", "Email": "mugishakwir.3@gmail.com", "Title/Position": "Registration Volunteer"},
             {"First Name": "Geoffrey", "Middle Name": "", "Last Name": "Mugabe", "Email": "geoffrey.mugabe@opm.go.ug", "Title/Position": "Senior Settlement Officer"}
         ];
         
@@ -753,6 +1016,8 @@
                         checkmark.style.display = 'block';
                         selectedSystem = system.id;
                     }
+                    
+                    updateSubmitButton();
                 });
                 
                 systemsGrid.appendChild(div);
@@ -786,7 +1051,7 @@
                         }
                     }
                     
-                    // Update display
+                    updateSubmitButton();
                     checkbox.dispatchEvent(new Event('change'));
                 });
                 
@@ -805,6 +1070,7 @@
                             selectedAccessRights.splice(index, 1);
                         }
                     }
+                    updateSubmitButton();
                 });
                 
                 accessGrid.appendChild(div);
@@ -837,6 +1103,18 @@
             document.getElementById('staffCount').textContent = count;
             document.getElementById('staffCountBtn').textContent = count;
             
+            // Show/hide staff list section
+            const staffListSection = document.getElementById('staffListSection');
+            if (count > 0) {
+                staffListSection.style.display = 'block';
+            } else {
+                staffListSection.style.display = 'none';
+            }
+        }
+        
+        // Update submit button
+        function updateSubmitButton() {
+            const count = selectedStaff.length;
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = count === 0 || !selectedSystem || selectedAccessRights.length === 0;
         }
@@ -845,7 +1123,6 @@
         function addStaff() {
             const email = document.getElementById('staffEmail').value.trim().toLowerCase();
             const errorDiv = document.getElementById('errorMessage');
-            const staffDetails = document.getElementById('staffDetails');
             const successMsg = document.getElementById('addSuccessMessage');
             const successText = document.getElementById('successText');
             
@@ -877,15 +1154,6 @@
             );
             
             if (staff) {
-                // Display staff details
-                const fullName = `${staff["First Name"]} ${staff["Middle Name"] ? staff["Middle Name"] + ' ' : ''}${staff["Last Name"]}`;
-                document.getElementById('fullName').textContent = fullName;
-                document.getElementById('staffEmailDisplay').textContent = staff["Email"];
-                document.getElementById('staffTitle').textContent = staff["Title/Position"];
-                
-                // Show staff details section
-                staffDetails.style.display = 'block';
-                
                 // Add to selected staff array
                 selectedStaff.push(staff);
                 
@@ -901,29 +1169,21 @@
                 
                 // Update staff count
                 updateStaffCount();
+                updateSubmitButton();
                 
-                // Scroll to staff list
+                // Hide success message after 3 seconds
                 setTimeout(() => {
-                    document.getElementById('staffListSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 300);
+                    successMsg.style.display = 'none';
+                }, 3000);
                 
             } else {
                 showError('Staff not found in database. Please check the email address.');
-                staffDetails.style.display = 'none';
             }
         }
         
         // Update staff list display
         function updateStaffList() {
-            const staffListSection = document.getElementById('staffListSection');
             const staffTableBody = document.getElementById('staffTableBody');
-            
-            if (selectedStaff.length === 0) {
-                staffListSection.style.display = 'none';
-                return;
-            }
-            
-            staffListSection.style.display = 'block';
             
             // Clear table
             staffTableBody.innerHTML = '';
@@ -952,6 +1212,7 @@
             selectedStaff.splice(index, 1);
             updateStaffList();
             updateStaffCount();
+            updateSubmitButton();
         }
         
         // Clear all staff
@@ -962,7 +1223,7 @@
                 selectedStaff = [];
                 updateStaffList();
                 updateStaffCount();
-                document.getElementById('staffDetails').style.display = 'none';
+                updateSubmitButton();
             }
         }
         
@@ -1038,6 +1299,12 @@
             // Get system name
             const system = systems.find(s => s.id === selectedSystem);
             
+            // Get access rights names
+            const accessRightsNames = selectedAccessRights.map(id => {
+                const access = accessRights.find(a => a.id === id);
+                return access ? access.name : id;
+            }).join(', ');
+            
             // Create request object
             const request = {
                 id: requestId,
@@ -1045,10 +1312,7 @@
                 system: selectedSystem,
                 systemName: system ? system.name : selectedSystem,
                 accessRights: selectedAccessRights,
-                accessRightsNames: selectedAccessRights.map(id => {
-                    const access = accessRights.find(a => a.id === id);
-                    return access ? access.name : id;
-                }).join(', '),
+                accessRightsNames: accessRightsNames,
                 reason: reason,
                 startDate: startDate,
                 endDate: endDate,
@@ -1063,56 +1327,56 @@
             existingRequests.push(request);
             localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
             
-            // Create approval link - use relative path for GitHub Pages
-            const approvalLink = `approval.html?id=${requestId}`;
-            
-            // Display success message with approval link
-            const successDiv = document.getElementById('successMessage');
-            successDiv.innerHTML = `
-                <h3><i class="fas fa-check-circle"></i> Request Submitted Successfully!</h3>
-                <p><strong>Request ID:</strong> ${requestId}</p>
-                <p><strong>Number of Staff:</strong> ${selectedStaff.length}</p>
-                <p><strong>System:</strong> ${system ? system.name : selectedSystem}</p>
-                <p><strong>Request Date:</strong> ${new Date().toLocaleDateString()}</p>
-                
-                <div class="approval-link">
-                    <h4><i class="fas fa-share-alt"></i> Share this link with approver:</h4>
-                    <div style="display: flex; gap: 10px; align-items: center; margin: 15px 0;">
-                        <input type="text" value="${approvalLink}" readonly 
-                               style="flex: 1; padding: 10px; border: 1px solid #90caf9; border-radius: 6px; background: white;">
-                        <button onclick="copyToClipboard('${approvalLink}')" 
-                                style="background: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
-                        <i class="fas fa-info-circle"></i> Send this link to the approver for review and approval
-                    </p>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <button onclick="newRequest()" 
-                                style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-plus"></i> New Request
-                        </button>
-                        <button onclick="window.location.href = 'index.html'" 
-                                style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-home"></i> Back to Home
-                        </button>
-                    </div>
-                </div>
-            `;
-            successDiv.style.display = 'block';
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Show success modal
+            showSuccessModal(requestId, selectedStaff.length, system ? system.name : selectedSystem);
             
             // Reset form
             resetForm();
         }
         
+        function showSuccessModal(requestId, staffCount, systemName) {
+            // Update modal content
+            document.getElementById('modalRequestId').textContent = requestId;
+            document.getElementById('modalStaffCount').textContent = staffCount;
+            document.getElementById('modalSystem').textContent = systemName;
+            document.getElementById('modalRequestDate').textContent = new Date().toLocaleDateString();
+            
+            // Create approval link
+            const approvalLink = `approval.html?id=${requestId}`;
+            document.getElementById('approvalLinkInput').value = window.location.origin + '/' + approvalLink;
+            
+            // Show modal
+            document.getElementById('successModal').style.display = 'block';
+        }
+        
+        function copyApprovalLink() {
+            const linkInput = document.getElementById('approvalLinkInput');
+            linkInput.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.style.background = '#1976d2';
+            }, 2000);
+        }
+        
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+        
+        function newRequest() {
+            closeModal();
+            resetForm();
+        }
+        
         function resetForm() {
             document.getElementById('accessRequestForm').reset();
-            document.getElementById('staffDetails').style.display = 'none';
-            document.getElementById('staffListSection').style.display = 'none';
             
             // Reset selections
             selectedStaff = [];
@@ -1122,6 +1386,7 @@
             // Reset UI
             updateStaffCount();
             updateStaffList();
+            updateSubmitButton();
             
             // Reset checkboxes
             document.querySelectorAll('.system-option').forEach(opt => {
@@ -1149,19 +1414,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        function copyToClipboard(text) {
-            // Get the full URL
-            const fullUrl = window.location.origin + '/' + text;
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                alert('Approval link copied to clipboard!');
-            });
-        }
-        
-        function newRequest() {
-            document.getElementById('successMessage').style.display = 'none';
-            resetForm();
-        }
-        
         function logout() {
             localStorage.removeItem('opm_user');
             window.location.href = 'index.html';
@@ -1172,6 +1424,7 @@
             initializeCheckboxes();
             setDefaultDates();
             updateStaffCount();
+            updateSubmitButton();
             
             // Allow Enter key in email field to trigger Add Staff
             document.getElementById('staffEmail').addEventListener('keypress', function(e) {
@@ -1183,6 +1436,14 @@
             
             // Focus on email input
             document.getElementById('staffEmail').focus();
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('successModal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
         });
     </script>
 </body>
