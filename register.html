@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Staff - OPM Access Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info h3 {
+            color: #1a237e;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn, .logout-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .nav-btn {
+            background: #1a237e;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            background: #283593;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Registration Form Card */
+        .form-card, .list-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h2, .list-card h2 {
+            color: #1a237e;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group label.required::after {
+            content: " *";
+            color: #f44336;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        /* Buttons */
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #1a237e;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #283593;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .message.error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            color: #1565c0;
+        }
+
+        /* Staff List */
+        .list-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a237e;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Staff Table */
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .staff-table th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .staff-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .staff-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .empty-state h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: #1a237e;
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #1a237e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <h3 id="userName">User</h3>
+                <p id="userEmail">user@example.com</p>
+            </div>
+            <div class="nav-buttons">
+                <a href="dashboard.html" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Registration Form -->
+            <div class="form-card">
+                <h2><i class="fas fa-user-plus"></i> Register New Staff</h2>
+                
+                <div id="message" class="message"></div>
+                
+                <form id="staffForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="required">First Name</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="required">Last Name</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" placeholder="name@opm.go.ug" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="position" class="required">Position/Title</label>
+                        <select id="position" required>
+                            <option value="">Select Position</option>
+                            <option value="ICT Officer">ICT Officer</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Finance Officer">Finance Officer</option>
+                            <option value="Program Coordinator">Program Coordinator</option>
+                            <option value="Admin Assistant">Admin Assistant</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="System Administrator">System Administrator</option>
+                            <option value="Project Manager">Project Manager</option>
+                            <option value="Director">Director</option>
+                            <option value="Deputy Director">Deputy Director</option>
+                            <option value="Technical Advisor">Technical Advisor</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" placeholder="e.g., ICT Department">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeId">Employee ID</label>
+                        <input type="text" id="employeeId" placeholder="OPM-XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" placeholder="+256 XXX XXX XXX">
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Staff
+                        </button>
+                        <button type="button" onclick="clearForm()" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i> Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Staff List -->
+            <div class="list-card">
+                <h2><i class="fas fa-users"></i> Registered Staff</h2>
+                
+                <div class="list-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search staff...">
+                    </div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalStaff">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="staff-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Position</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffListBody">
+                            <!-- Staff list will be loaded here -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fas fa-users-slash"></i>
+                        </div>
+                        <h4>No Staff Registered</h4>
+                        <p>Register your first staff member using the form on the left</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteStaffName"></strong>?</p>
+                <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+                    This action cannot be undone. The staff member will be removed from all access requests.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmDelete()" class="btn btn-danger">Delete Staff</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is authorized
+        const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
+        if (!userData.authorized) {
+            window.location.href = 'index.html';
+        }
+        
+        // Display user info
+        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('userEmail').textContent = userData.email;
+        
+        // Initialize staff database from localStorage or use default
+        function initializeStaffDatabase() {
+            const savedStaff = localStorage.getItem('opm_staff_database');
+            
+            if (savedStaff) {
+                return JSON.parse(savedStaff);
+            } else {
+                // Default staff data
+                const defaultStaff = [
+                    { 
+                        "First Name": "John", 
+                        "Last Name": "Smith", 
+                        "Email": "john.smith@opm.go.ug", 
+                        "Title/Position": "ICT Officer",
+                        "Department": "ICT Department",
+                        "Employee ID": "OPM-001",
+                        "Phone": "+256 700 123 456",
+                        "RegisteredDate": new Date().toISOString(),
+                        "RegisteredBy": userData.name
+                    },
+                    { 
+                        "First Name": "Sarah", 
+                        "Last Name": "Johnson", 
+                        "Email": "sarah.j@opm.go.ug", 
+                        "Title/Position": "HR Manager",
+                        "Department": "Human Resources",
+                        "Employee ID": "OPM-002",
+                        "Phone": "+256 701 234 567",
+                        "RegisteredDate": new Date().toISOString(),
+                        "RegisteredBy": userData.name
+                    },
+                    { 
+                        "First Name": "Michael", 
+                        "Last Name": "Brown", 
+                        "Email": "m.brown@opm.go.ug", 
+                        "Title/Position": "Finance Officer",
+                        "Department": "Finance Department",
+                        "Employee ID": "OPM-003",
+                        "Phone": "+256 702 345 678",
+                        "RegisteredDate": new Date().toISOString(),
+                        "RegisteredBy": userData.name
+                    }
+                ];
+                
+                // Save default staff to localStorage
+                localStorage.setItem('opm_staff_database', JSON.stringify(defaultStaff));
+                return defaultStaff;
+            }
+        }
+        
+        // Global variables
+        let staffDatabase = initializeStaffDatabase();
+        let staffToDelete = null;
+        
+        // Load staff list
+        function loadStaffList() {
+            const staffListBody = document.getElementById('staffListBody');
+            const totalStaff = document.getElementById('totalStaff');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Get search term
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filter staff based on search
+            const filteredStaff = staffDatabase.filter(staff => {
+                if (!searchTerm) return true;
+                
+                const fullName = `${staff["First Name"]} ${staff["Last Name"]}`.toLowerCase();
+                const email = staff["Email"].toLowerCase();
+                const position = staff["Title/Position"].toLowerCase();
+                const department = staff["Department"]?.toLowerCase() || '';
+                
+                return fullName.includes(searchTerm) || 
+                       email.includes(searchTerm) || 
+                       position.includes(searchTerm) ||
+                       department.includes(searchTerm);
+            });
+            
+            // Update total count
+            totalStaff.textContent = filteredStaff.length;
+            
+            // Clear table
+            staffListBody.innerHTML = '';
+            
+            if (filteredStaff.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // Add staff to table
+            filteredStaff.forEach((staff, index) => {
+                const row = document.createElement('tr');
+                const fullName = `${staff["First Name"]} ${staff["Last Name"]}`;
+                
+                row.innerHTML = `
+                    <td>
+                        <strong>${fullName}</strong>
+                        ${staff["Employee ID"] ? `<br><small style="color: #666;">${staff["Employee ID"]}</small>` : ''}
+                    </td>
+                    <td>${staff["Email"]}</td>
+                    <td>${staff["Title/Position"]}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="editStaff(${index})" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteStaff(${index})" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                staffListBody.appendChild(row);
+            });
+        }
+        
+        // Handle form submission
+        document.getElementById('staffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const position = document.getElementById('position').value;
+            const department = document.getElementById('department').value.trim();
+            const employeeId = document.getElementById('employeeId').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            // Validate form
+            if (!validateForm(firstName, lastName, email, position)) {
+                return;
+            }
+            
+            // Check if email already exists
+            if (staffDatabase.some(staff => staff.Email.toLowerCase() === email)) {
+                showMessage('A staff member with this email already exists.', 'error');
+                return;
+            }
+            
+            // Create staff object
+            const newStaff = {
+                "First Name": firstName,
+                "Last Name": lastName,
+                "Email": email,
+                "Title/Position": position,
+                "Department": department || '',
+                "Employee ID": employeeId || '',
+                "Phone": phone || '',
+                "RegisteredDate": new Date().toISOString(),
+                "RegisteredBy": userData.name
+            };
+            
+            // Add to database
+            staffDatabase.push(newStaff);
+            
+            // Save to localStorage
+            localStorage.setItem('opm_staff_database', JSON.stringify(staffDatabase));
+            
+            // Show success message
+            showMessage(`${firstName} ${lastName} has been registered successfully!`, 'success');
+            
+            // Reload staff list
+            loadStaffList();
+            
+            // Clear form
+            clearForm();
+        });
+        
+        function validateForm(firstName, lastName, email, position) {
+            const messageDiv = document.getElementById('message');
+            
+            if (!firstName) {
+                showMessage('Please enter first name.', 'error');
+                return false;
+            }
+            
+            if (!lastName) {
+                showMessage('Please enter last name.', 'error');
+                return false;
+            }
+            
+            if (!email) {
+                showMessage('Please enter email address.', 'error');
+                return false;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('Please enter a valid email address.', 'error');
+                return false;
+            }
+            
+            // Check if it's OPM email (optional but recommended)
+            if (!email.endsWith('@opm.go.ug') && !email.endsWith('@opm.ug')) {
+                if (!confirm('This is not an official OPM email address. Do you want to continue?')) {
+                    return false;
+                }
+            }
+            
+            if (!position) {
+                showMessage('Please select a position.', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${text}`;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'flex';
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        function clearForm() {
+            document.getElementById('staffForm').reset();
+            document.getElementById('firstName').focus();
+        }
+        
+        function editStaff(index) {
+            const staff = staffDatabase[index];
+            
+            // Fill form with staff data
+            document.getElementById('firstName').value = staff["First Name"];
+            document.getElementById('lastName').value = staff["Last Name"];
+            document.getElementById('email').value = staff["Email"];
+            document.getElementById('position').value = staff["Title/Position"];
+            document.getElementById('department').value = staff["Department"] || '';
+            document.getElementById('employeeId').value = staff["Employee ID"] || '';
+            document.getElementById('phone').value = staff["Phone"] || '';
+            
+            // Scroll to form
+            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+            
+            // Focus on first name
+            document.getElementById('firstName').focus();
+            
+            showMessage(`Editing ${staff["First Name"]} ${staff["Last Name"]}. Update the details and click Save.`, 'info');
+        }
+        
+        function deleteStaff(index) {
+            const staff = staffDatabase[index];
+            staffToDelete = index;
+            
+            document.getElementById('deleteStaffName').textContent = `${staff["First Name"]} ${staff["Last Name"]}`;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+        
+        function confirmDelete() {
+            if (staffToDelete !== null) {
+                // Remove staff from database
+                staffDatabase.splice(staffToDelete, 1);
+                
+                // Save to localStorage
+                localStorage.setItem('opm_staff_database', JSON.stringify(staffDatabase));
+                
+                // Reload staff list
+                loadStaffList();
+                
+                // Also remove from any pending requests
+                updateAccessRequests();
+                
+                showMessage('Staff member deleted successfully.', 'success');
+                closeModal();
+            }
+        }
+        
+        function updateAccessRequests() {
+            // Get all access requests
+            const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+            
+            // Filter out the deleted staff from all requests
+            const updatedRequests = allRequests.map(request => {
+                if (request.staffList && request.staffList.length > 0) {
+                    // Filter staff list to remove deleted staff
+                    request.staffList = request.staffList.filter(staff => 
+                        !staffDatabase.some(s => s.Email === staff.Email)
+                    );
+                }
+                return request;
+            });
+            
+            // Save updated requests
+            localStorage.setItem('opm_requests', JSON.stringify(updatedRequests));
+        }
+        
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            staffToDelete = null;
+        }
+        
+        function logout() {
+            localStorage.removeItem('opm_user');
+            window.location.href = 'index.html';
+        }
+        
+        // Export staff data
+        function exportStaffData() {
+            const dataStr = JSON.stringify(staffDatabase, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `opm-staff-database-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        // Import staff data
+        function importStaffData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(importedData)) {
+                        showMessage('Invalid file format. Please upload a valid JSON file.', 'error');
+                        return;
+                    }
+                    
+                    // Merge with existing data
+                    importedData.forEach(newStaff => {
+                        // Check if staff already exists
+                        const exists = staffDatabase.some(staff => staff.Email === newStaff.Email);
+                        if (!exists) {
+                            staffDatabase.push(newStaff);
+                        }
+                    });
+                    
+                    // Save to localStorage
+                    localStorage.setItem('opm_staff_database', JSON.stringify(staffDatabase));
+                    
+                    // Reload list
+                    loadStaffList();
+                    
+                    showMessage('Staff data imported successfully!', 'success');
+                    
+                } catch (error) {
+                    showMessage('Error importing file: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStaffList();
+            
+            // Set up search
+            document.getElementById('searchInput').addEventListener('input', loadStaffList);
+            
+            // Focus on first name field
+            document.getElementById('firstName').focus();
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('deleteModal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
