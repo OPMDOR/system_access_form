@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approve Request - OPM</title>
+    <title>System Access Request - OPM</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,130 +14,257 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
             margin: 0 auto;
         }
         
-        .approval-card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-        
         .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .request-id {
-            background: #f0f4ff;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-family: monospace;
-            font-weight: bold;
-            color: #4361ee;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        .status-badge {
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            display: inline-block;
-        }
-        
-        .pending { background: #fff3cd; color: #856404; }
-        .approved { background: #d4edda; color: #155724; }
-        .rejected { background: #f8d7da; color: #721c24; }
-        
-        .request-details {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        
-        .detail-row {
+            background: white;
+            border-radius: 15px 15px 0 0;
+            padding: 25px 40px;
+            margin-bottom: 2px;
             display: flex;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-            width: 200px;
-        }
-        
-        .detail-value {
-            flex: 1;
+        .user-info h3 {
+            margin: 0;
             color: #333;
         }
         
-        .approver-section {
-            background: #fff8e1;
-            padding: 25px;
+        .user-info p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .logout-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            text-align: center;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
             border-radius: 10px;
-            margin: 30px 0;
-            border-left: 4px solid #ffb300;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 8px;
             color: #555;
             font-weight: 600;
         }
         
-        .form-group input, .form-group textarea {
+        label.required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        input, select, textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
+            box-sizing: border-box;
         }
         
-        .action-buttons {
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .email-input-group {
             display: flex;
-            gap: 15px;
-            margin: 30px 0;
-            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
-        .action-btn {
-            padding: 14px 40px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            min-width: 150px;
+        .email-input {
+            flex: 1;
         }
         
-        .approve-btn {
-            background: #4CAF50;
+        .add-staff-btn {
+            background: #4361ee;
             color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
         }
         
-        .reject-btn {
+        .add-staff-btn:hover {
+            background: #3a56d4;
+        }
+        
+        .staff-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid #e0e0e0;
+            display: none;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .staff-list {
+            margin-top: 20px;
+        }
+        
+        .staff-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .staff-table th {
+            background: #4361ee;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .staff-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .staff-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .remove-btn {
             background: #e74c3c;
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
         }
         
-        .back-btn {
-            background: #6c757d;
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            background: #4CAF50;
             color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+        }
+        
+        .submit-btn:hover {
+            background: #45a049;
+        }
+        
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
         }
         
         .message {
@@ -147,342 +274,730 @@
             display: none;
         }
         
-        .success { 
-            background: #d4edda; 
-            color: #155724; 
-            border: 1px solid #28a745;
+        .error {
+            background: #ffeaea;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
         }
         
-        .error { 
-            background: #f8d7da; 
-            color: #721c24; 
-            border: 1px solid #dc3545;
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4CAF50;
         }
         
-        .info {
+        .approval-link {
             background: #e3f2fd;
-            color: #0d47a1;
-            border: 1px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #90caf9;
         }
         
         @media (max-width: 768px) {
-            .detail-row {
+            .details-grid,
+            .checkbox-grid,
+            .date-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .email-input-group {
                 flex-direction: column;
             }
             
-            .detail-label {
+            .add-staff-btn {
                 width: 100%;
-                margin-bottom: 5px;
             }
             
-            .action-buttons {
-                flex-direction: column;
+            .staff-table {
+                font-size: 14px;
             }
             
-            .action-btn {
-                width: 100%;
+            .staff-table th,
+            .staff-table td {
+                padding: 8px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="approval-card">
-            <div class="header">
-                <div class="request-id" id="requestIdDisplay">Request ID: Loading...</div>
-                <h1>System Access Request Approval</h1>
-                <div id="statusDisplay"></div>
+        <!-- Header with user info -->
+        <div class="header">
+            <div class="user-info">
+                <h3 id="userName">User</h3>
+                <p id="userEmail">user@example.com</p>
             </div>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+        
+        <!-- Main Form -->
+        <div class="form-card">
+            <h1>System Access Request Form</h1>
             
-            <div id="message" class="message"></div>
+            <div id="errorMessage" class="message error"></div>
+            <div id="successMessage" class="message success"></div>
             
-            <!-- Request Details -->
-            <div id="requestDetails" class="request-details">
-                <h3>Request Details</h3>
-                <div id="detailsContent">
-                    <!-- Details will be loaded here -->
+            <form id="accessRequestForm">
+                <!-- Staff Email Input -->
+                <div class="form-section">
+                    <h3>Staff Information</h3>
+                    <div class="form-group">
+                        <label for="staffEmail" class="required">Enter Staff Email:</label>
+                        <div class="email-input-group">
+                            <input type="email" id="staffEmail" class="email-input" 
+                                   placeholder="Enter staff email address" required>
+                            <button type="button" onclick="addStaff()" class="add-staff-btn">
+                                Add Staff
+                            </button>
+                        </div>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
+                            Enter email and click "Add Staff" to add to the list
+                        </p>
+                    </div>
+                    
+                    <!-- Staff Details -->
+                    <div id="staffDetails" class="staff-details">
+                        <h4>Staff Details</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <div class="detail-label">First Name</div>
+                                <div class="detail-value" id="firstName">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Middle Name</div>
+                                <div class="detail-value" id="middleName">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Last Name</div>
+                                <div class="detail-value" id="lastName">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value" id="staffEmailDisplay">-</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Title/Position</div>
+                                <div class="detail-value" id="staffTitle">-</div>
+                            </div>
+                        </div>
+                        <div id="addSuccessMessage" class="success-message"></div>
+                    </div>
+                    
+                    <!-- Staff List -->
+                    <div id="staffListSection" class="staff-list" style="display: none;">
+                        <div class="staff-list-header">
+                            <h4>Staff Selected for Access (${selectedStaff.length})</h4>
+                            <button type="button" onclick="clearStaffList()" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                                Clear All
+                            </button>
+                        </div>
+                        <table class="staff-table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Position</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <!-- Staff rows will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Approver Information -->
-            <div class="approver-section" id="approverSection">
-                <h3>Approver Information</h3>
-                <div class="form-group">
-                    <label>Your Name *</label>
-                    <input type="text" id="approverName" placeholder="Enter your full name">
+                
+                <!-- System Selection -->
+                <div class="form-section">
+                    <h3>System Details</h3>
+                    <div class="form-group">
+                        <label for="system" class="required">System Required:</label>
+                        <select id="system" required>
+                            <option value="">Select System</option>
+                            <option value="progres_v4">Progres V4</option>
+                            <option value="bims">BIMS</option>
+                            <option value="rapp">RAPP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="required">Access Rights Required:</label>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="registration_level_1">
+                                Registration Level 1
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="registration_level_2">
+                                Registration Level 2
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="print">
+                                Print
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="export">
+                                Export
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="rsd">
+                                RSD
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="access" value="dtr">
+                                DTR
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Your Email *</label>
-                    <input type="email" id="approverEmail" placeholder="Enter your email">
+                
+                <!-- Access Duration -->
+                <div class="form-section">
+                    <h3>Access Duration</h3>
+                    <div class="form-group">
+                        <div class="date-inputs">
+                            <div>
+                                <label for="startDate">Start Date</label>
+                                <input type="date" id="startDate" required readonly>
+                            </div>
+                            <div>
+                                <label for="endDate" class="required">End Date</label>
+                                <input type="date" id="endDate" required>
+                            </div>
+                        </div>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
+                            End date must be within one year from start date
+                        </p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Comments (Optional)</label>
-                    <textarea id="comments" rows="3" placeholder="Add any comments..."></textarea>
-                </div>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="action-buttons" id="actionButtons">
-                <button onclick="approveRequest()" class="action-btn approve-btn">
-                    Approve Request
-                </button>
-                <button onclick="rejectRequest()" class="action-btn reject-btn">
-                    Reject Request
-                </button>
-                <button onclick="goBack()" class="action-btn back-btn">
-                    Go Back
-                </button>
-            </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Request for ${selectedStaff.length} Staff</button>
+            </form>
         </div>
     </div>
-    
+
     <script>
-        // Get request ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestId = urlParams.get('id');
-        
-        if (!requestId) {
-            document.getElementById('message').textContent = 'No request ID provided.';
-            document.getElementById('message').className = 'message error';
-            document.getElementById('message').style.display = 'block';
-            document.getElementById('requestIdDisplay').textContent = 'Invalid Request';
-            return;
+        // Check if user is authorized
+        const userData = JSON.parse(localStorage.getItem('opm_user') || '{}');
+        if (!userData.authorized) {
+            window.location.href = 'index.html';
         }
         
-        // Display request ID
-        document.getElementById('requestIdDisplay').textContent = `Request ID: ${requestId}`;
+        // Display user info
+        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('userEmail').textContent = userData.email;
         
-        // Load request data
-        function loadRequest() {
-            try {
-                // Get all requests from localStorage
-                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
-                const request = allRequests.find(req => req.id === requestId);
-                
-                if (!request) {
-                    showMessage('Request not found. It may have been deleted or expired.', 'error');
-                    hideApprovalSection();
-                    return;
-                }
-                
-                displayRequestDetails(request);
-                
-                // Check if already processed
-                if (request.status !== 'pending') {
-                    showMessage(`This request has already been ${request.status} on ${new Date(request.approvalDate).toLocaleDateString()}`, 'info');
-                    hideApprovalSection();
-                }
-                
-            } catch (error) {
-                showMessage('Error loading request: ' + error.message, 'error');
-                hideApprovalSection();
-            }
-        }
+        // Staff database from your data
+        const staffDatabase = [
+            {"First Name": "Ceasar", "Middle Name": "", "Last Name": "Atiku", "Email": "ceasaratiku@gmail.com", "Title/Position": "Assistant Community Services Officer"},
+            {"First Name": "Mariam", "Middle Name": "", "Last Name": "Nakasango", "Email": "mariam.nakasango@opm.go.ug", "Title/Position": "Assistant Community Services Officer"},
+            {"First Name": "Doryn", "Middle Name": "", "Last Name": "Kasangaki", "Email": "kasangakidoryn@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Prossy", "Middle Name": "Eunice", "Last Name": "Akello", "Email": "aprossyeunice@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Doreen", "Middle Name": "", "Last Name": "Kasangaki", "Email": "doreen.kasangaki@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Tedson", "Middle Name": "", "Last Name": "TWESIGYE", "Email": "tedson.twesigye@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Joshua", "Middle Name": "Edward", "Last Name": "Karungi", "Email": "joshuakalungi101@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Noel", "Middle Name": "", "Last Name": "Ikwap", "Email": "noel.ikwap@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Teddy", "Middle Name": "", "Last Name": "Kayeny", "Email": "teddy.kayeny@opm.go.ug", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Astar", "Middle Name": "", "Last Name": "Kitimbo", "Email": "suadiqk@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Mayinja", "Middle Name": "", "Last Name": "Peter", "Email": "pete.mayinja@gmail.com", "Title/Position": "Assistant IT Officer"},
+            {"First Name": "Jane", "Middle Name": "", "Last Name": "Nakku", "Email": "nakkujane@yahoo.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Amos", "Middle Name": "", "Last Name": "Ojelel", "Email": "amos.ojelel@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Akanjuna", "Middle Name": "", "Last Name": "Rubashoka", "Email": "akanjuna.rubashoka@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rogers", "Middle Name": "", "Last Name": "Akankwasa", "Email": "rogers.akankwasa@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Eve", "Middle Name": "", "Last Name": "Nakayima", "Email": "eve.nakayima@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Sumaya", "Middle Name": "", "Last Name": "Kalembe", "Email": "sumaya.kalembe@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Allan", "Middle Name": "", "Last Name": "Mutasa", "Email": "allan.mutasa@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Collins", "Middle Name": "", "Last Name": "Tubbo", "Email": "tubbocollins92@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Innocent", "Middle Name": "", "Last Name": "Kakuru", "Email": "innocent.kakuru@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Peggy", "Middle Name": "", "Last Name": "Ayesiga", "Email": "Peggie.ayesiga@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Irene", "Middle Name": "", "Last Name": "Nakalema", "Email": "irene.nakalema@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Gloria", "Middle Name": "", "Last Name": "NATUKUNDA", "Email": "gloria.natukunda@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Denis", "Middle Name": "", "Last Name": "OLWA", "Email": "denniseolwa@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Michael", "Middle Name": "Jackson", "Last Name": "Ocaya", "Email": "michael.ocaya@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Robert", "Middle Name": "", "Last Name": "Okello", "Email": "okellorob@yahoo.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Harriet", "Middle Name": "", "Last Name": "Akello", "Email": "harriet.akello@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rauben", "Middle Name": "", "Last Name": "Mugume", "Email": "rauben.mugume@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Richard", "Middle Name": "Peko", "Last Name": "Tabulee", "Email": "rtabulee@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Elvis", "Middle Name": "", "Last Name": "Ochan", "Email": "elvis.ochan@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Mahfuzu", "Middle Name": "", "Last Name": "Asiku", "Email": "asiku.mahfuzu@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Mutiibwa", "Email": "mutiibwajade@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Hamza", "Middle Name": "", "Last Name": "Mutebi", "Email": "hamza.mutebi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Pamela", "Middle Name": "", "Last Name": "Aboke", "Email": "pamela.aboke@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "David", "Middle Name": "", "Last Name": "Mwaka", "Email": "david.mwaka@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Jennifer", "Middle Name": "", "Last Name": "Amodo", "Email": "jenniferhopeamodo@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Albert", "Middle Name": "", "Last Name": "Olicho", "Email": "albert.olicho@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Kereke", "Email": "sarah.kereke@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Arnold", "Middle Name": "", "Last Name": "Natwijuka", "Email": "arnoldnatwijuka@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Brian", "Middle Name": "", "Last Name": "Nyombi", "Email": "brian.nyombi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Moses", "Middle Name": "", "Last Name": "Mayiga", "Email": "moses.mayiga@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Barungi", "Email": "sarah.birungi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "ANALD", "Middle Name": "", "Last Name": "AMUTUHEIRE", "Email": "anald.amutuheire@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Saphrah", "Middle Name": "", "Last Name": "Mpirirwe", "Email": "mpirirwesaphrah@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Esther", "Middle Name": "", "Last Name": "Mukyala", "Email": "naiesther@yahoo.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Tryphine", "Middle Name": "", "Last Name": "Amanya", "Email": "amanyatry188@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Tonny", "Middle Name": "", "Last Name": "Olur", "Email": "tonnyolur@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Billy", "Middle Name": "", "Last Name": "Muhozi", "Email": "muhoozibilly@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Lydia", "Middle Name": "", "Last Name": "Tusiime", "Email": "lydiashanne@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Madiinah", "Middle Name": "", "Last Name": "Nalwoga", "Email": "madiinah.nalwoga@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Mahfuzu", "Middle Name": "", "Last Name": "ASIKU", "Email": "asiku.mafuzu@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Paul", "Middle Name": "", "Last Name": "Tiondi", "Email": "paul.tiondi@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Hellen", "Middle Name": "", "Last Name": "Amadrio", "Email": "hellen.amadrio@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Deogracious", "Middle Name": "", "Last Name": "Drabile", "Email": "deograciousdrabile12@gmail.com", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Betty", "Middle Name": "", "Last Name": "Endeo", "Email": "betty.endeo@opm.go.ug", "Title/Position": "Assistant Registration Officer"},
+            {"First Name": "Fred", "Middle Name": "", "Last Name": "Buzu", "Email": "fred.buzu@yahoo.com", "Title/Position": "Community Services Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Agea", "Email": "sarah.agea@opm.go.ug", "Title/Position": "Community Services Officer"},
+            {"First Name": "Peace", "Middle Name": "", "Last Name": "Asiimwe", "Email": "peace.asiimwe@opm.go.ug", "Title/Position": "Community Services Officer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Naluyinda", "Email": "sarah.naluyinda@opm.go.ug", "Title/Position": "Community Services Officer"},
+            {"First Name": "Anitah", "Middle Name": "", "Last Name": "Nakazzi", "Email": "anitah.nakazi@gmail.com", "Title/Position": "Data Management Specialist"},
+            {"First Name": "Hudra", "Middle Name": "", "Last Name": "Bwana", "Email": "hudra.bwana@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Musiimenta", "Middle Name": "", "Last Name": "Bella", "Email": "bellamusiime@gmail.com", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "NABIRYE", "Middle Name": "", "Last Name": "Eleanor", "Email": "eleanor.nabirye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Ivan", "Middle Name": "", "Last Name": "Ruhinda", "Email": "ivan.ruhinda@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Prossy", "Middle Name": "", "Last Name": "KANYESIGYE", "Email": "prossy.kanyesigye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Rhona", "Middle Name": "", "Last Name": "Kemigisha", "Email": "ronitakem@gmail.com", "Title/Position": "Protection Officer"},
+            {"First Name": "DICKENS", "Middle Name": "", "Last Name": "Bwengye", "Email": "dickens.bwengye@opm.go.ug", "Title/Position": "Assistant Protection Officer"},
+            {"First Name": "Agnes", "Middle Name": "", "Last Name": "Baseera", "Email": "agnes.baseera@opm.go.ug", "Title/Position": "Protection Officer"},
+            {"First Name": "Namboowa", "Middle Name": "", "Last Name": "Diana", "Email": "diana.namboowa@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Muwonge", "Email": "george.muwonge@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Roy", "Middle Name": "", "Last Name": "Yiga", "Email": "roy.yiga@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Nassozi", "Email": "joan.nassozi@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Judith", "Middle Name": "", "Last Name": "Nahabwe", "Email": "judith.nahabwe@opm.go.ug", "Title/Position": "Refugee Status Interviewing Officer"},
+            {"First Name": "Eve", "Middle Name": "", "Last Name": "Opileni", "Email": "eve.opileni@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Sharon", "Middle Name": "", "Last Name": "Ayebazibwe", "Email": "sharon.ayebazibwe@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Freda", "Middle Name": "", "Last Name": "Munduru", "Email": "mundurufreda@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Newton", "Middle Name": "", "Last Name": "Mugume", "Email": "mnewton.biz@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rendar", "Middle Name": "", "Last Name": "Namanya", "Email": "rendarn462@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Samson", "Middle Name": "", "Last Name": "Emunot", "Email": "emunotsamson@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Naswifu", "Middle Name": "", "Last Name": "Koire", "Email": "naswifu.koire@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Mariam", "Middle Name": "", "Last Name": "Ali", "Email": "joremariam@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Isaac", "Middle Name": "", "Last Name": "Ahiyanyire", "Email": "nyihireizhak@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rouben", "Middle Name": "", "Last Name": "Mugume", "Email": "mugumerauben@yahoo.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Shirley", "Middle Name": "", "Last Name": "Kyakunda", "Email": "shirley.kyakunda@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Julian", "Middle Name": "", "Last Name": "NAMUGAYA", "Email": "julian.namugaya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "JUDITH", "Middle Name": "", "Last Name": "NATUKUNDA", "Email": "judithnatukunda2015@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Nicholas", "Middle Name": "Kahima", "Last Name": "Tugume", "Email": "nicholas.tugume@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Hajarah", "Middle Name": "", "Last Name": "Nabulya", "Email": "hajara.nabulya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Didas", "Middle Name": "", "Last Name": "Kwesiga", "Email": "kwesdidas@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Racheal", "Middle Name": "", "Last Name": "Ayebare", "Email": "ntare.rach@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Daphine", "Middle Name": "", "Last Name": "Twongyre", "Email": "daphine.twongyere@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Ivan", "Middle Name": "", "Last Name": "Mandu", "Email": "ivan.mandu@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Patience", "Middle Name": "", "Last Name": "Kihumuro", "Email": "kihumuro69@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Brenda", "Middle Name": "", "Last Name": "Kato", "Email": "brendah.kato@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Peace", "Middle Name": "", "Last Name": "Besigye", "Email": "peace.besigye@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Leona", "Middle Name": "", "Last Name": "Aine", "Email": "leona.aine@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Milly", "Middle Name": "", "Last Name": "Nabunya", "Email": "milliam.nabunya@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Annet", "Middle Name": "", "Last Name": "Asuru", "Email": "annet.asuru@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Harriet", "Middle Name": "", "Last Name": "Faidah", "Email": "harriet.faidha@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Martha", "Middle Name": "", "Last Name": "Nabadda", "Email": "martha.nabadda@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Rosette", "Middle Name": "", "Last Name": "Kemirembe", "Email": "rosette.kemirembe@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Herbert", "Middle Name": "", "Last Name": "Ochama", "Email": "herbert.ochama@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Christine", "Middle Name": "Logi", "Last Name": "UNZIA", "Email": "christine.unzia@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Gerald", "Middle Name": "", "Last Name": "Latuk", "Email": "gerald.latuk@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Angella", "Middle Name": "", "Last Name": "Auma", "Email": "angella.auma@opm.go.ug", "Title/Position": "Registration Officer"},
+            {"First Name": "Oliwa", "Middle Name": "", "Last Name": "Joseph", "Email": "josephkjj123@gmail.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Rhona", "Middle Name": "", "Last Name": "Kamwine", "Email": "kamwine.ronah@yahoo.com", "Title/Position": "Registration Officer"},
+            {"First Name": "Joshua", "Middle Name": "", "Last Name": "Atwine", "Email": "Joshuaatwine056@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jalia", "Middle Name": "", "Last Name": "Nakasuse", "Email": "nakasusejalla1@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jackie", "Middle Name": "", "Last Name": "Namugolo", "Email": "namugoloj65@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Fatumah", "Middle Name": "", "Last Name": "Nalubowa", "Email": "fatumahmukasa93@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Ginyera", "Email": "orochiginyera@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Faith", "Middle Name": "", "Last Name": "Anero", "Email": "faithanero22@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Onencan", "Middle Name": "", "Last Name": "Robinson", "Email": "onencanrobinson@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Winfred", "Middle Name": "", "Last Name": "Nantumbwe", "Email": "winniewonder09@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Papetra", "Middle Name": "", "Last Name": "Lakica", "Email": "papetralakica@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Bosco", "Middle Name": "", "Last Name": "Okot", "Email": "okotbosco82@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Warren", "Middle Name": "", "Last Name": "Mirimo", "Email": "warrenmirimo@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Milly", "Middle Name": "", "Last Name": "Akello", "Email": "akellomilly97@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Phaeb", "Middle Name": "", "Last Name": "Kyomugisha", "Email": "kphaeb@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "David", "Middle Name": "Okot", "Last Name": "Nyeko", "Email": "okotdavidnyeko151995@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Micheal", "Middle Name": "", "Last Name": "Opoka", "Email": "opokamichael481@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Allen", "Middle Name": "", "Last Name": "Atwijukire", "Email": "atallen2014@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Elijah", "Middle Name": "", "Last Name": "Kwikiriza", "Email": "elikwikriza@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Prossy", "Middle Name": "", "Last Name": "Tukahirwa", "Email": "prossytukahirwa60@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mary", "Middle Name": "Goret", "Last Name": "Athieno", "Email": "kifuonjiag@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Flida", "Middle Name": "", "Last Name": "Mukunzire", "Email": "flidamukunzire@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Kellen", "Middle Name": "", "Last Name": "Kwarikunda", "Email": "leonake959@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "George", "Middle Name": "", "Last Name": "Okipi", "Email": "okipigeorge@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "David", "Middle Name": "", "Last Name": "Armstrong", "Email": "armstrongdk@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Edith", "Middle Name": "", "Last Name": "Nampala", "Email": "nampalaedith@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Eunice", "Middle Name": "", "Last Name": "Oyella", "Email": "oyellaeunice01@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Victoria", "Middle Name": "", "Last Name": "Nambogo", "Email": "victoriaheavens23@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Ronald", "Middle Name": "", "Last Name": "Onen", "Email": "ronnycliff@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Sarah", "Middle Name": "", "Last Name": "Namukura", "Email": "namukurasarah12@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Getrude", "Middle Name": "Naibok", "Last Name": "Lodou", "Email": "ibokechap@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Shibah", "Middle Name": "", "Last Name": "Alinda", "Email": "alinda3shibah@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Birungi", "Email": "jbirungi195@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Cynthia", "Middle Name": "", "Last Name": "Aber", "Email": "abercynthia7@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Phiona", "Middle Name": "Mary", "Last Name": "Nabakooza", "Email": "phionamary31@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Amos", "Middle Name": "", "Last Name": "Turyatemba", "Email": "amuhimba@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Gillian", "Middle Name": "", "Last Name": "Nakato", "Email": "nakatogillian@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Henry", "Middle Name": "", "Last Name": "Bweme", "Email": "bwemeh@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mercy", "Middle Name": "Pliver", "Last Name": "Achom", "Email": "achommercy137@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Joan", "Middle Name": "", "Last Name": "Katushabe", "Email": "joankatushabe27@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Anthony", "Middle Name": "Opio", "Last Name": "Ijalla", "Email": "opix23@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Emmanuel", "Middle Name": "", "Last Name": "Komakech", "Email": "komakech2023@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Dominic", "Middle Name": "", "Last Name": "Andama", "Email": "andamadominic09@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Brian", "Middle Name": "", "Last Name": "Kinyera", "Email": "kinyerakony@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Concy", "Middle Name": "", "Last Name": "Acayo", "Email": "concyacayo@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "MAURICE", "Middle Name": "", "Last Name": "TUKUNDANE", "Email": "tukundanemaurice@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "SAUYA", "Middle Name": "", "Last Name": "OWEMBABAZI", "Email": "sauya@ymail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Dorothy", "Middle Name": "", "Last Name": "Christmas", "Email": "christmasdorah@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Judith", "Middle Name": "", "Last Name": "Nakamanya", "Email": "Judithnak02@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Francis", "Middle Name": "Innocent", "Last Name": "Ebiu", "Email": "esayuebiu94@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Innocent", "Middle Name": "", "Last Name": "Musinguzi", "Email": "imusinguzi8@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Daphine", "Middle Name": "Robinah", "Last Name": "Asiimwe", "Email": "daphineasiimwe95@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Asaph", "Middle Name": "", "Last Name": "Akampa", "Email": "r2asaph@yahoo.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Faith", "Middle Name": "", "Last Name": "Amujal", "Email": "faithamujal@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Susan", "Middle Name": "", "Last Name": "ABALO", "Email": "usanabalo32@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "STELLA", "Middle Name": "", "Last Name": "AMVIKO", "Email": "amvikostella3@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Specioza", "Middle Name": "", "Last Name": "Eyotaru", "Email": "specieeyotaru@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Flavia", "Middle Name": "", "Last Name": "Anywa", "Email": "flavia.anywa@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Immaculate", "Middle Name": "Collette", "Last Name": "Atim", "Email": "letyour.collette@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Umar", "Middle Name": "", "Last Name": "Twinamatsiko", "Email": "umaromar310@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Racheal", "Middle Name": "", "Last Name": "Aheebwa", "Email": "ahabweracheal6@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Patience", "Middle Name": "", "Last Name": "Brenda", "Email": "patiencebrendah44@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Gladys", "Middle Name": "", "Last Name": "Twogirwe", "Email": "twongirwegladys@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Jane", "Middle Name": "", "Last Name": "Kyomuhangi", "Email": "janekyomuhangi256@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Evas", "Middle Name": "", "Last Name": "Ainebyona", "Email": "angellahevas14@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Anitah", "Middle Name": "", "Last Name": "Komugisa", "Email": "annitikom@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "ADRINE", "Middle Name": "", "Last Name": "PROMISE", "Email": "adriepromise@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Elinah", "Middle Name": "", "Last Name": "Gumoshabe", "Email": "gumoshabeelinah97@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Mugisha", "Middle Name": "", "Last Name": "Kwiringira", "Email": "mugishakwir.3@gmail.com", "Title/Position": "Registration Volunteer"},
+            {"First Name": "Geoffrey", "Middle Name": "", "Last Name": "Mugabe", "Email": "geoffrey.mugabe@opm.go.ug", "Title/Position": "Senior Settlement Officer"}
+        ];
         
-        function displayRequestDetails(request) {
-            const detailsContent = document.getElementById('detailsContent');
-            const statusDisplay = document.getElementById('statusDisplay');
+        // Array to store selected staff
+        let selectedStaff = [];
+        
+        // Set current date as default start date
+        function setDefaultDates() {
+            const today = new Date();
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
             
-            // Update status badge
-            let statusClass = 'pending';
-            let statusText = 'Pending Approval';
-            
-            if (request.status === 'approved') {
-                statusClass = 'approved';
-                statusText = 'Approved';
-            } else if (request.status === 'rejected') {
-                statusClass = 'rejected';
-                statusText = 'Rejected';
-            }
-            
-            statusDisplay.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
-            
-            // Create details HTML
-            let html = '';
-            
-            // Staff Information
-            if (request.staff) {
-                html += `
-                    <div class="detail-row">
-                        <div class="detail-label">Staff Name:</div>
-                        <div class="detail-value">
-                            ${request.staff['First Name'] || ''} 
-                            ${request.staff['Middle Name'] ? request.staff['Middle Name'] + ' ' : ''}
-                            ${request.staff['Last Name'] || ''}
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Staff Email:</div>
-                        <div class="detail-value">${request.staff.Email || request.staffEmail || 'N/A'}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Position:</div>
-                        <div class="detail-value">${request.staff['Title/Position'] || 'N/A'}</div>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="detail-row">
-                        <div class="detail-label">Staff Email:</div>
-                        <div class="detail-value">${request.staffEmail || 'N/A'}</div>
-                    </div>
-                `;
-            }
-            
-            // System Information
-            const systemNames = {
-                'progres_v4': 'Progres V4',
-                'bims': 'BIMS',
-                'rapp': 'RAPP'
+            // Format dates as YYYY-MM-DD
+            const formatDate = (date) => {
+                return date.toISOString().split('T')[0];
             };
             
-            html += `
-                <div class="detail-row">
-                    <div class="detail-label">System:</div>
-                    <div class="detail-value">${systemNames[request.system] || request.system || 'N/A'}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Access Rights:</div>
-                    <div class="detail-value">${request.accessRights || 'N/A'}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Duration:</div>
-                    <div class="detail-value">${request.startDate || 'Current Date'} to ${request.endDate || 'N/A'}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Requested By:</div>
-                    <div class="detail-value">
-                        ${request.requestingOfficer || 'N/A'}
-                        <br><small>${request.requestingOfficerEmail || ''}</small>
-                    </div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Request Date:</div>
-                    <div class="detail-value">${new Date(request.timestamp || Date.now()).toLocaleString()}</div>
-                </div>
-            `;
-            
-            // If already processed, show approver info
-            if (request.status !== 'pending') {
-                html += `
-                    <div class="detail-row">
-                        <div class="detail-label">${request.status === 'approved' ? 'Approved' : 'Rejected'} By:</div>
-                        <div class="detail-value">
-                            ${request.approver || 'N/A'}
-                            <br><small>${request.approverEmail || ''}</small>
-                        </div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">${request.status === 'approved' ? 'Approval' : 'Rejection'} Date:</div>
-                        <div class="detail-value">${new Date(request.approvalDate).toLocaleString()}</div>
-                    </div>
-                    ${request.comments ? `
-                    <div class="detail-row">
-                        <div class="detail-label">Comments:</div>
-                        <div class="detail-value">${request.comments}</div>
-                    </div>
-                    ` : ''}
-                `;
-            }
-            
-            detailsContent.innerHTML = html;
+            document.getElementById('startDate').value = formatDate(today);
+            document.getElementById('endDate').value = formatDate(oneYearLater);
+            document.getElementById('endDate').min = formatDate(today);
+            document.getElementById('endDate').max = formatDate(oneYearLater);
         }
         
-        function approveRequest() {
-            const approverName = document.getElementById('approverName').value.trim();
-            const approverEmail = document.getElementById('approverEmail').value.trim();
-            const comments = document.getElementById('comments').value.trim();
+        // Update submit button text
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const count = selectedStaff.length;
+            submitBtn.textContent = `Submit Request for ${count} Staff`;
+            submitBtn.disabled = count === 0;
+        }
+        
+        // Add staff function
+        function addStaff() {
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('errorMessage');
+            const staffDetails = document.getElementById('staffDetails');
+            const successMsg = document.getElementById('addSuccessMessage');
             
-            if (!approverName || !approverEmail) {
-                showMessage('Please enter your name and email.', 'error');
+            // Clear previous messages
+            errorDiv.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            if (!email) {
+                showError('Please enter staff email.');
                 return;
             }
             
-            updateRequestStatus('approved', approverName, approverEmail, comments);
-        }
-        
-        function rejectRequest() {
-            const approverName = document.getElementById('approverName').value.trim();
-            const approverEmail = document.getElementById('approverEmail').value.trim();
-            const comments = document.getElementById('comments').value.trim();
-            
-            if (!approverName || !approverEmail) {
-                showMessage('Please enter your name and email.', 'error');
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address.');
                 return;
             }
             
-            if (!comments) {
-                if (!confirm('Are you sure you want to reject without adding comments?')) {
-                    return;
-                }
+            // Check if staff is already added
+            if (selectedStaff.some(staff => staff.Email.toLowerCase() === email)) {
+                showError('This staff member is already in the list.');
+                return;
             }
             
-            updateRequestStatus('rejected', approverName, approverEmail, comments);
-        }
-        
-        function updateRequestStatus(status, approverName, approverEmail, comments) {
-            try {
-                // Get all requests
-                const allRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
-                const requestIndex = allRequests.findIndex(req => req.id === requestId);
+            // Find staff in database
+            const staff = staffDatabase.find(s => 
+                s.Email.toLowerCase() === email
+            );
+            
+            if (staff) {
+                // Display staff details
+                document.getElementById('firstName').textContent = staff["First Name"] || '-';
+                document.getElementById('middleName').textContent = staff["Middle Name"] || '-';
+                document.getElementById('lastName').textContent = staff["Last Name"] || '-';
+                document.getElementById('staffEmailDisplay').textContent = staff["Email"] || '-';
+                document.getElementById('staffTitle').textContent = staff["Title/Position"] || '-';
                 
-                if (requestIndex === -1) {
-                    showMessage('Request not found.', 'error');
-                    return;
-                }
+                // Show staff details section
+                staffDetails.style.display = 'block';
                 
-                // Update request
-                allRequests[requestIndex].status = status;
-                allRequests[requestIndex].approver = approverName;
-                allRequests[requestIndex].approverEmail = approverEmail;
-                allRequests[requestIndex].comments = comments;
-                allRequests[requestIndex].approvalDate = new Date().toISOString();
-                
-                // Save back to localStorage
-                localStorage.setItem('opm_requests', JSON.stringify(allRequests));
+                // Add to selected staff array
+                selectedStaff.push(staff);
                 
                 // Show success message
-                const action = status === 'approved' ? 'approved' : 'rejected';
-                showMessage(`Request ${action} successfully!`, 'success');
+                successMsg.textContent = `✓ ${staff["First Name"]} ${staff["Last Name"]} added successfully!`;
+                successMsg.style.display = 'block';
                 
-                // Hide approval section
-                hideApprovalSection();
+                // Clear email input
+                document.getElementById('staffEmail').value = '';
                 
-                // Reload request details
+                // Update staff list display
+                updateStaffList();
+                
+                // Update submit button
+                updateSubmitButton();
+                
+                // Scroll to staff list
                 setTimeout(() => {
-                    loadRequest();
-                }, 1000);
+                    document.getElementById('staffListSection').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
                 
-            } catch (error) {
-                showMessage('Error updating request: ' + error.message, 'error');
+            } else {
+                showError('Staff not found in database. Please check the email.');
+                staffDetails.style.display = 'none';
             }
         }
         
-        function hideApprovalSection() {
-            document.getElementById('approverSection').style.display = 'none';
-            document.getElementById('actionButtons').style.display = 'none';
-        }
-        
-        function showMessage(text, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = text;
-            messageDiv.className = `message ${type}`;
-            messageDiv.style.display = 'block';
+        // Update staff list display
+        function updateStaffList() {
+            const staffListSection = document.getElementById('staffListSection');
+            const staffTableBody = document.getElementById('staffTableBody');
             
-            // Auto-hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                }, 5000);
+            if (selectedStaff.length === 0) {
+                staffListSection.style.display = 'none';
+                return;
+            }
+            
+            staffListSection.style.display = 'block';
+            
+            // Update header
+            document.querySelector('.staff-list-header h4').textContent = 
+                `Staff Selected for Access (${selectedStaff.length})`;
+            
+            // Clear table
+            staffTableBody.innerHTML = '';
+            
+            // Add staff to table
+            selectedStaff.forEach((staff, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <strong>${staff["First Name"]} ${staff["Last Name"]}</strong>
+                        ${staff["Middle Name"] ? `<br><small>${staff["Middle Name"]}</small>` : ''}
+                    </td>
+                    <td>${staff["Email"]}</td>
+                    <td>${staff["Title/Position"]}</td>
+                    <td>
+                        <button onclick="removeStaff(${index})" class="remove-btn">
+                            Remove
+                        </button>
+                    </td>
+                `;
+                staffTableBody.appendChild(row);
+            });
+        }
+        
+        // Remove staff from list
+        function removeStaff(index) {
+            selectedStaff.splice(index, 1);
+            updateStaffList();
+            updateSubmitButton();
+        }
+        
+        // Clear all staff
+        function clearStaffList() {
+            if (confirm('Are you sure you want to remove all staff from the list?')) {
+                selectedStaff = [];
+                updateStaffList();
+                updateSubmitButton();
+                document.getElementById('staffDetails').style.display = 'none';
             }
         }
         
-        function goBack() {
-            window.history.back();
+        // Handle form submission
+        document.getElementById('accessRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const system = document.getElementById('system').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Get selected access rights
+            const accessCheckboxes = document.querySelectorAll('input[name="access"]:checked');
+            const accessRights = Array.from(accessCheckboxes).map(cb => cb.value);
+            
+            // Validate
+            if (!validateForm(system, accessRights, startDate, endDate)) {
+                return;
+            }
+            
+            // Submit form
+            submitRequest(system, accessRights, startDate, endDate);
+        });
+        
+        function validateForm(system, accessRights, startDate, endDate) {
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (selectedStaff.length === 0) {
+                showError('Please add at least one staff member.');
+                return false;
+            }
+            
+            if (!system) {
+                showError('Please select a system.');
+                return false;
+            }
+            
+            if (accessRights.length === 0) {
+                showError('Please select at least one access right.');
+                return false;
+            }
+            
+            if (!startDate || !endDate) {
+                showError('Please select both start and end dates.');
+                return false;
+            }
+            
+            // Check if end date is within one year
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const oneYearLater = new Date(start);
+            oneYearLater.setFullYear(start.getFullYear() + 1);
+            
+            if (end > oneYearLater) {
+                showError('End date cannot exceed one year from start date.');
+                return false;
+            }
+            
+            if (end < start) {
+                showError('End date cannot be before start date.');
+                return false;
+            }
+            
+            return true;
         }
         
-        // Load request when page loads
-        window.addEventListener('DOMContentLoaded', loadRequest);
+        function submitRequest(system, accessRights, startDate, endDate) {
+            // Generate unique request ID
+            const requestId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+            
+            // Create request object
+            const request = {
+                id: requestId,
+                staffList: selectedStaff,
+                system: system,
+                accessRights: accessRights.join(', '),
+                startDate: startDate,
+                endDate: endDate,
+                requestingOfficer: userData.name,
+                requestingOfficerEmail: userData.email,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            };
+            
+            // Save to localStorage
+            const existingRequests = JSON.parse(localStorage.getItem('opm_requests') || '[]');
+            existingRequests.push(request);
+            localStorage.setItem('opm_requests', JSON.stringify(existingRequests));
+            
+            // Create approval link - use relative path
+            const approvalLink = `approval.html?id=${requestId}`;
+            
+            // Display success message with approval link
+            const successDiv = document.getElementById('successMessage');
+            successDiv.innerHTML = `
+                <h3>✓ Request Submitted Successfully!</h3>
+                <p><strong>Request ID:</strong> ${requestId}</p>
+                <p><strong>Number of Staff:</strong> ${selectedStaff.length}</p>
+                <p><strong>System:</strong> ${document.getElementById('system').options[document.getElementById('system').selectedIndex].text}</p>
+                
+                <div class="approval-link">
+                    <h4>📤 Share this link with approver:</h4>
+                    <input type="text" value="${window.location.origin}/${approvalLink}" readonly 
+                           style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #90caf9; border-radius: 4px;">
+                    <button onclick="copyToClipboard('${window.location.origin}/${approvalLink}')" 
+                            style="background: #1976d2; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                        📋 Copy Link
+                    </button>
+                    <button onclick="newRequest()" 
+                            style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+                        📝 New Request
+                    </button>
+                </div>
+            `;
+            successDiv.style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Reset form
+            document.getElementById('accessRequestForm').reset();
+            document.getElementById('staffDetails').style.display = 'none';
+            document.getElementById('staffListSection').style.display = 'none';
+            selectedStaff = [];
+            updateSubmitButton();
+            setDefaultDates();
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+        
+        function newRequest() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('staffEmail').focus();
+        }
+        
+        function logout() {
+            localStorage.removeItem('opm_user');
+            localStorage.removeItem('opm_requests');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            setDefaultDates();
+            updateSubmitButton();
+            
+            // Allow Enter key in email field to trigger Add Staff
+            document.getElementById('staffEmail').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addStaff();
+                }
+            });
+            
+            // Focus on email input
+            document.getElementById('staffEmail').focus();
+        });
     </script>
 </body>
 </html>
