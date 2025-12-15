@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Access Request - OPM</title>
+    <style>
+        /* Print-friendly styles */
+        @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; padding: 20px; }
+            .print-content { 
+                border: 2px solid #000;
+                padding: 30px;
+                font-family: 'Times New Roman', serif;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .print-content {
+            border: 1px solid #ddd;
+            padding: 30px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #1a237e;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: #1a237e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .section h2 {
+            color: #1a237e;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            padding: 8px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            min-height: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th {
+            background: #1a237e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        .signature-section {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        
+        .signature-box {
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            text-align: center;
+        }
+        
+        .stamp-area {
+            height: 100px;
+            border: 1px dashed #666;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background: #283593;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls no-print">
+        <button onclick="window.print()" class="btn">
+            <i class="fas fa-print"></i> Print Form
+        </button>
+        <button onclick="window.close()" class="btn">
+            <i class="fas fa-times"></i> Close
+        </button>
+    </div>
+    
+    <div class="print-content" id="printContent">
+        <!-- Content will be loaded by JavaScript -->
+        <div id="loading">Loading request details...</div>
+    </div>
+
+    <script>
+        // Get request ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestId = urlParams.get('id');
+        const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+        
+        async function loadRequestDetails() {
+            if (!requestId) {
+                document.getElementById('printContent').innerHTML = 
+                    '<div class="error">No request ID provided</div>';
+                return;
+            }
+            
+            try {
+                // Fetch request from Google Sheets
+                const response = await fetch(`${API_URL}?action=getRequests`);
+                const requests = await response.json();
+                const request = requests.find(req => req.requestId === requestId);
+                
+                if (!request) {
+                    document.getElementById('printContent').innerHTML = 
+                        '<div class="error">Request not found</div>';
+                    return;
+                }
+                
+                // Render the print form
+                renderPrintForm(request);
+                
+            } catch (error) {
+                document.getElementById('printContent').innerHTML = 
+                    `<div class="error">Error loading request: ${error.message}</div>`;
+            }
+        }
+        
+        function renderPrintForm(request) {
+            const printContent = document.getElementById('printContent');
+            
+            let html = `
+                <div class="header">
+                    <div class="logo">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h1>OFFICE OF THE PRIME MINISTER - UGANDA</h1>
+                    <h2>SYSTEM ACCESS REQUEST FORM</h2>
+                    <p><strong>Request ID:</strong> ${request.requestId}</p>
+                </div>
+                
+                <div class="section">
+                    <h2>1. REQUEST DETAILS</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Request Date</div>
+                            <div class="info-value">${new Date(request.requestDate).toLocaleDateString()}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Status</div>
+                            <div class="info-value" style="
+                                color: ${request.status === 'Approved' ? 'green' : 
+                                        request.status === 'Rejected' ? 'red' : 'orange'};
+                                font-weight: bold;
+                            ">${request.status}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Requested By</div>
+                            <div class="info-value">${request.requestingOfficer}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Request Email</div>
+                            <div class="info-value">${request.requestingOfficerEmail}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>2. STAFF REQUESTING ACCESS</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // Staff rows
+            request.staffEmails.forEach((email, index) => {
+                // In real app, you'd fetch staff details
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>Staff Member ${index + 1}</td>
+                        <td>${email}</td>
+                        <td>Position</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="section">
+                    <h2>3. SYSTEM ACCESS DETAILS</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Systems Requested</div>
+                            <div class="info-value">${request.systems.join(', ')}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Access Rights</div>
+                            <div class="info-value">${request.accessRights.join(', ')}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Access Period</div>
+                            <div class="info-value">${request.startDate} to ${request.endDate}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2>4. REASON FOR ACCESS</h2>
+                    <div class="info-value" style="min-height: 100px;">${request.reason}</div>
+                </div>
+            `;
+            
+            // Approval section if approved/rejected
+            if (request.status !== 'Pending') {
+                html += `
+                    <div class="section">
+                        <h2>5. APPROVAL DETAILS</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">${request.status === 'Approved' ? 'Approved' : 'Rejected'} By</div>
+                                <div class="info-value">${request.approverName}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">${request.status === 'Approved' ? 'Approver' : 'Rejector'} Email</div>
+                                <div class="info-value">${request.approverEmail}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">${request.status === 'Approved' ? 'Approval' : 'Rejection'} Date</div>
+                                <div class="info-value">${request.approvalDate}</div>
+                            </div>
+                        </div>
+                        ${request.comments ? `
+                        <div class="info-item">
+                            <div class="info-label">Comments</div>
+                            <div class="info-value">${request.comments}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            // Signatures section
+            html += `
+                <div class="signature-section">
+                    <div class="signature-box">
+                        <p>_________________________</p>
+                        <p><strong>Requesting Officer</strong></p>
+                        <p>${request.requestingOfficer}</p>
+                        <p>Date: _________________</p>
+                    </div>
+                    
+                    <div class="signature-box">
+                        <p>_________________________</p>
+                        <p><strong>Department Head</strong></p>
+                        <p>Signature & Stamp</p>
+                        <p>Date: _________________</p>
+                    </div>
+                    
+                    <div class="signature-box">
+                        <p>_________________________</p>
+                        <p><strong>ICT Manager</strong></p>
+                        <p>Signature & Stamp</p>
+                        <p>Date: _________________</p>
+                    </div>
+                </div>
+                
+                <div class="stamp-area">
+                    <p>OFFICIAL STAMP AREA</p>
+                </div>
+                
+                <div style="margin-top: 40px; font-size: 12px; color: #666;">
+                    <p><strong>Note:</strong> This form must be signed by the Department Head and ICT Manager before access is granted.</p>
+                    <p>Access will be provisioned within 24 hours of approval.</p>
+                </div>
+            `;
+            
+            printContent.innerHTML = html;
+        }
+        
+        // Load request on page load
+        window.addEventListener('DOMContentLoaded', loadRequestDetails);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></script>
+</body>
+</html>
